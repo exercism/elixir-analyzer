@@ -5,6 +5,8 @@ defmodule ElixirAnalyzer do
 
   alias ElixirAnalyzer.Submission
 
+  import ElixirAnalyzer.Summary, only: [summary: 2]
+
   # defaults
   @exercise_config "./config/exercise_data.json"
   @output_file "analyze.json"
@@ -22,29 +24,27 @@ defmodule ElixirAnalyzer do
       |> Submission.finalize()
       |> write_results(params)
 
-    summary = """
-    #{exercise} analysis ... #{str_section_result(:halted, s, params)}!
-
-    Analysis ... #{str_section_result(:analyzed, s, params)}
-    Output written to ... \"#{path}#{params.output_file}\"
-    """
-
-    IO.puts(summary)
+    if params.puts_summary do
+      summary(s, params) |> IO.puts()
+    end
 
     s
   end
 
   # translate arguments to a param map
+  @spec get_params(String.t(), String.t(), Keyword.t()) :: map()
   def get_params(exercise, path, opts \\ []) do
     defaults = [
       {:exercise, exercise},
       {:path, path},
       {:output_path, path},
       {:output_file, @output_file},
-      {:exercise_config, @exercise_config}
+      {:exercise_config, @exercise_config},
+      {:write_results, true},
+      {:puts_summary, true},
     ]
 
-    Enum.reduce(defaults, Enum.into(opts, %{}), fn {k, v}, p -> Map.put_new(p, k, v) end)
+    Enum.reduce(defaults, Enum.into(opts, %{}), fn {k, v}, params -> Map.put_new(params, k, v) end)
   end
 
   # Do init work
@@ -101,38 +101,10 @@ defmodule ElixirAnalyzer do
   end
 
   defp write_results(s = %Submission{}, params) do
-    File.write!("#{params.output_path}#{params.output_file}", Submission.to_json(s))
+    if params.write_results do
+      File.write!("#{params.output_path}#{params.output_file}", Submission.to_json(s))
+    end
 
     s
-  end
-
-  def str_section_result(key, s = %Submission{}, params) do
-    case key do
-      :halted ->
-        cond do
-          s.halted -> "Halted"
-          true -> "Completed"
-        end
-
-      :compiled ->
-        cond do
-          params.skip_compile -> "Skipped"
-          s.compiled -> "Compilation Complete"
-          true -> "Compilation Error"
-        end
-
-      :tested ->
-        cond do
-          params.skip_test -> "Skipped"
-          s.tested -> "Test Complete"
-          true -> "Test Error"
-        end
-
-      :analyzed ->
-        cond do
-          s.analyzed -> "Analysis Complete"
-          true -> "Analysis Error"
-        end
-    end
   end
 end
