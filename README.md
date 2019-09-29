@@ -115,20 +115,3 @@ Parameterized Comment | Comment Description | Comment Website Copy
 `"elixir.analysis.quote_error"` | There was some error creating a quoted form (Abstract-Syntax-Tree) of the code as a string |
 --------------------- | ------------------- | --------------------
 `"elixir.two_fer.no_specification"` | Suggest a type specification to student
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `elixir_analyzer` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:elixir_analyzer, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/elixir_analyzer](https://hexdocs.pm/elixir_analyzer).
