@@ -116,7 +116,7 @@ to contribute to the _code_ of this track, you'll need Elixir 1.9.1 or higher.
 
 This runs the analyzer using `two-fer` as exercise and a path to a solution.
 Most scripts, including this one, accept a wide range of flags to change or
-enhance the behaviour, as coded in [`exmentor/cli.ex`][file-execution-options].
+enhance the behaviour, as coded in [`elixir_analyzer/cli.ex`][file-execution-options].
 
 <!-- Run with the `-h` / `--help` flag to get a list of flags and their description.
 
