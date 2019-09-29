@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.CLI do
   @usage """
-  $ exmentor {--exercise exercise-name|exercise-name} {--path path-to|path-to}
+  $ elixir_analyzer {--exercise exercise-name|exercise-name} {--path path-to|path-to}
 
   You may also pass the following optional flags:
     --skip-analysis           flag skips running the static analysis

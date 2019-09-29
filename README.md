@@ -12,10 +12,10 @@ This is a prototype Elixir application to follow the specification of the Exerci
 
 ### via CLI
 
-running `bin/ex_mentor` on a system with elixir/erlang/otp installed
+running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ```text
-  $ exmentor {--exercise exercise-name|exercise-name} {--path path-to|path-to}
+  $ elixir_analyzer {--exercise exercise-name|exercise-name} {--path path-to|path-to}
 
   You may also pass the following optional flags:
     --skip-analysis                         flag skips running the static analysis
@@ -124,7 +124,7 @@ by adding `elixir_analyzer` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_mentor, "~> 0.1.0"}
+    {:elixir_analyzer, "~> 0.1.0"}
   ]
 end
 ```
