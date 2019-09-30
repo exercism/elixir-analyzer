@@ -112,7 +112,9 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   defmacro __before_compile__(env) do
     features = Macro.escape(Module.get_attribute(env.module, :features))
+    tests_needed_to_approve = Module.get_attribute(env.module, :tests_needed_to_approve, [])
 
+    # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
 
     # compile each feature to a test
@@ -124,27 +126,14 @@ defmodule ElixirAnalyzer.ExerciseTest do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests)
+            tests_needed_to_approve = unquote(tests_needed_to_approve)
 
             s
-            |> failed_feature_test?(feature_results)
             |> append_test_comments(feature_results)
+            |> determine_status(feature_results, tests_needed_to_approve)
 
           {:error, e} ->
             append_analysis_failure(s, e)
-        end
-      end
-
-      defp failed_feature_test?(s = %Submission{}, feature_results) do
-        has_fail =
-          Enum.any?(feature_results, fn
-            {:fail, %{severity: :disapprove}} -> true
-            _ -> false
-          end)
-
-        if has_fail do
-          Submission.disapprove(s)
-        else
-          s
         end
       end
 
@@ -166,6 +155,41 @@ defmodule ElixirAnalyzer.ExerciseTest do
           _, s ->
             s
         end)
+      end
+
+      defp determine_status(s = %Submission{}, feature_results, tests_needed_to_approve) do
+        only_passing = fn
+          {:pass, _} -> true
+          _ -> false
+        end
+
+        only_names = fn {_, name} -> name end
+
+        passing_tests =
+          feature_results
+          |> Enum.filter(only_passing)
+          |> Enum.map(only_names)
+
+        approved =
+          case tests_needed_to_approve do
+            [] -> false
+
+            _  ->
+              tests_needed_to_approve
+              |> Enum.all?(fn t -> t in passing_tests end)
+          end
+
+        disapproved =
+          Enum.any?(feature_results, fn
+            {:fail, %{severity: :disapprove}} -> true
+            _ -> false
+          end)
+
+        case {approved, disapproved} do
+          {_,    true } -> Submission.disapprove(s)
+          {true, false} -> Submission.approve(s)
+          _truth_table  -> s
+        end
       end
 
       defp append_analysis_failure(s = %Submission{}, {line, error, token}) do

@@ -12,7 +12,7 @@ defmodule ElixirAnalyzerTest do
       path = "./test_data/two_fer/passing_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {"comments":["elixir.general.refer_to_mentor"],"status":"refer_to_mentor"}
+        {"comments":["elixir.general.approve"],"status":"approve"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
