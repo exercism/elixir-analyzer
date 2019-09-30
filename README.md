@@ -70,7 +70,7 @@ This module contains macros for a DSL to be able to compare ideal solution featu
   feature "has spec" do
 
     mentor_message "elixir.two_fer.no_specification"
-    severity :message # or :disapprove or :refer
+    severity :info # or :disapprove or :refer
     match :all # :any, :none, :one
     # status :test # :skip
 

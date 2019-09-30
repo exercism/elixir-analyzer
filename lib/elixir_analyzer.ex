@@ -1,6 +1,7 @@
 defmodule ElixirAnalyzer do
   @moduledoc """
-  Documentation for ElixirAnalyzer.
+  Static analysis framework for Elixir using a domain specifc language and pattern
+  matching.
   """
 
   alias ElixirAnalyzer.Submission
@@ -12,7 +13,39 @@ defmodule ElixirAnalyzer do
   @output_file "analyze.json"
   @lib_dir "lib/"
 
-  # Entrypoint
+  @doc """
+  This is the main entry point to the analyzer.
+
+  ## Parameters
+
+  * `exercise` is which exercise is submitted to determine proper analysis
+
+  * `path` is the path (ending with a '/') to the submitted solution
+
+  * `opts` is a Keyword List of options, see **options**
+
+  ## Options
+
+  * `:exercise` - name of the exercise, defaults to the `exercise` parameter
+
+  * `:path` - path to the submitted solution, defaults to the `path` parameter
+
+  * `:output_path` - path to write file output, defaults to the `path` parameter
+
+  * `:output_file`, - specificies the name of the output_file, defaults to
+    `@output_file` (`analyze.json`)
+
+  * `:exercise_config` - specifies the path to the JSON exercise configuration,
+    defaults to `@exercise_config` (`./config/exercise_data.json`)
+
+  * `:write_results` - boolean flag if an ananlysis should output the results to
+    JSON file, defaults to `true`
+
+  * `:puts_summary` - boolean flag if an ananlysis should print the summary of the
+    analysis to stdio, defaults to `true`
+
+  Any arbitrary keyword-value pair can be passed to `analyze_exercise/3` and these options may be used the other consuming code.
+  """
   @spec analyze_exercise(String.t(), String.t(), keyword()) :: Submission.t()
   def analyze_exercise(exercise, path, opts \\ []) do
     params = get_params(exercise, path, opts)
@@ -31,9 +64,9 @@ defmodule ElixirAnalyzer do
     s
   end
 
-  # translate arguments to a param map
+  # translate arguments to a param map, adding in defaults
   @spec get_params(String.t(), String.t(), Keyword.t()) :: map()
-  def get_params(exercise, path, opts \\ []) do
+  defp get_params(exercise, path, opts) do
     defaults = [
       {:exercise, exercise},
       {:path, path},

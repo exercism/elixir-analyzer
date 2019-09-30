@@ -3,11 +3,21 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
 
   use ElixirAnalyzer.ExerciseTest
 
+  # these are all the tests need to pass for approval if no
+  # failing tests that trigger a disapproval, defaults to []
+  # if unspecified.
+  @tests_needed_to_approve [
+    "has default parameter",
+    "has guard",
+    "uses string interpolation",
+    "raises function clause error",
+  ]
+
   # has type specification
   feature "has spec" do
     # status :skip
     message("elixir.two_fer.no_specification")
-    severity(:message)
+    severity(:info)
     match(:all)
 
     form do
@@ -19,7 +29,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   feature "has default parameter" do
     # status :skip
     message("elixir.two_fer.no_default_param")
-    severity(:message)
+    severity(:info)
     match(:all)
 
     form do
@@ -61,7 +71,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "use function clause error" do
+  feature "raises function clause error" do
     # status :skip
     message("elixir.two_fer.use_function_to_catch_bad_argument")
     severity(:disapprove)
@@ -75,7 +85,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   feature "first level @moduledoc recomended" do
     # status :skip
     message("elixir.solution.missing_module_doc")
-    severity(:message)
+    severity(:info)
     match(:all)
     depth(1)
 
