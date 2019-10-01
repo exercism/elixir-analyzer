@@ -25,7 +25,7 @@ running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ### via IEX
 
-`iex -S mix`, then calling `ElixirAnalyzer.analyze("slug-name", "/path/to/solution/")`.
+`iex -S mix`, then calling `ElixirAnalyzer.analyze_exercise("slug-name", "/path/to/solution/")`.
 This assumes the solution has the file of the proper name and also a test unit by the proper name.
 
 At this time "two-fer" is the only solution implemented at a most basic level. All that gets validated is if it passes the test unit completely.  Goal will be to able to recognize the optimal solution through ast search for specific patterns.
