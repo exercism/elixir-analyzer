@@ -1,6 +1,8 @@
 defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   @moduledoc false
 
+  alias ElixirAnalyzer.Constants
+
   use ElixirAnalyzer.ExerciseTest
 
   # these are all the tests need to pass for approval if no
@@ -10,15 +12,14 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     "has default parameter",
     "has guard",
     "uses string interpolation",
-    "raises function clause error",
   ]
 
   # has type specification
   feature "has spec" do
     # status :skip
-    message("elixir.two_fer.no_specification")
-    severity(:info)
-    match(:all)
+    message  Constants.solution_use_specification
+    severity :info
+    match    :all
 
     form do
       @spec two_fer(String.t()) :: String.t()
@@ -28,25 +29,37 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   # has function header with default parameter
   feature "has default parameter" do
     # status :skip
-    message("elixir.two_fer.no_default_param")
-    severity(:info)
-    match(:all)
+    message  Constants.two_fer_use_default_parameter
+    severity :disapprove
+    match    :any
 
+    # function header
     form do
       def two_fer(_ignore \\ "you")
+    end
+
+    # function with do block
+    form do
+      def two_fer(_ignore \\ "you") when _ignore do
+        _ignore
+      end
+    end
+
+    # function one-liner
+    form do
+      def two_fer(_ignore \\ "you") when _ignore, do: _ignore
     end
   end
 
   # function clauses use guards
   feature "has guard" do
     # status :skip
-    message("elixir.two_fer.no_guards")
-    severity(:disapprove)
-    match(:any)
+    message  Constants.two_fer_use_guards
+    severity :disapprove
+    match    :any
 
     form do
       def two_fer(_ignore) when is_binary(_ignore), do: _ignore
-      def two_fer(_ignore), do: _ignore
     end
 
     form do
@@ -62,9 +75,9 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   # string interpolation used
   feature "uses string interpolation" do
     # status :skip
-    message("elixir.two_fer.use_string_interpolation")
-    severity(:disapprove)
-    match(:any)
+    message  Constants.two_fer_use_string_interpolation
+    severity :disapprove
+    match    :any
 
     form do
       "One for #{name}, one for me"
@@ -73,9 +86,9 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
 
   feature "raises function clause error" do
     # status :skip
-    message("elixir.two_fer.use_function_to_catch_bad_argument")
-    severity(:disapprove)
-    match(:all)
+    message  Constants.solution_raise_fn_clause_error
+    severity :info
+    match    :none
 
     form do
       raise FunctionClauseError
@@ -84,10 +97,10 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
 
   feature "first level @moduledoc recomended" do
     # status :skip
-    message("elixir.solution.missing_module_doc")
-    severity(:info)
-    match(:all)
-    depth(1)
+    message  Constants.solution_use_moduledoc
+    severity :info
+    match    :all
+    depth    1
 
     form do
       @moduledoc _ignore

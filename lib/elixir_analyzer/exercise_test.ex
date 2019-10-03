@@ -3,6 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.QuoteUtil
+  alias ElixirAnalyzer.Constants
 
   @doc false
   defmacro __using__(_opts) do
@@ -182,6 +183,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         disapproved =
           Enum.any?(feature_results, fn
             {:fail, %{severity: :disapprove}} -> true
+            {:fail, %{severity: :refer}}      -> true
             _ -> false
           end)
 
@@ -205,7 +207,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
         comment_params = %{line: line, error: make_error.(error, token), token: token}
 
-        Submission.append_comment(s, {"elixir.analysis.quote_error", comment_params})
+        Submission.append_comment(s, {Constants.general_parsing_error, comment_params})
       end
     end
   end

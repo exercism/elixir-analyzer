@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer do
   matching.
   """
 
+  alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Submission
 
   import ElixirAnalyzer.Summary, only: [summary: 2]
@@ -110,7 +111,7 @@ defmodule ElixirAnalyzer do
         |> Submission.halt()
         |> Submission.disapprove()
         |> Submission.append_comment({
-          "elixir.general.code_file_not_found",
+          Constants.general_file_not_found,
           %{
             "file_name" => s.code_file,
             "path" => s.path
