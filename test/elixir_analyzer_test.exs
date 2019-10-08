@@ -37,7 +37,7 @@ defmodule ElixirAnalyzerTest do
       path = "./test_data/two_fer/error_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {"comments":[{"comment":"elixir.general.parsing_error","params":{"error":"missing terminator: end (for \\"do\\" starting at line 1)","line":14,"token":""}}],"status":"refer_to_mentor"}
+        {"comments":[{"comment":"elixir.general.parsing_error","params":{"error":"missing terminator: end (for \\"do\\" starting at line 1)","line":14}}],"status":"refer_to_mentor"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
