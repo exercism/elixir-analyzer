@@ -195,17 +195,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
       end
 
       defp append_analysis_failure(s = %Submission{}, {line, error, token}) do
-        make_error = fn
-          e, t when is_binary(e) ->
-            e <> t
-
-          e, t when is_tuple(e) ->
-            [e | rest] = Tuple.to_list(e)
-
-            Enum.join([e, t | rest])
-        end
-
-        comment_params = %{line: line, error: make_error.(error, token), token: token}
+        comment_params = %{line: line, error: "#{error}#{token}"}
 
         Submission.append_comment(s, {Constants.general_parsing_error, comment_params})
       end
