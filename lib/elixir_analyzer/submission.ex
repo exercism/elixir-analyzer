@@ -73,17 +73,7 @@ defmodule ElixirAnalyzer.Submission do
     do: %{r | status: :refer} |> finalize()
 
   def finalize(r = %__MODULE__{final: false}) do
-    case r do
-      %__MODULE__{status: :approve} = r ->
-        prepend_comment(r, "elixir.general.approve")
-
-      %__MODULE__{status: :disapprove} = r ->
-        prepend_comment(r, "elixir.general.disapprove")
-
-      %__MODULE__{status: :refer} ->
-        prepend_comment(r, "elixir.general.refer_to_mentor")
-    end
-    |> Map.put(:final, true)
+    Map.put(r, :final, true)
   end
 
   def prepend_comment(r = %__MODULE__{}, comment) when is_binary(comment) do

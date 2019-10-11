@@ -4,37 +4,40 @@ defmodule ElixirAnalyzerTest do
 
   alias ElixirAnalyzer.Submission
 
-  describe "test ElixirAnalyzer" do
+  describe "ElixirAnalyzer" do
     @options [puts_summary: false, write_results: false]
 
-    test "passing solution" do
+    # @tag :pending
+    test "approved solution" do
       exercise = "two-fer"
-      path = "./test_data/two_fer/passing_solution/"
+      path = "./test_data/two_fer/approved_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {"comments":["elixir.general.approve"],"status":"approve"}
+        {"comments":[],"status":"approve"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
-    test "failing solution" do
+    # @tag :pending
+    test "approved solution with comments" do
       exercise = "two-fer"
-      path = "./test_data/two_fer/failing_solution/"
+      path = "./test_data/two_fer/referred_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {"comments":["elixir.general.refer_to_mentor","elixir.solution.missing_module_doc","elixir.two_fer.no_default_param","elixir.two_fer.no_specification"],"status":"refer_to_mentor"}
+        {\"comments\":[\"elixir.solution.use_module_doc\",\"elixir.solution.raise_fn_clause_error\",\"elixir.solution.use_specification\"],\"status\":\"approve\"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
+    # @tag :pending
     test "error solution" do
       exercise = "two-fer"
       path = "./test_data/two_fer/error_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {"comments":["elixir.general.refer_to_mentor",{"comment":"elixir.analysis.quote_error","params":{"error":"missing terminator: end (for \\"do\\" starting at line 1)","line":14,"token":""}}],"status":"refer_to_mentor"}
+        {"comments":[{"comment":"elixir.general.parsing_error","params":{"error":"missing terminator: end (for \\"do\\" starting at line 1)","line":14}}],"status":"refer_to_mentor"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)

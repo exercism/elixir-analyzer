@@ -26,6 +26,9 @@ ex_mentor-*.tar
 elixir_analyzer
 bin/elixir_analyzer
 
+#but not elixir_analyzer source
+!lib/elixir_analyzer/
+
 test_results.json
 analyze.json
 

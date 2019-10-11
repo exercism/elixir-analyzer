@@ -3,6 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.QuoteUtil
+  alias ElixirAnalyzer.Constants
 
   @doc false
   defmacro __using__(_opts) do
@@ -182,6 +183,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         disapproved =
           Enum.any?(feature_results, fn
             {:fail, %{severity: :disapprove}} -> true
+            {:fail, %{severity: :refer}}      -> true
             _ -> false
           end)
 
@@ -193,19 +195,9 @@ defmodule ElixirAnalyzer.ExerciseTest do
       end
 
       defp append_analysis_failure(s = %Submission{}, {line, error, token}) do
-        make_error = fn
-          e, t when is_binary(e) ->
-            e <> t
+        comment_params = %{line: line, error: "#{error}#{token}"}
 
-          e, t when is_tuple(e) ->
-            [e | rest] = Tuple.to_list(e)
-
-            Enum.join([e, t | rest])
-        end
-
-        comment_params = %{line: line, error: make_error.(error, token), token: token}
-
-        Submission.append_comment(s, {"elixir.analysis.quote_error", comment_params})
+        Submission.append_comment(s, {Constants.general_parsing_error, comment_params})
       end
     end
   end
