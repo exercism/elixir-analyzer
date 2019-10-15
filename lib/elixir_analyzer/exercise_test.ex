@@ -112,8 +112,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
-    features = Macro.escape(Module.get_attribute(env.module, :features))
-    tests_needed_to_approve = Module.get_attribute(env.module, :tests_needed_to_approve, [])
+    features = Macro.escape(Module.get_attribute(env.module, :features)) |> IO.inspect(label: "115")
+    auto_approvable = Module.get_attribute(env.module, :auto_approvable, false)
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
@@ -127,11 +127,11 @@ defmodule ElixirAnalyzer.ExerciseTest do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests)
-            tests_needed_to_approve = unquote(tests_needed_to_approve)
+            auto_approvable = unquote(auto_approvable)
 
             s
             |> append_test_comments(feature_results)
-            |> determine_status(feature_results, tests_needed_to_approve)
+            |> determine_status(feature_results, auto_approvable)
 
           {:error, e} ->
             append_analysis_failure(s, e)
@@ -158,38 +158,30 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp determine_status(s = %Submission{}, feature_results, tests_needed_to_approve) do
-        only_passing = fn
-          {:pass, _} -> true
-          _ -> false
-        end
-
-        only_names = fn {_, name} -> name end
-
-        passing_tests =
-          feature_results
-          |> Enum.filter(only_passing)
-          |> Enum.map(only_names)
-
+      defp determine_status(s = %Submission{}, feature_results, auto_approvable) do
         approved =
-          case tests_needed_to_approve do
-            [] -> false
-
-            _  ->
-              tests_needed_to_approve
-              |> Enum.all?(fn t -> t in passing_tests end)
-          end
+          Enum.all?(feature_results, fn
+            {:fail, %{severity: :disapprove}} -> false
+            {:fail, %{severity: :refer}} -> false
+            _ -> true
+          end) and auto_approvable
 
         disapproved =
           Enum.any?(feature_results, fn
             {:fail, %{severity: :disapprove}} -> true
-            {:fail, %{severity: :refer}}      -> true
             _ -> false
           end)
 
-        case {approved, disapproved} do
-          {_,    true } -> Submission.disapprove(s)
-          {true, false} -> Submission.approve(s)
+        referred =
+          Enum.any?(feature_results, fn
+            {:fail, %{severity: :disapprove}} -> true
+            _ -> false
+          end)
+
+        case {approved, disapproved, referred} do
+          {_,    _,     true } -> Submission.refer(s)
+          {_,    true,  false} -> Submission.disapprove(s)
+          {true, false, false} -> Submission.approve(s)
           _truth_table  -> s
         end
       end
@@ -303,7 +295,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
           cond do
             matching_depth ->
-              {node, match?(unquote(match_ast), node)}
+              {node, match?(unquote(match_ast), node)} #|> IO.inspect(label: "298")
 
             true ->
               {node, false}
