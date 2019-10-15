@@ -12,6 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     "has default parameter",
     "has guard",
     "uses string interpolation",
+    "raises function clause error",
   ]
 
   # has type specification
@@ -22,11 +23,21 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     match    :all
 
     form do
+      @spec _ignore
+    end
+  end
+
+  feature "has wrong spec" do
+    status   :skip
+    message  Constants.two_fer_wrong_specification
+    severity :refer
+    match    :all
+
+    form do
       @spec two_fer(String.t()) :: String.t()
     end
   end
 
-  # has function header with default parameter
   feature "has default parameter" do
     # status :skip
     message  Constants.two_fer_use_default_parameter
@@ -36,6 +47,18 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     # function header
     form do
       def two_fer(_ignore \\ "you")
+    end
+
+    # function without a guard
+    form do
+      def two_fer(_ignore \\ "you"), do: _ignore
+    end
+
+    # function without a guard and a do block
+    form do
+      def two_fer(_ignore \\ "you") do
+        _ignore
+      end
     end
 
     # function with do block
@@ -51,28 +74,106 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  # function clauses use guards
+  feature "uses function header" do
+    status   :skip
+    message  Constants.two_fer_use_of_function_header
+    severity :refer
+    match    :any
+
+    form do
+      def two_fer(_ignore \\ "you")
+    end
+  end
+
   feature "has guard" do
     # status :skip
     message  Constants.two_fer_use_guards
     severity :disapprove
     match    :any
 
+    # is_binary cases
     form do
       def two_fer(_ignore) when is_binary(_ignore), do: _ignore
     end
 
     form do
-      def two_fer(_ignore) do
-        case _ignore do
-          _ignore when is_binary(_ignore) -> _ignore
-          _ -> _ignore
-        end
+      case _ignore do
+        _ignore when is_binary(_ignore) -> _ignore
+        _ -> _ignore
+      end
+    end
+
+    form do
+      case is_binary(_ignore) do
+        _ignore
+      end
+    end
+
+    # is_bitstring cases
+    form do
+      def two_fer(_ignore) when is_bitstring(_ignore), do: _ignore
+    end
+
+    form do
+      case _ignore do
+        _ignore when is_bitstring(_ignore) -> _ignore
+        _ -> _ignore
+      end
+    end
+
+    form do
+      case is_bitstring(_ignore) do
+        _ignore
       end
     end
   end
 
-  # string interpolation used
+  feature "use function level guard" do
+    status   :skip
+    message  Constants.two_fer_use_function_level_guard
+    severity :disapprove
+    match    :any
+
+    # is_binary cases
+    form do
+      case _ignore do
+        _ignore when is_binary(_ignore) -> _ignore
+        _ -> _ignore
+      end
+    end
+
+    form do
+      case is_binary(_ignore) do
+        _ignore
+      end
+    end
+
+    # is_bitstring cases
+    form do
+      case _ignore do
+        _ignore when is_bitstring(_ignore) -> _ignore
+        _ -> _ignore
+      end
+    end
+
+    form do
+      case is_bitstring(_ignore) do
+        _ignore
+      end
+    end
+  end
+
+  feature "uses auxilary functions" do
+    status   :skip
+    message  Constants.two_fer_use_of_aux_functions
+    severity :refer
+    match    :any
+
+    form do
+      defp _ignore(_ignore), do: _ignore
+    end
+  end
+
   feature "uses string interpolation" do
     # status :skip
     message  Constants.two_fer_use_string_interpolation
@@ -80,14 +181,14 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     match    :any
 
     form do
-      "One for #{name}, one for me"
+      "One for #{_ignore}, one for me"
     end
   end
 
   feature "raises function clause error" do
     # status :skip
     message  Constants.solution_raise_fn_clause_error
-    severity :info
+    severity :disapprove
     match    :none
 
     form do
