@@ -20,12 +20,12 @@ defmodule ElixirAnalyzerTest do
     end
 
     # @tag :pending
-    test "approved solution with comments" do
+    test "referred solution with comments" do
       exercise = "two-fer"
       path = "./test_data/two_fer/referred_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, @options)
       expected_output = """
-        {\"comments\":[\"elixir.solution.use_module_doc\",\"elixir.solution.raise_fn_clause_error\",\"elixir.solution.use_specification\"],\"status\":\"approve\"}
+        {\"comments\":[\"elixir.solution.use_module_doc\",\"elixir.solution.raise_fn_clause_error\",\"elixir.two_fer.use_of_function_header\",\"elixir.solution.use_specification\"],\"status\":\"refer_to_mentor\"}
         """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
