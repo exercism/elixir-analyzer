@@ -26,8 +26,7 @@ defmodule ElixirAnalyzerConstantsTest do
         {:ok, {{'HTTP/1.1', status, status_msg}, _headers, _body}} =
           :httpc.request(:head, {request_url, []}, [], [])
 
-        assert status == 200
-        assert status_msg == 'OK'
+        assert {status, status_msg, @comment} == {200, 'OK', @comment}
       end
     end
   end
