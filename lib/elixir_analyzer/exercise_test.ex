@@ -10,7 +10,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     quote do
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @features []
+      @feature_tests []
     end
   end
 
@@ -21,7 +21,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   @doc """
   Store each feature in the @features attribute so we can compile them all at once later
   """
-  defmacro feature(description, do: block) do
+  defmacro feature_test(description, do: block) do
     feature_data = %{
       name: description,
       forms: [],
@@ -43,12 +43,12 @@ defmodule ElixirAnalyzer.ExerciseTest do
     feature_data = Map.to_list(feature_data)
 
     quote do
-      @features [{unquote(feature_data), unquote(Macro.escape(feature_forms))} | @features]
+      @feature_tests [{unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests]
     end
   end
 
   defp gather_feature_data({field, _, [f]} = node, acc)
-       when field in [:message, :severity, :match, :status] do
+       when field in [:comment, :on_fail, :find, :status] do
     {node, put_in(acc, [field], f)}
   end
 
@@ -81,7 +81,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         _ -> {ast, false}
       end
 
-    match_ast_string =
+    find_ast_string =
       ast
       |> Macro.prewalk(fn
         {atom, meta, param} = node ->
@@ -101,7 +101,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     {node,
      update_in(acc, [:forms], fn fs ->
-       [[{:match_ast_string, match_ast_string}, {:block_params, block_params}] | fs]
+       [[{:find_ast_string, find_ast_string}, {:block_params, block_params}] | fs]
      end)}
   end
 
@@ -112,18 +112,18 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   #
-  #  Compile @features into features function in the __before_compile__ macro
+  #  Compile @feature_tests into features function in the __before_compile__ macro
   #
 
   defmacro __before_compile__(env) do
-    features = Macro.escape(Module.get_attribute(env.module, :features)) #|> IO.inspect(label: "115")
+    feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests)) #|> IO.inspect(label: "115")
     auto_approvable = Module.get_attribute(env.module, :auto_approvable, false)
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
 
     # compile each feature to a test
-    feature_tests = Enum.map(features, &compile_feature(&1, code_ast))
+    feature_tests = Enum.map(feature_test_data, &compile_feature(&1, code_ast))
 
     quote do
       @spec analyze(Submission.t(), String.t()) :: Submission.t()
@@ -131,6 +131,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests)
+            feature_results = filter_suppressed_results(feature_results)
+
             auto_approvable = unquote(auto_approvable)
 
             s
@@ -142,6 +144,30 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end
       end
 
+      defp filter_suppressed_results(feature_results) do
+        feature_results
+        |> Enum.filter(fn
+          {_test_result, %{suppress_if: condition}} when condition !== false ->
+            [suppress_on_test_name, suppress_on_result] = condition
+
+            suppressed =
+              Enum.any?(feature_results, fn {result, test} ->
+                case {result, test.name} do
+                  {^suppress_on_result, ^suppress_on_test_name} -> true
+                  _ -> false
+                end
+              end)
+
+            # If the test should be suppressed, return false to filter the result
+            case suppressed do
+              true -> false
+              _    -> true
+            end
+
+          _result -> true
+        end)
+      end
+
       defp append_test_comments(s = %Submission{}, feature_results) do
         Enum.reduce(feature_results, s, fn
           {:pass, _description}, s ->
@@ -151,29 +177,10 @@ defmodule ElixirAnalyzer.ExerciseTest do
             s
 
           {:fail, description}, s when is_map(description) ->
-            suppressed =
-              case description.suppress_if do
-                false -> false
-
-                [suppress_on_test_name, suppress_on_result] ->
-                  Enum.any?(feature_results, fn {result, test} ->
-                    case {result, test.name} do
-                      {^suppress_on_result, ^suppress_on_test_name} -> true
-                      _ -> false
-                    end
-                  end)
-              end
-
-
-            cond do
-              suppressed -> s
-
-              true ->
-                if Map.has_key?(description, :params) do
-                  Submission.append_comment(s, {description.message, description.params})
-                else
-                  Submission.append_comment(s, description.message)
-                end
+            if Map.has_key?(description, :params) do
+              Submission.append_comment(s, {description.comment, description.params})
+            else
+              Submission.append_comment(s, description.comment)
             end
 
           _, s ->
@@ -182,24 +189,26 @@ defmodule ElixirAnalyzer.ExerciseTest do
       end
 
       defp determine_status(s = %Submission{}, feature_results, auto_approvable) do
-        approved =
-          Enum.all?(feature_results, fn
-            {:fail, %{severity: :disapprove}} -> false
-            {:fail, %{severity: :refer}} -> false
-            _ -> true
-          end) and auto_approvable
+        referred =
+          Enum.any?(feature_results, fn
+            {:fail, %{on_fail: :refer}} -> true
+            _ -> false
+          end)
 
         disapproved =
           Enum.any?(feature_results, fn
-            {:fail, %{severity: :disapprove}} -> true
+            {:fail, %{on_fail: :disapprove}} -> true
             _ -> false
           end)
 
-        referred =
-          Enum.any?(feature_results, fn
-            {:fail, %{severity: :disapprove}} -> true
-            _ -> false
-          end)
+        approved =
+          Enum.all?(feature_results, fn
+            {:fail, %{on_fail: :disapprove}} -> false
+            {:fail, %{on_fail: :refer}} -> false
+            _ -> true
+          end) and auto_approvable
+
+        # {approved, disapproved, referred} |> IO.inspect(label: "exercise status {approve, disapprove, referred}")
 
         case {approved, disapproved, referred} do
           {_,    _,     true } -> Submission.refer(s)
@@ -219,28 +228,28 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   def compile_feature({feature_data, feature_forms}, code_ast) do
     name = Keyword.fetch!(feature_data, :name)
-    message = Keyword.fetch!(feature_data, :message)
+    comment = Keyword.fetch!(feature_data, :comment)
     status = Keyword.get(feature_data, :status, :test)
-    severity = Keyword.get(feature_data, :severity, :disapprove)
-    match_type = Keyword.get(feature_data, :match, :all)
-    match_at_depth = Keyword.get(feature_data, :depth, nil)
+    on_fail = Keyword.get(feature_data, :on_fail, :disapprove)
+    find_type = Keyword.get(feature_data, :find, :all)
+    find_at_depth = Keyword.get(feature_data, :depth, nil)
     suppress_if = Keyword.get(feature_data, :suppress_if, false)
 
 
     form_expr =
       feature_forms
-      |> Enum.map(&compile_form(&1, match_at_depth, code_ast))
-      |> Enum.reduce(:start, &combine_compiled_forms(match_type, &1, &2))
-      |> handle_combined_compiled_forms(match_type)
+      |> Enum.map(&compile_form(&1, find_at_depth, code_ast))
+      |> Enum.reduce(:start, &combine_compiled_forms(find_type, &1, &2))
+      |> handle_combined_compiled_forms(find_type)
 
     case status do
       :test ->
         quote do
           test_description = %{
             name: unquote(name),
-            message: unquote(message),
+            comment: unquote(comment),
             status: unquote(status),
-            severity: unquote(severity),
+            on_fail: unquote(on_fail),
             suppress_if: unquote(suppress_if),
           }
 
@@ -259,15 +268,15 @@ defmodule ElixirAnalyzer.ExerciseTest do
     end
   end
 
-  def compile_form(form, match_at_depth, code_ast) do
-    match_ast_string = Keyword.fetch!(form, :match_ast_string)
+  def compile_form(form, find_at_depth, code_ast) do
+    find_ast_string = Keyword.fetch!(form, :find_ast_string)
     block_params = Keyword.fetch!(form, :block_params)
 
-    match_ast = Code.string_to_quoted!(match_ast_string)
+    find_ast = Code.string_to_quoted!(find_ast_string)
 
-    # create the walk function, determined if the form to match
+    # create the walk function, determined if the form to find
     # is multiple first level entries in a code block
-    walk_fn = get_compile_form_prewalk_fn(block_params, match_ast, match_at_depth)
+    walk_fn = get_compile_form_prewalk_fn(block_params, find_ast, find_at_depth)
 
     quote do
       (fn ast ->
@@ -278,7 +287,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     end
   end
 
-  defp get_compile_form_prewalk_fn(block_params, match_ast, match_at_depth)
+  defp get_compile_form_prewalk_fn(block_params, find_ast, find_at_depth)
        when is_integer(block_params) do
     quote do
       fn
@@ -286,22 +295,22 @@ defmodule ElixirAnalyzer.ExerciseTest do
         # to the size of the form block, then pattern match on each chunk
         # return true if a match
         {:__block__, _, params} = node, false, depth ->
-          matching_depth = unquote(match_at_depth) in [nil, depth]
+          finding_depth = unquote(find_at_depth) in [nil, depth]
 
           cond do
-            matching_depth and is_list(params) ->
-              match =
+            finding_depth and is_list(params) ->
+              found =
                 params
                 |> Enum.chunk_every(unquote(block_params), 1, :discard)
                 |> Enum.reduce(false, fn
                   chunk, false ->
-                    match?(unquote(match_ast), chunk)
+                    match?(unquote(find_ast), chunk)
 
                   _chunk, true ->
                     true
                 end)
 
-              {node, match}
+              {node, found}
 
             true ->
               {node, false}
@@ -315,17 +324,17 @@ defmodule ElixirAnalyzer.ExerciseTest do
     end
   end
 
-  defp get_compile_form_prewalk_fn(false, match_ast, match_at_depth) do
+  defp get_compile_form_prewalk_fn(false, find_ast, find_at_depth) do
     quote do
       fn
         node, false, depth ->
-          # IO.inspect({node, depth, inspect(unquote(Macro.escape(match_ast))), unquote(match_at_depth)}, label: ">>>")
+          # IO.inspect({node, depth, inspect(unquote(Macro.escape(find_ast))), unquote(find_at_depth)}, label: ">>>")
 
-          matching_depth = unquote(match_at_depth) in [nil, depth]
+          finding_depth = unquote(find_at_depth) in [nil, depth]
 
           cond do
-            matching_depth ->
-              {node, match?(unquote(match_ast), node)} #|> IO.inspect(label: "298")
+            finding_depth ->
+              {node, match?(unquote(find_ast), node)} #|> IO.inspect(label: "298")
 
             true ->
               {node, false}
@@ -374,8 +383,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
     end
   end
 
-  def handle_combined_compiled_forms(combined_expr, match_type) do
-    case match_type do
+  def handle_combined_compiled_forms(combined_expr, find_type) do
+    case find_type do
       type when type in [:all, :any] -> combined_expr
       type when type in [:none] -> quote do: unquote(combined_expr) == 0
       type when type in [:one] -> quote do: unquote(combined_expr) == 1

@@ -8,37 +8,37 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   @auto_approvable true
 
   #
-  # Two-fer features
+  # Two-fer feature_tests
   #
 
-  feature "has spec" do
+  feature_test "has spec" do
     # status :skip
-    message  Constants.solution_use_specification
-    severity :info
-    match    :all
+    find     :all
+    on_fail  :info
+    comment  Constants.solution_use_specification
 
     form do
       @spec _ignore
     end
   end
 
-  feature "has wrong spec" do
+  feature_test "has wrong spec" do
     # status      :skip
-    message     Constants.two_fer_wrong_specification
-    severity    :refer
-    match       :all
+    find        :all
+    on_fail     :refer
     suppress_if "has spec", :fail
+    comment     Constants.two_fer_wrong_specification
 
     form do
       @spec two_fer(String.t()) :: String.t()
     end
   end
 
-  feature "has default parameter" do
+  feature_test "has default parameter" do
     # status :skip
-    message  Constants.two_fer_use_default_parameter
-    severity :disapprove
-    match    :any
+    find    :any
+    on_fail :disapprove
+    comment Constants.two_fer_use_default_parameter
 
     # function header
     form do
@@ -70,22 +70,22 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "uses function header" do
+  feature_test "uses function header" do
     # status   :skip
-    message  Constants.two_fer_use_of_function_header
-    severity :refer
-    match    :none
+    find     :none
+    on_fail  :refer
+    comment  Constants.two_fer_use_of_function_header
 
     form do
       def two_fer(_ignore \\ "you")
     end
   end
 
-  feature "has guard" do
+  feature_test "has guard" do
     # status :skip
-    message  Constants.two_fer_use_guards
-    severity :disapprove
-    match    :any
+    find    :any
+    on_fail :disapprove
+    comment Constants.two_fer_use_guards
 
     # is_binary cases
     # acceptable
@@ -144,12 +144,12 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "use function level guard" do
+  feature_test "use function level guard" do
     # status   :skip
-    message     Constants.two_fer_use_function_level_guard
-    severity    :disapprove
-    match       :none
+    find        :none
+    on_fail    :disapprove
     suppress_if "has guard", :fail
+    comment     Constants.two_fer_use_function_level_guard
 
     # is_binary cases
     form do
@@ -196,45 +196,45 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "uses auxilary functions" do
+  feature_test "uses auxilary functions" do
     # status   :skip
-    message  Constants.two_fer_use_of_aux_functions
-    severity :refer
-    match    :none
+    find    :none
+    on_fail :refer
+    comment Constants.two_fer_use_of_aux_functions
 
     form do
       defp _ignore(_ignore), do: _ignore
     end
   end
 
-  feature "uses string interpolation" do
+  feature_test "uses string interpolation" do
     # status :skip
-    message  Constants.two_fer_use_string_interpolation
-    severity :disapprove
-    match    :any
+    find    :any
+    on_fail :disapprove
+    comment Constants.two_fer_use_string_interpolation
 
     form do
       "One for #{_ignore}, one for me"
     end
   end
 
-  feature "raises function clause error" do
+  feature_test "raises function clause error" do
     # status :skip
-    message  Constants.solution_raise_fn_clause_error
-    severity :disapprove
-    match    :none
+    find    :none
+    on_fail :disapprove
+    comment Constants.solution_raise_fn_clause_error
 
     form do
       raise FunctionClauseError
     end
   end
 
-  feature "first level @moduledoc recomended" do
+  feature_test "first level @moduledoc recomended" do
     # status :skip
-    message  Constants.solution_use_moduledoc
-    severity :info
-    match    :all
-    depth    1
+    find    :all
+    on_fail :info
+    comment Constants.solution_use_moduledoc
+    depth   1
 
     form do
       @moduledoc _ignore
