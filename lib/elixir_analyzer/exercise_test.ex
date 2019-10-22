@@ -52,6 +52,10 @@ defmodule ElixirAnalyzer.ExerciseTest do
     {node, put_in(acc, [field], f)}
   end
 
+  defp gather_feature_data({:suppress_if, _, [name, condition]} = node, acc) do
+    {node, put_in(acc, [:suppress_if], [name, condition])}
+  end
+
   defp gather_feature_data({:depth, _, [f]} = node, acc) when is_integer(f) do
     {node, put_in(acc, [:depth], f)}
   end
@@ -112,7 +116,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
-    features = Macro.escape(Module.get_attribute(env.module, :features)) |> IO.inspect(label: "115")
+    features = Macro.escape(Module.get_attribute(env.module, :features)) #|> IO.inspect(label: "115")
     auto_approvable = Module.get_attribute(env.module, :auto_approvable, false)
 
     # ast placeholder for the submission code ast
@@ -140,17 +144,36 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       defp append_test_comments(s = %Submission{}, feature_results) do
         Enum.reduce(feature_results, s, fn
-          {:pass, _desc}, s ->
+          {:pass, _description}, s ->
             s
 
-          {:skip, _desc}, s ->
+          {:skip, _description}, s ->
             s
 
-          {:fail, desc}, s when is_map(desc) ->
-            if Map.has_key?(desc, :params) do
-              Submission.append_comment(s, {desc.message, desc.params})
-            else
-              Submission.append_comment(s, desc.message)
+          {:fail, description}, s when is_map(description) ->
+            suppressed =
+              case description.suppress_if do
+                false -> false
+
+                [suppress_on_test_name, suppress_on_result] ->
+                  Enum.any?(feature_results, fn {result, test} ->
+                    case {result, test.name} do
+                      {^suppress_on_result, ^suppress_on_test_name} -> true
+                      _ -> false
+                    end
+                  end)
+              end
+
+
+            cond do
+              suppressed -> s
+
+              true ->
+                if Map.has_key?(description, :params) do
+                  Submission.append_comment(s, {description.message, description.params})
+                else
+                  Submission.append_comment(s, description.message)
+                end
             end
 
           _, s ->
@@ -201,6 +224,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
     severity = Keyword.get(feature_data, :severity, :disapprove)
     match_type = Keyword.get(feature_data, :match, :all)
     match_at_depth = Keyword.get(feature_data, :depth, nil)
+    suppress_if = Keyword.get(feature_data, :suppress_if, false)
+
 
     form_expr =
       feature_forms
@@ -211,20 +236,25 @@ defmodule ElixirAnalyzer.ExerciseTest do
     case status do
       :test ->
         quote do
+          test_description = %{
+            name: unquote(name),
+            message: unquote(message),
+            status: unquote(status),
+            severity: unquote(severity),
+            suppress_if: unquote(suppress_if),
+          }
+
           if unquote(form_expr) do
-            {:pass, unquote(name)}
+            {:pass, test_description}
           else
-            {:fail,
-             %{
-               message: unquote(message),
-               severity: unquote(severity)
-             }}
+
+            {:fail, test_description}
           end
         end
 
       :skip ->
         quote do
-          {:skip, unquote(name)}
+          {:skip, test_description}
         end
     end
   end

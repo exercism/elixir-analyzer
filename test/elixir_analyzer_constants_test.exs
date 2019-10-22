@@ -13,7 +13,7 @@ defmodule ElixirAnalyzerConstantsTest do
 
   describe "if comment exists at exercism/website-copy" do
     @comments Constants.list_of_all_comments()
-    @website_copy_url "https://github.com/exercism/website-copy/blob/master/"
+    @website_copy_url "https://github.com/exercism/website-copy/blob/master/automated-comments/"
     @file_ext ".md"
 
     for comment <- @comments do
