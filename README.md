@@ -67,12 +67,12 @@ This module contains macros for a DSL to be able to compare ideal solution featu
 
   # This is DSL for describing the test to be done
   # This describes that a solution should have a typespec for the two_fer function
-  feature "has spec" do
+  feature_test "has spec" do
 
-    mentor_message "elixir.two_fer.no_specification"
-    severity :info # or :disapprove or :refer
-    match :all # :any, :none, :one
-    # status :test # :skip
+    status   :test # :skip -- optional
+    find     :all # :any, :none, :one
+    on_fail  :info # or :disapprove or :refer
+    comment  Constants.two_fer_no_specification # may also be a string
 
     # the form of the code that you are looking for
     # you may include more than one form block
@@ -81,6 +81,10 @@ This module contains macros for a DSL to be able to compare ideal solution featu
     end
   end
 ```
+
+### `ElixirAnalyzer.Constants`
+
+Contains macro to generate a function returning the comment path on the `exercism/website-copy` repository.  The current plan is to centralize these so that they can be easily tested and changed
 
 ### `ElixirAnalyzer.CLI`
 
@@ -92,26 +96,10 @@ These modules are for describing the tests for which the analyzer is able to det
 
 ## Other Plans
 
-1. Develop the environment for execution (postponed)
-    * Edit, Aug 18/19 -- This will all be orchestrated in a docker container, so the code should be constrained (though absolute security is not possible in docker), if the need arises will come up with a solution.
+1. Develop the environment for execution (done)
 
-2. Finish the escript to be able to call the program from the command line with command line arguments
+2. Finish the escript to be able to call the program from the command line with command line arguments (done)
 
-3. Create the bash script to call the application with the parameters needed (stubbed in `bin/analyze.sh`)
+3. Create the bash script to call the application with the parameters needed (done)
 
-4. Create the Dockerfile in order to create the environment for the application to be run. (stubbed in `docker/Dockerfile`)
-
-## Dictionary of paramerized comments
-
-Parameterized Comment | Comment Description | Comment Website Copy
---------------------- | ------------------- | --------------------
-`"elixir.general.approve"` | Solution has been approved, may have more reasons to follow. |
-`"elixir.general.refer_to_mentor"` | Solution has been referred to a mentor, may have more reasons to follow. |
-`"elixir.general.disapprove"` | Solution has been disapproved for some reason, must have more reasons to follow. |
-`"elixir.general.code_file_not_found"` | Unable to locate the code file at the path |
-`"elixir.general.compile_success"` | Successful compile |
-`"elixir.general.compile_error"` | Some error occured with compilation |
---------------------- | ------------------- | --------------------
-`"elixir.analysis.quote_error"` | There was some error creating a quoted form (Abstract-Syntax-Tree) of the code as a string |
---------------------- | ------------------- | --------------------
-`"elixir.two_fer.no_specification"` | Suggest a type specification to student
+4. Create the Dockerfile in order to create the environment for the application to be run. (done)

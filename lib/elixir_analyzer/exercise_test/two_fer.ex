@@ -81,118 +81,42 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "has guard" do
+  feature_test "uses guards" do
     # status :skip
     find    :any
     on_fail :disapprove
     comment Constants.two_fer_use_guards
 
-    # is_binary cases
-    # acceptable
     form do
-      def two_fer(_ignore) when is_binary(_ignore), do: _ignore
-    end
-
-    # not acceptable, but will raise a different error
-    form do
-      case _ignore do
-        _ignore when is_binary(_ignore) -> _ignore
-        _ -> _ignore
-      end
+      is_binary(_ignore)
     end
 
     form do
-      case is_binary(_ignore) do
-        _ignore
-      end
-    end
-
-    form do
-      if is_binary(_ignore), do: _ignore
-    end
-
-    form do
-      if !is_binary(_ignore), do: _ignore
-    end
-
-    # is_bitstring cases
-    # acceptable
-    form do
-      def two_fer(_ignore) when is_bitstring(_ignore), do: _ignore
-    end
-
-    # not acceptable, but will raise a different error
-    form do
-      case _ignore do
-        _ignore when is_bitstring(_ignore) -> _ignore
-        _ -> _ignore
-      end
-    end
-
-    form do
-      case is_bitstring(_ignore) do
-        _ignore
-      end
-    end
-
-    form do
-      if is_bitstring(_ignore), do: _ignore
-    end
-
-    form do
-      if !is_bitstring(_ignore), do: _ignore
+      is_bitstring(_ignore)
     end
   end
 
-  feature_test "use function level guard" do
-    # status   :skip
-    find        :none
-    on_fail    :disapprove
-    suppress_if "has guard", :fail
+  feature_test "uses function level guard" do
+    # status      :skip
+    find        :any
+    on_fail     :refer
+    suppress_if "uses guards", :fail
     comment     Constants.two_fer_use_function_level_guard
 
-    # is_binary cases
     form do
-      case _ignore do
-        _ignore when is_binary(_ignore) -> _ignore
-        _ -> _ignore
-      end
+      def two_fer(_ignore \\ "you") when is_binary(_ignore), _ignore
     end
 
     form do
-      case is_binary(_ignore) do
-        _ignore
-      end
+      def two_fer(_ignore) when is_binary(_ignore), _ignore
     end
 
     form do
-      if is_binary(_ignore), do: _ignore
+      def two_fer(_ignore \\ "you") when is_bitstring(_ignore), _ignore
     end
 
     form do
-      if !is_binary(_ignore), do: _ignore
-    end
-
-    # is_bitstring cases
-    form do
-      case _ignore do
-        _ignore when is_bitstring(_ignore) -> _ignore
-        _ -> _ignore
-      end
-    end
-
-    form do
-      case is_bitstring(_ignore) do
-        _ignore
-      end
-    end
-
-    form do
-      if is_bitstring(_ignore), do: _ignore
-    end
-
-    form do
-      if !is_bitstring(_ignore), do: _ignore
+      def two_fer(_ignore) when is_bitstring(_ignore), _ignore
     end
   end
 
