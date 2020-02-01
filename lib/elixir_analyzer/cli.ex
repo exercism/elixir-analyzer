@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.CLI do
   @usage """
-  $ elixir_analyzer {--exercise exercise-name|exercise-name} {--path path-to|path-to}
+  $ elixir_analyzer <exercise-name> <path> [options]
 
   You may also pass the following optional flags:
     --skip-analysis           flag skips running the static analysis
@@ -10,52 +10,46 @@ defmodule ElixirAnalyzer.CLI do
 
   @options [
     {{:skip_analyze, :boolean}, false},
-    {{:exercise, :string}, nil},
-    {{:path, :string}, nil},
-    {{:output, :string}, nil},
-    {{:output_file, :string}, "analyze.json"}
+    {{:output_dir, :string}, nil},
+    {{:output_file, :string}, "analyze.json"},
+    {{:single_file, :boolean}, false},
+    {{:help, :boolean}, false}
   ]
 
-  @spec main() :: no_return
   @spec main(list(String.t())) :: no_return
-  def main(args \\ []) do
-    {options, argv, _} =
+  def main(args) do
+    args |> parse_args() |> process()
+  end
+
+  def parse_args(args) when length(args) < 2, do: :help
+
+  def parse_args(args) do
+    options = %{
+      :output_file => "analyze.json"
+    }
+
+    cmd_opts =
       OptionParser.parse(args,
-        alias: [
-          o: :output,
-          f: :output_file
-        ],
-        strict: for({option, _default} <- @options, do: option)
+        strict: (for {o, _} <- @options, do: o)
       )
 
-    exercise = Keyword.get(options, :exercise, false)
-    path = Keyword.get(options, :path, false)
-
-    {exercise, path, err} =
-      case {exercise, path, argv} do
-        {false, false, argv} when length(argv) >= 2 ->
-          {Enum.at(argv, 0), Enum.at(argv, 1), false}
-
-        {_, false, argv} when length(argv) >= 1 ->
-          {exercise, Enum.at(argv, 0), false}
-
-        {false, _, argv} when length(argv) >= 1 ->
-          {Enum.at(argv, 0), path, false}
-
-        _ ->
-          {nil, nil, true}
-      end
-
-    if err do
-      IO.puts(@usage)
-    else
-      opts =
-        for {{option, _type}, default} <- @options,
-            value = Keyword.get(options, option, default),
-            value != nil,
-            do: {option, value}
-
-      ElixirAnalyzer.analyze_exercise(exercise, path, opts)
+    case cmd_opts do
+      {[help: true], _, _}        -> :help
+      {opts, [exercise, path], _} -> {Enum.into(opts, options), exercise, path}
+      _                           -> :help
     end
+  end
+
+  def process(:help), do: IO.puts(@usage)
+
+  def process({options, exercise, path}) do
+    opts =
+      @options
+      |> Enum.reduce(options, fn {{o, _}, d}, acc ->
+        Map.put_new(acc, o, d)
+      end)
+      |> Map.to_list()
+
+    ElixirAnalyzer.analyze_exercise(exercise, path, opts)
   end
 end
