@@ -3,16 +3,17 @@ defmodule ElixirAnalyzer.CLI do
   $ elixir_analyzer <exercise-name> <path> [options]
 
   You may also pass the following optional flags:
-    --skip-analysis           flag skips running the static analysis
-    --output path, -o path    where to print the output, default to path
-    --output-file filename, -f filename
+    --skip-analysis                       flag skips running the static analysis
+    --output <path>                       where to print the output, default to path
+    --output-file <filename>
+    --analyze-file <full-path>:<module-name>
   """
 
   @options [
     {{:skip_analyze, :boolean}, false},
     {{:output_dir, :string}, nil},
     {{:output_file, :string}, "analyze.json"},
-    {{:single_file, :boolean}, false},
+    {{:analyze_file, :string}, nil},
     {{:help, :boolean}, false}
   ]
 
@@ -20,8 +21,6 @@ defmodule ElixirAnalyzer.CLI do
   def main(args) do
     args |> parse_args() |> process()
   end
-
-  def parse_args(args) when length(args) < 2, do: :help
 
   def parse_args(args) do
     options = %{
@@ -34,9 +33,15 @@ defmodule ElixirAnalyzer.CLI do
       )
 
     case cmd_opts do
-      {[help: true], _, _}        -> :help
-      {opts, [exercise, path], _} -> {Enum.into(opts, options), exercise, path}
-      _                           -> :help
+      {[help: true], _, _}           -> :help
+
+      {[analyze_file: target], _, _} ->
+        [path, module] = String.split(target, ":", trim: true)
+        {Enum.into([module: module], options), "undefined", path}
+
+      {opts, [exercise, path], _}    -> {Enum.into(opts, options), exercise, path}
+
+      _                              -> :help
     end
   end
 
