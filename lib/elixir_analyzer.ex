@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer do
   # defaults
   @exercise_config "./config/exercise_data.json"
   @output_file "analyze.json"
-  @lib_dir "lib/"
+  @lib_dir "lib"
 
   @doc """
   This is the main entry point to the analyzer.
@@ -71,6 +71,8 @@ defmodule ElixirAnalyzer do
     defaults = [
       {:exercise, exercise},
       {:path, path},
+      {:file, nil},
+      {:module, nil},
       {:output_path, path},
       {:output_file, @output_file},
       {:exercise_config, @exercise_config},
@@ -84,15 +86,19 @@ defmodule ElixirAnalyzer do
   # Do init work
   # -read config, create the inital Submission struch
   defp init(params) do
-    config_contents = File.read!(params.exercise_config)
-    config = Jason.decode!(config_contents)
+    {:ok, config_contents} = File.read(params.exercise_config)
+    {:ok, config} = Jason.decode(config_contents)
     exercise_config = config[params.exercise]
+
+    code_path = unless params.file, do: "#{params.path}/#{@lib_dir}", else: params.path
+    code_file = unless params.file, do: exercise_config["code_file"], else: params.file
+    analysis_module = unless params.file, do: exercise_config["analyzer_module"], else: "ElixirAnalyzer.ExerciseTest.#{params.module}"
 
     %Submission{
       path: params.path,
-      code_path: params.path <> @lib_dir,
-      code_file: exercise_config["code_file"],
-      analysis_module: String.to_existing_atom("Elixir.#{exercise_config["analyzer_module"]}")
+      code_path: code_path,
+      code_file: code_file,
+      analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
     }
   end
 
@@ -101,7 +107,7 @@ defmodule ElixirAnalyzer do
   # - read in the code
   # - compile
   defp check(s = %Submission{}, _params) do
-    with path_to_code <- "#{s.code_path}#{s.code_file}",
+    with path_to_code <- "#{s.code_path}/#{s.code_file}",
          {:code_read, {:ok, code_str}} <- {:code_read, File.read(path_to_code)},
          {:code_str, s} <- {:code_str, %{s | code: code_str}} do
       s
@@ -136,7 +142,7 @@ defmodule ElixirAnalyzer do
 
   defp write_results(s = %Submission{}, params) do
     if params.write_results do
-      File.write!("#{params.output_path}#{params.output_file}", Submission.to_json(s))
+      :ok = File.write("#{params.output_path}/#{params.output_file}", Submission.to_json(s))
     end
 
     s

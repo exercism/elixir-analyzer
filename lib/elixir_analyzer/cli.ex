@@ -36,8 +36,10 @@ defmodule ElixirAnalyzer.CLI do
       {[help: true], _, _}           -> :help
 
       {[analyze_file: target], _, _} ->
-        [path, module] = String.split(target, ":", trim: true)
-        {Enum.into([module: module], options), "undefined", path}
+        [fullpath, module] = String.split(target, ":", trim: true)
+        path = Path.dirname(fullpath)
+        file = Path.basename(fullpath)
+        {Enum.into([module: module, file: file], options), "undefined", path}
 
       {opts, [exercise, path], _}    -> {Enum.into(opts, options), exercise, path}
 
