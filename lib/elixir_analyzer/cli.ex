@@ -1,12 +1,18 @@
 defmodule ElixirAnalyzer.CLI do
   @usage """
-  $ elixir_analyzer <exercise-name> <path> [options]
+  Usage:
 
-  You may also pass the following optional flags:
+    $ elixir_analyzer <exercise-name> <path> [options]
+
+  You may also pass the following options:
     --skip-analysis                       flag skips running the static analysis
     --output <path>                       where to print the output, default to path
     --output-file <filename>
-    --analyze-file <full-path>:<module-name>
+
+  You may also test only individual files :
+    (assuming analyzer tests are compiled for the named module)
+
+    $ exercism_analyzer --analyze-file <full-path-to-.ex>:<module-name>
   """
 
   @options [
