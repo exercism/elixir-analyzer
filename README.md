@@ -72,7 +72,7 @@ This module contains macros for a DSL to be able to compare ideal solution featu
 
   # This is DSL for describing the test to be done
   # This describes that a solution should have a typespec for the two_fer function
-  feature_test "has spec" do
+  feature "has spec" do
 
     status   :test # :skip -- optional
     find     :all # :any, :none, :one

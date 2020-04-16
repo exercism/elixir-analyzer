@@ -39,7 +39,8 @@ defmodule ElixirAnalyzer.CLI do
       )
 
     case cmd_opts do
-      {[help: true], _, _}           -> :help
+      {[help: true], _, _} ->
+        :help
 
       {[analyze_file: target], _, _} ->
         [fullpath, module] = String.split(target, ":", trim: true)
@@ -47,22 +48,25 @@ defmodule ElixirAnalyzer.CLI do
         file = Path.basename(fullpath)
         {Enum.into([module: module, file: file], options), "undefined", path}
 
-      {opts, [exercise, path], _}    -> {Enum.into(opts, options), exercise, path}
-
-      _                              -> :help
+      {opts, [exercise, path], _} ->
+        {Enum.into(opts, options), exercise, path}
     end
+  rescue
+    _ -> :help
   end
 
   def process(:help), do: IO.puts(@usage)
 
   def process({options, exercise, path}) do
-    opts =
-      @options
-      |> Enum.reduce(options, fn {{o, _}, d}, acc ->
-        Map.put_new(acc, o, d)
-      end)
-      |> Map.to_list()
-
+    opts = get_default_options(options)
     ElixirAnalyzer.analyze_exercise(exercise, path, opts)
+  end
+
+  defp get_default_options(options) do
+    @options
+    |> Enum.reduce(options, fn {{option, _}, default}, acc ->
+      Map.put_new(acc, option, default)
+    end)
+    |> Map.to_list()
   end
 end

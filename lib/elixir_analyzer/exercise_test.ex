@@ -10,6 +10,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     quote do
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
+      @auto_approvable true
       @feature_tests []
     end
   end
@@ -21,7 +22,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   @doc """
   Store each feature in the @features attribute so we can compile them all at once later
   """
-  defmacro feature_test(description, do: block) do
+  defmacro feature(description, do: block) do
     feature_data = %{
       name: description,
       forms: [],
@@ -30,11 +31,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
       }
     }
 
-    feature_data =
-      block
-      |> Macro.prewalk(feature_data, &gather_feature_data/2)
-      # return acc only
-      |> elem(1)
+    {_, feature_data} =
+      Macro.prewalk(block, feature_data, &gather_feature_data/2)
 
     # made into a key-val list for better quoting
     feature_forms = feature_data.forms
