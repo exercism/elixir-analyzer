@@ -15,12 +15,17 @@ This is a prototype Elixir application to follow the specification of the Exerci
 running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ```text
-  $ elixir_analyzer {--exercise exercise-name|exercise-name} {--path path-to|path-to}
-
-  You may also pass the following optional flags:
-    --skip-analysis                         flag skips running the static analysis
-    --output path, -o path                  where to print the output, default to path
-    --output-file filename, -f filename     default 'analyze.json'
+  Usage:
+    $ elixir_analyzer <exercise-name> <path> [options]
+    
+  You may also pass the following options:
+    --skip-analysis                       flag skips running the static analysis
+    --output <path>                       where to print the output, default to path
+    --output-file <filename>
+    
+  You may also test only individual files :
+    (assuming analyzer tests are compiled for the named module)
+    $ exercism_analyzer --analyze-file <full-path-to-.ex>:<module-name>
 ```
 
 ### via IEX
