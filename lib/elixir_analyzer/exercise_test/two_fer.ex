@@ -1,17 +1,20 @@
 defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
-  @moduledoc false
+  @dialyzer generated: true
+  @moduledoc """
+  This is an exercise analyzer extension module for the exercise TwoFer
+
+  Written by: Tim Austin (@neenjaw) tim@neenjaw.com
+  """
 
   alias ElixirAnalyzer.Constants
 
   use ElixirAnalyzer.ExerciseTest
 
-  @auto_approvable true
-
   #
   # Two-fer feature_tests
   #
 
-  feature_test "has spec" do
+  feature "has spec" do
     # status :skip
     find     :all
     on_fail  :info
@@ -22,7 +25,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "has wrong spec" do
+  feature "has wrong spec" do
     # status      :skip
     find        :all
     on_fail     :refer
@@ -34,7 +37,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "has default parameter" do
+  feature "has default parameter" do
     # status :skip
     find    :any
     on_fail :disapprove
@@ -70,7 +73,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "uses function header" do
+  feature "uses function header" do
     # status   :skip
     find     :none
     on_fail  :refer
@@ -81,7 +84,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "uses guards" do
+  feature "uses guards" do
     # status :skip
     find    :any
     on_fail :disapprove
@@ -96,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "uses function level guard" do
+  feature "uses function level guard" do
     # status      :skip
     find        :any
     on_fail     :refer
@@ -120,7 +123,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "uses auxilary functions" do
+  feature "uses auxilary functions" do
     # status   :skip
     find    :none
     on_fail :refer
@@ -131,7 +134,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "uses string interpolation" do
+  feature "uses string interpolation" do
     # status :skip
     find    :any
     on_fail :disapprove
@@ -142,7 +145,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "raises function clause error" do
+  feature "raises function clause error" do
     # status :skip
     find    :none
     on_fail :disapprove
@@ -153,7 +156,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature_test "first level @moduledoc recomended" do
+  feature "first level @moduledoc recomended" do
     # status :skip
     find    :all
     on_fail :info
