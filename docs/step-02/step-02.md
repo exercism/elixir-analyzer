@@ -1,6 +1,6 @@
 # A Guide to Writing an Elixir Analyzer Extension
 
-## Step 1: The anatomy of an elixir analyzer extension
+## Step 2: The anatomy of an elixir analyzer extension
 
 In this section we will look at two files:
 
