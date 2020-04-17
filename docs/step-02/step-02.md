@@ -49,7 +49,7 @@ Then we can run the elixir analyzer:
 Compiling 2 files (.ex)
 Generated escript elixir_analyzer with MIX_ENV=dev
 
-> ./elixir_analyzer --analyze-file "<path>/example.ex:Example"
+> ./elixir_analyzer --analyze-file "<path>/02-example-module.ex:Example"
 undefined analysis ... Completed!
 
 Analysis ... Analysis Complete
