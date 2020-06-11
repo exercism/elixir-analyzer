@@ -84,15 +84,13 @@ defmodule ElixirAnalyzer do
   end
 
   # Do init work
-  # -read config, create the inital Submission struch
+  # -read config, create the initial Submission struct
   defp init(params) do
     {:ok, config_contents} = File.read(params.exercise_config)
     {:ok, config} = Jason.decode(config_contents)
     exercise_config = config[params.exercise]
 
-    code_path = unless params.file, do: "#{params.path}/#{@lib_dir}", else: params.path
-    code_file = unless params.file, do: exercise_config["code_file"], else: params.file
-    analysis_module = unless params.file, do: exercise_config["analyzer_module"], else: "ElixirAnalyzer.ExerciseTest.#{params.module}"
+    {code_path, code_file, analysis_module} = do_init(params, exercise_config)
 
     %Submission{
       path: params.path,
@@ -101,6 +99,25 @@ defmodule ElixirAnalyzer do
       analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
     }
   end
+
+  # When file is nil, pull code params from config file
+  defp do_init(%{file: nil} = params, exercise_config) do
+    {
+      "#{params.path}/#{@lib_dir}",
+      exercise_config["code_file"],
+      exercise_config["analyzer_module"]
+    }
+  end
+
+  # Else, use passed in params to analyze
+  defp do_init(params, _exercise_config) do
+    {
+      params.path,
+      params.file,
+      "ElixirAnalyzer.ExerciseTest.#{params.module}"
+    }
+  end
+
 
   # Check
   # - check if the file exists
@@ -135,7 +152,7 @@ defmodule ElixirAnalyzer do
         |> Submission.refer()
 
       true ->
-        Kernel.apply(s.analysis_module, :analyze, [s, s.code])
+        s.analysis_module.analyze(s, s.code)
         |> Submission.set_analyzed(true)
     end
   end
