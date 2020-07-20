@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer do
   @moduledoc """
-  Static analysis framework for Elixir using a domain specifc language and pattern
+  Static analysis framework for Elixir using a domain specific language and pattern
   matching.
   """
 
@@ -33,16 +33,16 @@ defmodule ElixirAnalyzer do
 
   * `:output_path` - path to write file output, defaults to the `path` parameter
 
-  * `:output_file`, - specificies the name of the output_file, defaults to
+  * `:output_file`, - specifies the name of the output_file, defaults to
     `@output_file` (`analyze.json`)
 
   * `:exercise_config` - specifies the path to the JSON exercise configuration,
     defaults to `@exercise_config` (`./config/exercise_data.json`)
 
-  * `:write_results` - boolean flag if an ananlysis should output the results to
+  * `:write_results` - boolean flag if an analysis should output the results to
     JSON file, defaults to `true`
 
-  * `:puts_summary` - boolean flag if an ananlysis should print the summary of the
+  * `:puts_summary` - boolean flag if an analysis should print the summary of the
     analysis to stdio, defaults to `true`
 
   Any arbitrary keyword-value pair can be passed to `analyze_exercise/3` and these options may be used the other consuming code.

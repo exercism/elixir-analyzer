@@ -123,7 +123,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "uses auxilary functions" do
+  feature "uses auxiliary functions" do
     # status   :skip
     find :none
     on_fail :refer
@@ -156,7 +156,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     end
   end
 
-  feature "first level @moduledoc recomended" do
+  feature "first level @moduledoc recommended" do
     # status :skip
     find :all
     on_fail :info
