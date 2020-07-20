@@ -345,7 +345,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   end
 
   def combine_compiled_forms(:any, form, :start) do
-    # start the disjuction with false
+    # start the disjunction with false
     combine_compiled_forms(:any, form, quote(do: false))
   end
 
