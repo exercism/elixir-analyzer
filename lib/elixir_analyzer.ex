@@ -77,7 +77,7 @@ defmodule ElixirAnalyzer do
       {:output_file, @output_file},
       {:exercise_config, @exercise_config},
       {:write_results, true},
-      {:puts_summary, true},
+      {:puts_summary, true}
     ]
 
     Enum.reduce(defaults, Enum.into(opts, %{}), fn {k, v}, params -> Map.put_new(params, k, v) end)
@@ -92,12 +92,21 @@ defmodule ElixirAnalyzer do
 
     {code_path, code_file, analysis_module} = do_init(params, exercise_config)
 
-    %Submission{
-      path: params.path,
-      code_path: code_path,
-      code_file: code_file,
-      analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
-    }
+    try do
+      %Submission{
+        path: params.path,
+        code_path: code_path,
+        code_file: code_file,
+        analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
+      }
+    rescue
+      # String.to_existing_atom/1 may fail if the exercise to be tested does not exist
+      ArgumentError ->
+        if params.write_results do
+          {:ok, json} = Jason.encode(%{"status" => "disapprove", "comments" => []})
+          :ok = File.write("#{params.output_path}/#{params.output_file}", json)
+        end
+    end
   end
 
   # When file is nil, pull code params from config file
@@ -118,7 +127,6 @@ defmodule ElixirAnalyzer do
     }
   end
 
-
   # Check
   # - check if the file exists
   # - read in the code
@@ -134,7 +142,7 @@ defmodule ElixirAnalyzer do
         |> Submission.halt()
         |> Submission.disapprove()
         |> Submission.append_comment({
-          Constants.general_file_not_found,
+          Constants.general_file_not_found(),
           %{
             "file_name" => s.code_file,
             "path" => s.path

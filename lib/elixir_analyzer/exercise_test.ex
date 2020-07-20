@@ -31,8 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
       }
     }
 
-    {_, feature_data} =
-      Macro.prewalk(block, feature_data, &gather_feature_data/2)
+    {_, feature_data} = Macro.prewalk(block, feature_data, &gather_feature_data/2)
 
     # made into a key-val list for better quoting
     feature_forms = feature_data.forms
@@ -41,7 +40,9 @@ defmodule ElixirAnalyzer.ExerciseTest do
     feature_data = Map.to_list(feature_data)
 
     quote do
-      @feature_tests [{unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests]
+      @feature_tests [
+        {unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests
+      ]
     end
   end
 
@@ -114,7 +115,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
-    feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests)) #|> IO.inspect(label: "115")
+    feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
     auto_approvable = Module.get_attribute(env.module, :auto_approvable, false)
 
     # ast placeholder for the submission code ast
@@ -159,10 +160,11 @@ defmodule ElixirAnalyzer.ExerciseTest do
             # If the test should be suppressed, return false to filter the result
             case suppressed do
               true -> false
-              _    -> true
+              _ -> true
             end
 
-          _result -> true
+          _result ->
+            true
         end)
       end
 
@@ -209,17 +211,17 @@ defmodule ElixirAnalyzer.ExerciseTest do
         # {approved, disapproved, referred} |> IO.inspect(label: "exercise status {approve, disapprove, referred}")
 
         case {approved, disapproved, referred} do
-          {_,    _,     true } -> Submission.refer(s)
-          {_,    true,  false} -> Submission.disapprove(s)
+          {_, _, true} -> Submission.refer(s)
+          {_, true, false} -> Submission.disapprove(s)
           {true, false, false} -> Submission.approve(s)
-          _truth_table  -> s
+          _truth_table -> s
         end
       end
 
       defp append_analysis_failure(s = %Submission{}, {line, error, token}) do
         comment_params = %{line: line, error: "#{error}#{token}"}
 
-        Submission.append_comment(s, {Constants.general_parsing_error, comment_params})
+        Submission.append_comment(s, {Constants.general_parsing_error(), comment_params})
       end
     end
   end
@@ -232,7 +234,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
     find_type = Keyword.get(feature_data, :find, :all)
     find_at_depth = Keyword.get(feature_data, :depth, nil)
     suppress_if = Keyword.get(feature_data, :suppress_if, false)
-
 
     form_expr =
       feature_forms
@@ -248,13 +249,12 @@ defmodule ElixirAnalyzer.ExerciseTest do
             comment: unquote(comment),
             status: unquote(status),
             on_fail: unquote(on_fail),
-            suppress_if: unquote(suppress_if),
+            suppress_if: unquote(suppress_if)
           }
 
           if unquote(form_expr) do
             {:pass, test_description}
           else
-
             {:fail, test_description}
           end
         end
@@ -332,7 +332,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
           cond do
             finding_depth ->
-              {node, match?(unquote(find_ast), node)} #|> IO.inspect(label: "298")
+              {node, match?(unquote(find_ast), node)}
 
             true ->
               {node, false}

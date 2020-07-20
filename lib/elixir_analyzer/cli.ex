@@ -35,7 +35,7 @@ defmodule ElixirAnalyzer.CLI do
 
     cmd_opts =
       OptionParser.parse(args,
-        strict: (for {o, _} <- @options, do: o)
+        strict: for({o, _} <- @options, do: o)
       )
 
     case cmd_opts do
