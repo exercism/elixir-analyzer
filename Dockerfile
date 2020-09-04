@@ -1,4 +1,4 @@
-FROM elixir:1.8-alpine as builder
+FROM elixir:1.10-alpine as builder
 
 # Install SSL ca certificates
 RUN apk update && apk add ca-certificates
@@ -13,7 +13,7 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN bin/build.sh
 
-FROM elixir:1-8-alpine
+FROM elixir:1.10-alpine
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
