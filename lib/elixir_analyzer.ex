@@ -47,9 +47,9 @@ defmodule ElixirAnalyzer do
 
   Any arbitrary keyword-value pair can be passed to `analyze_exercise/3` and these options may be used the other consuming code.
   """
-  @spec analyze_exercise(String.t(), String.t(), keyword()) :: Submission.t()
-  def analyze_exercise(exercise, path, opts \\ []) do
-    params = get_params(exercise, path, opts)
+  @spec analyze_exercise(String.t(), String.t(), String.t(), keyword()) :: Submission.t()
+  def analyze_exercise(exercise, input_path, output_path, opts \\ []) do
+    params = get_params(exercise, input_path, output_path, opts)
 
     s =
       init(params)
@@ -66,14 +66,14 @@ defmodule ElixirAnalyzer do
   end
 
   # translate arguments to a param map, adding in defaults
-  @spec get_params(String.t(), String.t(), Keyword.t()) :: map()
-  defp get_params(exercise, path, opts) do
+  @spec get_params(String.t(), String.t(), String.t(), Keyword.t()) :: map()
+  defp get_params(exercise, input_path, output_path, opts) do
     defaults = [
       {:exercise, exercise},
-      {:path, path},
+      {:path, input_path},
       {:file, nil},
       {:module, nil},
-      {:output_path, path},
+      {:output_path, output_path},
       {:output_file, @output_file},
       {:exercise_config, @exercise_config},
       {:write_results, true},
