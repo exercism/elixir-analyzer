@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer do
 
   # defaults
   @exercise_config "./config/exercise_data.json"
-  @output_file "analyze.json"
+  @output_file "analysis.json"
   @lib_dir "lib"
 
   @doc """
@@ -34,7 +34,7 @@ defmodule ElixirAnalyzer do
   * `:output_path` - path to write file output, defaults to the `path` parameter
 
   * `:output_file`, - specifies the name of the output_file, defaults to
-    `@output_file` (`analyze.json`)
+    `@output_file` (`analysis.json`)
 
   * `:exercise_config` - specifies the path to the JSON exercise configuration,
     defaults to `@exercise_config` (`./config/exercise_data.json`)

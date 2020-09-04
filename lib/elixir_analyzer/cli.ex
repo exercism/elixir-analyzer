@@ -16,8 +16,7 @@ defmodule ElixirAnalyzer.CLI do
 
   @options [
     {{:skip_analyze, :boolean}, false},
-    {{:output_dir, :string}, nil},
-    {{:output_file, :string}, "analyze.json"},
+    {{:output_file, :string}, "analysis.json"},
     {{:analyze_file, :string}, nil},
     {{:help, :boolean}, false}
   ]
@@ -29,7 +28,7 @@ defmodule ElixirAnalyzer.CLI do
 
   def parse_args(args) do
     options = %{
-      :output_file => "analyze.json"
+      :output_file => "analysis.json"
     }
 
     cmd_opts =
