@@ -30,6 +30,6 @@ bin/elixir_analyzer
 !lib/elixir_analyzer/
 
 test_results.json
-analyze.json
+analysis.json
 
 tmp/

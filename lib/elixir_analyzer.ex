@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer do
 
   # defaults
   @exercise_config "./config/exercise_data.json"
-  @output_file "analyze.json"
+  @output_file "analysis.json"
   @lib_dir "lib"
 
   @doc """
@@ -34,7 +34,7 @@ defmodule ElixirAnalyzer do
   * `:output_path` - path to write file output, defaults to the `path` parameter
 
   * `:output_file`, - specifies the name of the output_file, defaults to
-    `@output_file` (`analyze.json`)
+    `@output_file` (`analysis.json`)
 
   * `:exercise_config` - specifies the path to the JSON exercise configuration,
     defaults to `@exercise_config` (`./config/exercise_data.json`)
@@ -47,9 +47,9 @@ defmodule ElixirAnalyzer do
 
   Any arbitrary keyword-value pair can be passed to `analyze_exercise/3` and these options may be used the other consuming code.
   """
-  @spec analyze_exercise(String.t(), String.t(), keyword()) :: Submission.t()
-  def analyze_exercise(exercise, path, opts \\ []) do
-    params = get_params(exercise, path, opts)
+  @spec analyze_exercise(String.t(), String.t(), String.t(), keyword()) :: Submission.t()
+  def analyze_exercise(exercise, input_path, output_path, opts \\ []) do
+    params = get_params(exercise, input_path, output_path, opts)
 
     s =
       init(params)
@@ -66,14 +66,14 @@ defmodule ElixirAnalyzer do
   end
 
   # translate arguments to a param map, adding in defaults
-  @spec get_params(String.t(), String.t(), Keyword.t()) :: map()
-  defp get_params(exercise, path, opts) do
+  @spec get_params(String.t(), String.t(), String.t(), Keyword.t()) :: map()
+  defp get_params(exercise, input_path, output_path, opts) do
     defaults = [
       {:exercise, exercise},
-      {:path, path},
+      {:path, input_path},
       {:file, nil},
       {:module, nil},
-      {:output_path, path},
+      {:output_path, output_path},
       {:output_file, @output_file},
       {:exercise_config, @exercise_config},
       {:write_results, true},
@@ -167,7 +167,7 @@ defmodule ElixirAnalyzer do
 
   defp write_results(s = %Submission{}, params) do
     if params.write_results do
-      :ok = File.write("#{params.output_path}/#{params.output_file}", Submission.to_json(s))
+      :ok = File.write(Path.join(params.output_path, params.output_file), Submission.to_json(s))
     end
 
     s

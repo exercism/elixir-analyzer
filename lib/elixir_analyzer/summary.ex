@@ -14,7 +14,7 @@ defmodule ElixirAnalyzer.Summary do
     #{params.exercise} analysis ... #{result_to_string(:halted, s)}!
 
     Analysis ... #{result_to_string(:analyzed, s)}
-    Output written to ... #{params.path}/#{params.output_file}
+    Output written to ... #{Path.join(params.output_path, params.output_file)}
     """
   end
 

@@ -2,11 +2,10 @@ defmodule ElixirAnalyzer.CLI do
   @usage """
   Usage:
 
-    $ elixir_analyzer <exercise-name> <path> [options]
+    $ elixir_analyzer <exercise-name> <input path> <output path>  [options]
 
   You may also pass the following options:
     --skip-analysis                       flag skips running the static analysis
-    --output <path>                       where to print the output, default to path
     --output-file <filename>
 
   You may also test only individual files :
@@ -17,8 +16,7 @@ defmodule ElixirAnalyzer.CLI do
 
   @options [
     {{:skip_analyze, :boolean}, false},
-    {{:output_dir, :string}, nil},
-    {{:output_file, :string}, "analyze.json"},
+    {{:output_file, :string}, "analysis.json"},
     {{:analyze_file, :string}, nil},
     {{:help, :boolean}, false}
   ]
@@ -30,7 +28,7 @@ defmodule ElixirAnalyzer.CLI do
 
   def parse_args(args) do
     options = %{
-      :output_file => "analyze.json"
+      :output_file => "analysis.json"
     }
 
     cmd_opts =
@@ -43,13 +41,13 @@ defmodule ElixirAnalyzer.CLI do
         :help
 
       {[analyze_file: target], _, _} ->
-        [fullpath, module] = String.split(target, ":", trim: true)
-        path = Path.dirname(fullpath)
-        file = Path.basename(fullpath)
+        [full_path, module] = String.split(target, ":", trim: true)
+        path = Path.dirname(full_path)
+        file = Path.basename(full_path)
         {Enum.into([module: module, file: file], options), "undefined", path}
 
-      {opts, [exercise, path], _} ->
-        {Enum.into(opts, options), exercise, path}
+      {opts, [exercise, input_path, output_path], _} ->
+        {Enum.into(opts, options), exercise, input_path, output_path}
     end
   rescue
     _ -> :help
@@ -57,9 +55,9 @@ defmodule ElixirAnalyzer.CLI do
 
   def process(:help), do: IO.puts(@usage)
 
-  def process({options, exercise, path}) do
+  def process({options, exercise, input_path, output_path}) do
     opts = get_default_options(options)
-    ElixirAnalyzer.analyze_exercise(exercise, path, opts)
+    ElixirAnalyzer.analyze_exercise(exercise, input_path, output_path, opts)
   end
 
   defp get_default_options(options) do
