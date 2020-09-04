@@ -167,7 +167,7 @@ defmodule ElixirAnalyzer do
 
   defp write_results(s = %Submission{}, params) do
     if params.write_results do
-      :ok = File.write("#{params.output_path}/#{params.output_file}", Submission.to_json(s))
+      :ok = File.write(Path.join(params.output_path, params.output_file), Submission.to_json(s))
     end
 
     s
