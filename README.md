@@ -12,15 +12,28 @@ This is a prototype Elixir application to follow the specification of the Exerci
 
 ### via CLI
 
+#### Fast start
+
+```shell
+> git clone https://github.com/exercism/elixir-analyzer.git
+[git output]
+> cd elixir_analyzer
+
+> ./bin/build
+[output of CLI being build]
+> ./bin/elixir_analyzer <exercism slug for exercise> <root folder of solution to be analyzed> <folder to output contents>
+```
+
+#### Running the analyzer
+
 running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ```text
   Usage:
-    $ elixir_analyzer <exercise-name> <path> [options]
+    $ elixir_analyzer <exercise-name> <path the folder containing the solution> <path to folder for output> [options]
     
   You may also pass the following options:
     --skip-analysis                       flag skips running the static analysis
-    --output <path>                       where to print the output, default to path
     --output-file <filename>
     
   You may also test only individual files :
@@ -30,12 +43,12 @@ running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ### via IEX
 
-`iex -S mix`, then calling `ElixirAnalyzer.analyze_exercise("slug-name", "/path/to/solution/")`.
+`iex -S mix`, then calling `ElixirAnalyzer.analyze_exercise("slug-name", "/path/to/solution/", "/path/to/output/")`.
 This assumes the solution has the file of the proper name and also a test unit by the proper name.
 
 At this time "two-fer" is the only solution implemented at a most basic level. All that gets validated is if it passes the test unit completely.  Goal will be to able to recognize the optimal solution through ast search for specific patterns.
 
-As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyzer.analyze("two-fer", "./test_data/two_fer/passing_solution/")`.
+As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyzer.analyze("two-fer", "./test_data/two_fer/passing_solution/", "./test_data/results/")`.
 
 ## Design
 
