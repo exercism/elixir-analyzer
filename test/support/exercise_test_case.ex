@@ -53,18 +53,18 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     Passing a list of code blocks is also supported.
   """
   defmacro test_exercise_analysis(name, assertions, do: test_cases) do
-    supported_opt_keys = [:status, :comments, :comments_include, :comments_exclude]
-    opt_keys = Keyword.keys(assertions)
-    opt_key_diff = opt_keys -- supported_opt_keys
+    supported_assertions_keys = [:comments, :comments_include, :comments_exclude, :status]
+    assertions_keys = Keyword.keys(assertions)
+    assertions_key_diff = assertions_keys -- supported_assertions_keys
 
-    if opt_keys == [] do
-      raise "Expected to receive at least one of the supported options: #{
-              Enum.join(supported_opt_keys)
+    if assertions_keys == [] do
+      raise "Expected to receive at least one of the supported assertions: #{
+              Enum.join(supported_assertions_keys)
             }"
     end
 
-    if opt_key_diff != [] do
-      raise "Unsupported options received: #{Enum.join(opt_key_diff)}"
+    if assertions_key_diff != [] do
+      raise "Unsupported assertion received: #{Enum.join(assertions_key_diff)}"
     end
 
     test_cases = List.wrap(test_cases)
@@ -93,33 +93,44 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
               unquote(Macro.to_string(code))
             )
 
-          expected_status = unquote(assertions[:status])
+          Enum.map(Keyword.keys(unquote(assertions)), fn key ->
+            case key do
+              :comments ->
+                expected_comments = unquote(assertions[:comments])
 
-          if expected_status do
-            assert result.status == expected_status
-          end
+                if expected_comments do
+                  assert Enum.sort(result.comments) == Enum.sort(expected_comments)
+                end
 
-          expected_comments = unquote(assertions[:comments])
+              :comments_include ->
+                comments_include = unquote(assertions[:comments_include])
 
-          if expected_comments do
-            assert Enum.sort(result.comments) == Enum.sort(expected_comments)
-          end
+                if comments_include do
+                  Enum.each(comments_include, fn comment ->
+                    assert comment in result.comments
+                  end)
+                end
 
-          comments_include = unquote(assertions[:comments_include])
+              :comments_exclude ->
+                comments_exclude = unquote(assertions[:comments_exclude])
 
-          if comments_include do
-            Enum.each(comments_include, fn comment ->
-              assert comment in result.comments
-            end)
-          end
+                if comments_exclude do
+                  Enum.each(comments_exclude, fn comment ->
+                    refute comment in result.comments
+                  end)
+                end
 
-          comments_exclude = unquote(assertions[:comments_exclude])
+              :status ->
+                expected_status = unquote(assertions[:status])
 
-          if comments_exclude do
-            Enum.each(comments_exclude, fn comment ->
-              refute comment in result.comments
-            end)
-          end
+                if expected_status do
+                  assert result.status == expected_status
+                end
+
+              _ ->
+                :noop
+            end
+          end)
         end
       end
     end)
