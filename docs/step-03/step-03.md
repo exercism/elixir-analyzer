@@ -174,6 +174,7 @@ For example:
       end
     
     a == b
+    # => true
     ```
 
 3. Usage of parenthesis in certain contexts
@@ -189,6 +190,7 @@ For example:
       end
     
     a == b
+    # => true
     ```
    
 #### 3. Add attributes to the matching process
