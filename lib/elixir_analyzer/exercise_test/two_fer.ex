@@ -48,12 +48,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
       def two_fer(_ignore \\ "you")
     end
 
-    # function without a guard
-    form do
-      def two_fer(_ignore \\ "you"), do: _ignore
-    end
-
-    # function without a guard and a do block
+    # function without a guard and with a do block
     form do
       def two_fer(_ignore \\ "you") do
         _ignore
@@ -65,11 +60,6 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
       def two_fer(_ignore \\ "you") when _ignore do
         _ignore
       end
-    end
-
-    # function one-liner
-    form do
-      def two_fer(_ignore \\ "you") when _ignore, do: _ignore
     end
   end
 
