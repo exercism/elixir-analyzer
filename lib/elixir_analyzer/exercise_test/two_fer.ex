@@ -132,6 +132,16 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
     form do
       defp _ignore(_ignore), do: _ignore
     end
+
+    form do
+      def two_fer(_ignore), do: _ignore
+      def _ignore(_ignore), do: _ignore
+    end
+
+    form do
+      def _ignore(_ignore), do: _ignore
+      def two_fer(_ignore), do: _ignore
+    end
   end
 
   feature "uses string interpolation" do
