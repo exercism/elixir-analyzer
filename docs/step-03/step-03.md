@@ -134,6 +134,63 @@ defmodule ElixirAnalyzer.ExerciseTest.Example do
 end
 ```
 
+##### 2.1 Limitations
+
+Slightly different syntax can produce exactly the same AST. That means that certain details cannot be distinguished by this analyzer. If they cannot be distinguished, they cannot be verified by the analyzer, but they also don't need to be both listed when specifying all of the forms for a feature.
+
+For example:  
+
+1. Single line vs multiline string
+    ```elixir
+    a =
+      quote do
+        """
+        1
+        2
+        """
+      end
+    
+    b = 
+      quote do
+        "1\n2\n"
+      end
+    
+    a == b
+    # => true
+    ```
+
+2. Single line vs multiline `do` blocks
+    ```elixir
+    a =
+      quote do
+        def foo do
+          "hello"
+        end
+      end
+    
+    b =
+      quote do
+        def foo, do: "hello"
+      end
+    
+    a == b
+    ```
+
+3. Usage of parenthesis in certain contexts
+    ```elixir
+    a =
+      quote do
+        def foo("hello")
+      end
+    
+    b =
+      quote do
+        def foo "hello"
+      end
+    
+    a == b
+    ```
+   
 #### 3. Add attributes to the matching process
 
 So far we have defined a feature to test, and a pattern to match, but we need to further specify how we want it to match and what it should do when it doesn't. We need to add the `find`, `on_fail`, and `comment` attributes:
