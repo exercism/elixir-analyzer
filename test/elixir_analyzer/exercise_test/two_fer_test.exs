@@ -113,15 +113,15 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
     end
   end
 
-  #  describe "function header" do
-  #    test_exercise_analysis "refer when using a function header",
-  #      status: :refer,
-  #      comments_include: [Constants.two_fer_use_of_function_header()] do
-  #      defmodule TwoFer do
-  #        def two_fer(name \\ "you") when is_binary(name)
-  #      end
-  #    end
-  #  end
+  describe "function header" do
+    test_exercise_analysis "refer when using a function header",
+      status: :refer,
+      comments_include: [Constants.two_fer_use_of_function_header()] do
+      defmodule TwoFer do
+        def two_fer(name \\ "you")
+      end
+    end
+  end
 
   describe "guards" do
     test_exercise_analysis "usage of is_binary or is_bitstring is required",
