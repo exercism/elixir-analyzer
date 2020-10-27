@@ -158,6 +158,19 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
   end
 
   describe "using auxiliary functions" do
+    test_exercise_analysis "multiple implementations of two_fer/1 don't count as auxiliary functions",
+      comments_exclude: [Constants.two_fer_use_of_aux_functions()] do
+      defmodule TwoFer do
+        def two_fer("foo") do
+          "One for foo, one for me"
+        end
+
+        def two_fer(name) do
+          "One for #{name}, one for me"
+        end
+      end
+    end
+
     test_exercise_analysis "refer there are other functions than two_fer/1",
       comments_include: [Constants.two_fer_use_of_aux_functions()],
       status: :refer do
@@ -190,29 +203,29 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
           end
 
           defp foo(_a, _b), do: nil
-        end,
-        defmodule TwoFer do
-          def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
-          end
-
-          def foo(_a, _b), do: nil
-        end,
-        defmodule TwoFer do
-          def foo(_a, _b, _c, _d), do: nil
-
-          def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
-          end
-        end,
-        defmodule TwoFer do
-          def foo(_a) do
-          end
-
-          def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
-          end
         end
+        #        defmodule TwoFer do
+        #          def two_fer(name \\ "you") do
+        #            "One for #{name}, one for me"
+        #          end
+        #
+        #          def foo(_a, _b), do: nil
+        #        end,
+        #        defmodule TwoFer do
+        #          def foo(_a, _b, _c, _d), do: nil
+        #
+        #          def two_fer(name \\ "you") do
+        #            "One for #{name}, one for me"
+        #          end
+        #        end,
+        #        defmodule TwoFer do
+        #          def foo(_a) do
+        #          end
+        #
+        #          def two_fer(name \\ "you") do
+        #            "One for #{name}, one for me"
+        #          end
+        #        end
       ]
     end
   end
