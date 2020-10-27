@@ -288,7 +288,7 @@ So this next part will likely take a bit of testing to isolate the exact pattern
 4. determine if the analysis.json has to appropriate output
 5. (repeat)
 
-If you have made it this far, great! You are doing awesome. Now to learn about some of the other things we can do in a match in [step 4][step-4]
+If you have made it this far, great! You are doing awesome. Once you have a good idea about what kind of features you want the analyzer extension to look for, it's time for [step 4][step-4] - write unit tests for your new extension.
 
 [website-copy]: https://github.com/exercism/website-copy/tree/master/automated-comments
 [step-4]: ../step-04/step-04.md
