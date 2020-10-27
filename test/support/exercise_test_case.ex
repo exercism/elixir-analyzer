@@ -78,7 +78,9 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
           _ -> name
         end
 
-      quote location: :keep do
+      {_, [line: line], _} = code
+
+      quote line: line do
         test "#{unquote(test_name)}" do
           empty_submission = %ElixirAnalyzer.Submission{
             code_file: "",
