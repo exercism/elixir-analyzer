@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzerConstantsTest do
+defmodule ElixirAnalyzer.ConstantsTest do
   use ExUnit.Case
   doctest ElixirAnalyzer
 

@@ -23,8 +23,8 @@ erl_crash.dump
 ex_mentor-*.tar
 
 # the escript
-elixir_analyzer
-bin/elixir_analyzer
+/elixir_analyzer
+/bin/elixir_analyzer
 
 #but not elixir_analyzer source
 !lib/elixir_analyzer/

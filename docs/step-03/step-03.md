@@ -134,6 +134,65 @@ defmodule ElixirAnalyzer.ExerciseTest.Example do
 end
 ```
 
+##### 2.1 Limitations
+
+Slightly different syntax can produce exactly the same AST. That means that certain details cannot be distinguished by this analyzer. If they cannot be distinguished, they cannot be verified by the analyzer, but they also don't need to be both listed when specifying all of the forms for a feature.
+
+For example:  
+
+1. Single line vs multiline string
+    ```elixir
+    a =
+      quote do
+        """
+        1
+        2
+        """
+      end
+    
+    b = 
+      quote do
+        "1\n2\n"
+      end
+    
+    a == b
+    # => true
+    ```
+
+2. Single line vs multiline `do` blocks
+    ```elixir
+    a =
+      quote do
+        def foo do
+          "hello"
+        end
+      end
+    
+    b =
+      quote do
+        def foo, do: "hello"
+      end
+    
+    a == b
+    # => true
+    ```
+
+3. Usage of parenthesis in certain contexts
+    ```elixir
+    a =
+      quote do
+        def foo("hello")
+      end
+    
+    b =
+      quote do
+        def foo "hello"
+      end
+    
+    a == b
+    # => true
+    ```
+   
 #### 3. Add attributes to the matching process
 
 So far we have defined a feature to test, and a pattern to match, but we need to further specify how we want it to match and what it should do when it doesn't. We need to add the `find`, `on_fail`, and `comment` attributes:
@@ -231,7 +290,7 @@ So this next part will likely take a bit of testing to isolate the exact pattern
 4. determine if the analysis.json has to appropriate output
 5. (repeat)
 
-If you have made it this far, great! You are doing awesome. Now to learn about some of the other things we can do in a match in [step 4][step-4]
+If you have made it this far, great! You are doing awesome. Once you have a good idea about what kind of features you want the analyzer extension to look for, it's time for [step 4][step-4] - write unit tests for your new extension.
 
 [website-copy]: https://github.com/exercism/website-copy/tree/master/automated-comments
 [step-4]: ../step-04/step-04.md
