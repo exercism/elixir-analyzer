@@ -204,28 +204,6 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
 
           defp foo(_a, _b), do: nil
         end
-        #        defmodule TwoFer do
-        #          def two_fer(name \\ "you") do
-        #            "One for #{name}, one for me"
-        #          end
-        #
-        #          def foo(_a, _b), do: nil
-        #        end,
-        #        defmodule TwoFer do
-        #          def foo(_a, _b, _c, _d), do: nil
-        #
-        #          def two_fer(name \\ "you") do
-        #            "One for #{name}, one for me"
-        #          end
-        #        end,
-        #        defmodule TwoFer do
-        #          def foo(_a) do
-        #          end
-        #
-        #          def two_fer(name \\ "you") do
-        #            "One for #{name}, one for me"
-        #          end
-        #        end
       ]
     end
   end
@@ -242,18 +220,18 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
     end
   end
 
-    describe "FunctionClauseError" do
-      test_exercise_analysis "doesn't allow raising FunctionClauseError explicitly",
-        comments_include: [Constants.solution_raise_fn_clause_error()] do
-        defmodule TwoFer do
-          def two_fer(name \\ "you") do
-            if is_bitstring(name) do
-              "One for #{name}, one for me"
-            else
-              raise FunctionClauseError
-            end
+  describe "FunctionClauseError" do
+    test_exercise_analysis "doesn't allow raising FunctionClauseError explicitly",
+      comments_include: [Constants.solution_raise_fn_clause_error()] do
+      defmodule TwoFer do
+        def two_fer(name \\ "you") do
+          if is_bitstring(name) do
+            "One for #{name}, one for me"
+          else
+            raise FunctionClauseError
           end
         end
       end
     end
+  end
 end
