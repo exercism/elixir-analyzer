@@ -1,6 +1,6 @@
-defmodule ElixirAnalyzer.ExerciseTest.TwoFerTest do
+defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
   use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.ExerciseTest.TwoFer
+    exercise_test_module: ElixirAnalyzer.TestSuite.TwoFer
 
   test_exercise_analysis "perfect solution",
     status: :approve,
