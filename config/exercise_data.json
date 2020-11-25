@@ -1,6 +1,6 @@
 {
-    "two-fer": {
-        "code_file": "two_fer.ex",
-        "analyzer_module": "ElixirAnalyzer.ExerciseTest.TwoFer"
-    }
+  "two-fer": {
+    "code_file": "two_fer.ex",
+    "analyzer_module": "ElixirAnalyzer.TestSuite.TwoFer"
+  }
 }
