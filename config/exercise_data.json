@@ -1,14 +1,14 @@
 {
-    "two-fer": {
-        "code_file": "two_fer.ex",
-        "analyzer_module": "ElixirAnalyzer.ExerciseTest.TwoFer"
-    },
-    "pacman-rules": {
-        "code_file": "pacman_rules.ex",
-        "analyzer_module": "ElixirAnalyzer.ExerciseTest.PacmanRules"
-    },
-    "take-a-number": {
-        "code_file": "take_a_number.ex",
-        "analyzer_module": "ElixirAnalyzer.ExerciseTest.TakeANumber"
-    }
+  "two-fer": {
+    "code_file": "two_fer.ex",
+    "analyzer_module": "ElixirAnalyzer.ExerciseTest.TwoFer"
+  },
+  "pacman-rules": {
+    "code_file": "pacman_rules.ex",
+    "analyzer_module": "ElixirAnalyzer.ExerciseTest.PacmanRules"
+  },
+  "take-a-number": {
+    "code_file": "take_a_number.ex",
+    "analyzer_module": "ElixirAnalyzer.ExerciseTest.TakeANumber"
+  }
 }
