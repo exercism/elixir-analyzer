@@ -21,7 +21,9 @@ defmodule ElixirAnalyzer.Constants do
     two_fer_wrong_specification: "elixir.two-fer.wrong_specification",
     two_fer_use_function_level_guard: "elixir.two_fer.use_function_level_guard",
     two_fer_use_of_aux_functions: "elixir.two_fer.use_of_aux_functions",
-    two_fer_use_of_function_header: "elixir.two_fer.use_of_function_header"
+    two_fer_use_of_function_header: "elixir.two_fer.use_of_function_header",
+    pacman_rules_use_strictly_boolean_operators:
+      "elixir.pacman_rules.use_strictly_boolean_operators"
   ]
 
   for {constant, markdown} <- @constants do
