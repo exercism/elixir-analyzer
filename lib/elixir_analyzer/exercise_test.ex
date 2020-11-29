@@ -76,8 +76,14 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     {ast, block_params} =
       case ast do
-        {:__block__, _, params} -> {params, length(params)}
-        _ -> {ast, false}
+        {:__block__, _, [param]} ->
+          {param, false}
+
+        {:__block__, _, [_ | _] = params}  ->
+          {params, length(params)}
+
+        _ ->
+          {ast, false}
       end
 
     find_ast_string =
@@ -208,8 +214,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
             _ -> true
           end) and auto_approvable
 
-        # {approved, disapproved, referred} |> IO.inspect(label: "exercise status {approve, disapprove, referred}")
-
         case {approved, disapproved, referred} do
           {_, _, true} -> Submission.refer(s)
           {_, true, false} -> Submission.disapprove(s)
@@ -326,8 +330,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
     quote do
       fn
         node, false, depth ->
-          # IO.inspect({node, depth, inspect(unquote(Macro.escape(find_ast))), unquote(find_at_depth)}, label: ">>>")
-
           finding_depth = unquote(find_at_depth) in [nil, depth]
 
           cond do
