@@ -8,8 +8,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
   @doc false
   defmacro __using__(_opts) do
     quote do
-      use ElixirAnalyzer.ExerciseTest.FeatureTest
-      use ElixirAnalyzer.ExerciseTest.FunctionCallTest
+      use ElixirAnalyzer.ExerciseTest.Feature
+      use ElixirAnalyzer.ExerciseTest.EnsureCall
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
@@ -22,8 +22,9 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
+    ensure_call_test_data = Module.get_attribute(env.module, :ensure_call_tests) |> IO.inspect(label: "25")
     feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
-    auto_approvable = Module.get_attribute(env.module, :auto_approvable, false)
+    auto_approvable = Module.get_attribute(env.module, :auto_approvable, true)
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast

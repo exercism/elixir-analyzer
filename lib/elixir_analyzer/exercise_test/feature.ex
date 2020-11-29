@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
+defmodule ElixirAnalyzer.ExerciseTest.Feature do
   @doc false
   defmacro __using__(_opts) do
     quote do
