@@ -9,6 +9,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   defmacro __using__(_opts) do
     quote do
       use ElixirAnalyzer.ExerciseTest.FeatureTest
+      use ElixirAnalyzer.ExerciseTest.FunctionCallTest
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
