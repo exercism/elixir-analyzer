@@ -11,7 +11,11 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   use ElixirAnalyzer.ExerciseTest
 
   #
-  # Two-fer feature_tests
+  #
+  #
+
+  #
+  # Two-fer feature tests
   #
 
   feature "has spec" do
