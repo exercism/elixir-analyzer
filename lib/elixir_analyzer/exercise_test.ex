@@ -76,14 +76,11 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     {ast, block_params} =
       case ast do
-        {:__block__, _, params} ->
-          case length(params) do
-            1 ->
-              {hd(params), false}
+        {:__block__, _, [param]} ->
+          {param, false}
 
-            len ->
-              {params, len}
-          end
+        {:__block__, _, [_ | _] = params}  ->
+          {params, length(params)}
 
         _ ->
           {ast, false}
