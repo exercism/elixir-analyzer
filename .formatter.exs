@@ -9,6 +9,8 @@
     comment: :*,
     form: :*,
     suppress_if: :*,
-    depth: :*
+    depth: :*,
+    calling_function: :*,
+    called_function: :*
   ]
 ]
