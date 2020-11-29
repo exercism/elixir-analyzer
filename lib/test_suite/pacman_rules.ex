@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzer.ExerciseTest.PacmanRules do
+defmodule ElixirAnalyzer.TestSuite.PacmanRules do
   @dialyzer generated: true
   @moduledoc """
   This is an exercise analyzer extension module for the concept exercise Pacman Rules

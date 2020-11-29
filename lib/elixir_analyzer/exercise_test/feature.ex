@@ -65,8 +65,14 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
 
     {ast, block_params} =
       case ast do
-        {:__block__, _, params} -> {params, length(params)}
-        _ -> {ast, false}
+        {:__block__, _, [param]} ->
+          {param, false}
+
+        {:__block__, _, [_ | _] = params} ->
+          {params, length(params)}
+
+        _ ->
+          {ast, false}
       end
 
     find_ast_string =
