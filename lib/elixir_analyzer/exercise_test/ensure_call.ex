@@ -105,6 +105,4 @@ defmodule ElixirAnalyzer.ExerciseTest.EnsureCall do
   def do_walk_ensure_call_block(node, test_data) do
     {node, test_data}
   end
-
-  #
 end
