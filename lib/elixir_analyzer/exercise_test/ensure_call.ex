@@ -1,4 +1,6 @@
 defmodule ElixirAnalyzer.ExerciseTest.EnsureCall do
+  @moduledoc false
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -40,17 +42,59 @@ defmodule ElixirAnalyzer.ExerciseTest.EnsureCall do
     test_data
   end
 
-  def do_walk_ensure_call_block({:calling_function, _, [function_signature]} = node, test_data) do
-    {node, Map.put(test_data, :calling_function, FunctionSignature.parse(function_signature))}
+  def do_walk_ensure_call_block({:called_from, _, [function_signature]} = node, test_data) do
+    case FunctionSignature.parse(function_signature) do
+      %{global: true} = signature ->
+        {node, Map.put(test_data, :called_from, signature)}
+
+      %{global: false} ->
+        raise ElixirAnalyzer.ExerciseTest.EnsureCall.SyntaxError,
+              "re-specify :called_from function with global context"
+
+      _ ->
+        raise ElixirAnalyzer.ExerciseTest.EnsureCall.SyntaxError,
+              "specified :called_from function is invalid"
+    end
   end
 
-  def do_walk_ensure_call_block({:called_function, _, function_signatures} = node, test_data) do
-    {node,
-     Map.put(
-       test_data,
-       :called_function,
-       Enum.map(function_signatures, &FunctionSignature.parse/1)
-     )}
+  def do_walk_ensure_call_block({:global_call, _, function_signatures} = node, test_data) do
+    signatures = Enum.map(function_signatures, &FunctionSignature.parse/1)
+
+    Enum.each(signatures, fn
+      %{global: false} ->
+        raise ElixirAnalyzer.ExerciseTest.EnsureCall.SyntaxError,
+              "re-specify :called_from function with global context"
+
+      :error ->
+        raise ElixirAnalyzer.ExerciseTest.EnsureCall.SyntaxError,
+              "specified :global_call attribute is invalid"
+
+      _ ->
+        nil
+    end)
+
+    {node, Map.put(test_data, :global_call, signatures)}
+  end
+
+  def do_walk_ensure_call_block({:local_call, _, function_signatures} = node, test_data) do
+    signatures =
+      function_signatures
+      |> Enum.map(&FunctionSignature.parse/1)
+      |> Enum.map(fn
+        %{global: true} = signature -> FunctionSignature.convert_to_local(signature)
+        signature -> signature
+      end)
+
+    Enum.each(signatures, fn
+      :error ->
+        raise ElixirAnalyzer.ExerciseTest.EnsureCall.SyntaxError,
+              "specified :local_call attribute is invalid"
+
+      _ ->
+        nil
+    end)
+
+    {node, Map.put(test_data, :local_call, signatures)}
   end
 
   def do_walk_ensure_call_block({:should_be_present, _, [value]} = node, test_data)
