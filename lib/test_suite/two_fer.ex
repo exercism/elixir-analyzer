@@ -11,15 +11,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   use ElixirAnalyzer.ExerciseTest
 
   #
-  # Two-fer ensure call tests
-  #
-
-  ensure_call "calls IO.parse/3" do
-    calling_function TwoFer.say/1
-    called_function IO.parse/3
-  end
-
-  #
   # Two-fer feature tests
   #
 
