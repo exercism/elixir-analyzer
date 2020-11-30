@@ -10,7 +10,9 @@
     form: :*,
     suppress_if: :*,
     depth: :*,
-    calling_function: :*,
-    called_function: :*
+    called_from: :*,
+    global_call: :*,
+    local_call: :*,
+    should_be_present: :*
   ]
 ]
