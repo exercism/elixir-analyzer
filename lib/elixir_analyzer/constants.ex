@@ -22,8 +22,13 @@ defmodule ElixirAnalyzer.Constants do
     two_fer_use_function_level_guard: "elixir.two_fer.use_function_level_guard",
     two_fer_use_of_aux_functions: "elixir.two_fer.use_of_aux_functions",
     two_fer_use_of_function_header: "elixir.two_fer.use_of_function_header",
+
+    # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
-      "elixir.pacman_rules.use_strictly_boolean_operators"
+      "elixir.pacman_rules.use_strictly_boolean_operators",
+
+    # Take A Number Comments
+    take_a_number_do_not_use_abstractions: "elixir.take_a_number.do_not_use_abstractions"
   ]
 
   for {constant, markdown} <- @constants do

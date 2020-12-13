@@ -79,7 +79,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         {:__block__, _, [param]} ->
           {param, false}
 
-        {:__block__, _, [_ | _] = params}  ->
+        {:__block__, _, [_ | _] = params} ->
           {params, length(params)}
 
         _ ->
