@@ -100,10 +100,15 @@ defmodule ElixirAnalyzer do
         analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
       }
     rescue
-      # String.to_existing_atom/1 may fail if the exercise to be tested does not exist
+      # String.to_existing_atom/1 may fail if the test suite for the exercise does not exist
       ArgumentError ->
         if params.write_results do
-          {:ok, json} = Jason.encode(%{"status" => "disapprove", "comments" => []})
+          {:ok, json} =
+            Jason.encode(%{
+              "status" => "skipped",
+              "comments" => ["Analysis skipped, no analysis suite exists for this exercise"]
+            })
+
           :ok = File.write("#{params.output_path}/#{params.output_file}", json)
         end
     end
