@@ -1,0 +1,54 @@
+name: Push Docker images to DockerHub and ECR
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  multiple-registries:
+    runs-on: ubuntu-latest
+
+    env:
+      ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # 2.3.4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@154c24e1f33dbb5865a021c99f1318cfebf27b32 # 1.1.1
+
+      - name: Cache Docker layers
+        uses: actions/cache@0781355a23dac32fd3bac414512f4b903437991a # 2.1.3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to DockerHub
+        uses: docker/login-action@f3364599c6aa293cdc2b8391b1b56d0c30e45c8a # 1.8.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Login to ECR
+        uses: docker/login-action@f3364599c6aa293cdc2b8391b1b56d0c30e45c8a # 1.8.0
+        with:
+          registry: ${{ env.ECR_REGISTRY }}
+          username: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@0db984c1826869dcd0740ff26ff75ff543238fd9 # 2.2.2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ github.event.repository.full_name }}:latest
+            ${{ github.event.repository.full_name }}:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:production
+            ${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
