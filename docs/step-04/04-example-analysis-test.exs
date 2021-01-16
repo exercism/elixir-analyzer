@@ -1,6 +1,6 @@
-defmodule ElixirAnalyzer.ExerciseTest.ExampleTest do
+defmodule ElixirAnalyzer.TestSuite.ExampleTest do
   use ElixirAnalyzer.ExerciseTestCase,
-      exercise_test_module: ElixirAnalyzer.ExerciseTest.Example
+      exercise_test_module: ElixirAnalyzer.TestSuite.Example
 
   test_exercise_analysis "perfect solution",
     status: :approve,

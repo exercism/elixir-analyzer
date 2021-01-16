@@ -37,7 +37,7 @@ Some discrete things that we don't want to find:
 So now let's revisit the analyzer extension from step 2, and write an analyzer test to check if the name of the parameter is `name`. Our analyzer extension module so far:
 
 ```elixir
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 end
@@ -48,7 +48,7 @@ We are going to add a call to the the macro `feature/1` which we gained use of b
 #### 1. Add a feature block with a string name
 
 ```diff
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
@@ -120,7 +120,7 @@ end
 Now we have the pattern to match, let's insert it into our extension:
 
 ```diff
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
@@ -138,61 +138,64 @@ end
 
 Slightly different syntax can produce exactly the same AST. That means that certain details cannot be distinguished by this analyzer. If they cannot be distinguished, they cannot be verified by the analyzer, but they also don't need to be both listed when specifying all of the forms for a feature.
 
-For example:  
+For example:
 
 1. Single line vs multiline string
-    ```elixir
-    a =
-      quote do
-        """
-        1
-        2
-        """
-      end
-    
-    b = 
-      quote do
-        "1\n2\n"
-      end
-    
-    a == b
-    # => true
-    ```
+
+   ```elixir
+   a =
+     quote do
+       """
+       1
+       2
+       """
+     end
+
+   b =
+     quote do
+       "1\n2\n"
+     end
+
+   a == b
+   # => true
+   ```
 
 2. Single line vs multiline `do` blocks
-    ```elixir
-    a =
-      quote do
-        def foo do
-          "hello"
-        end
-      end
-    
-    b =
-      quote do
-        def foo, do: "hello"
-      end
-    
-    a == b
-    # => true
-    ```
+
+   ```elixir
+   a =
+     quote do
+       def foo do
+         "hello"
+       end
+     end
+
+   b =
+     quote do
+       def foo, do: "hello"
+     end
+
+   a == b
+   # => true
+   ```
 
 3. Usage of parenthesis in certain contexts
-    ```elixir
-    a =
-      quote do
-        def foo("hello")
-      end
-    
-    b =
-      quote do
-        def foo "hello"
-      end
-    
-    a == b
-    # => true
-    ```
-   
+
+   ```elixir
+   a =
+     quote do
+       def foo("hello")
+     end
+
+   b =
+     quote do
+       def foo "hello"
+     end
+
+   a == b
+   # => true
+   ```
+
 #### 3. Add attributes to the matching process
 
 So far we have defined a feature to test, and a pattern to match, but we need to further specify how we want it to match and what it should do when it doesn't. We need to add the `find`, `on_fail`, and `comment` attributes:
@@ -209,7 +212,7 @@ So far we have defined a feature to test, and a pattern to match, but we need to
 Because we only have one pattern, `:any`, `:all`, or `:one` would all produce the same output, so let's just choose `:all`
 
 ```diff
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
@@ -236,7 +239,7 @@ end
 For our test, let's disapprove of the solution if the pattern doesn't match the submission:
 
 ```diff
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
@@ -262,7 +265,7 @@ At this moment, the comments are found in the [exercism/website-copy][website-co
 so lets add that to our analyzer as well:
 
 ```diff
-defmodule ElixirAnalyzer.ExerciseTest.Example do
+defmodule ElixirAnalyzer.TestSuite.Example do
   @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
