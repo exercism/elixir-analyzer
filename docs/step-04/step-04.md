@@ -15,7 +15,7 @@
 
    ```elixir
    # 04-example-analysis-test.exs
-   defmodule ElixirAnalyzer.ExerciseTesTestSuitet.ExampleTest do
+   defmodule ElixirAnalyzer.TestSuite.ExampleTest do
      use ElixirAnalyzer.ExerciseTestCase,
          exercise_test_module: ElixirAnalyzer.TestSuite.Example
 
