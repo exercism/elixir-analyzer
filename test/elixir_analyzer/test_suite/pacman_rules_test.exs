@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.ExerciseTest.PacmanRulesTest do
   use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.ExerciseTest.PacmanRules
+    exercise_test_module: ElixirAnalyzer.TestSuite.PacmanRules
 
   test_exercise_analysis "example solution",
     comments: [],

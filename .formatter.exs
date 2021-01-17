@@ -9,6 +9,10 @@
     comment: :*,
     form: :*,
     suppress_if: :*,
-    depth: :*
+    depth: :*,
+    called_from: :*,
+    global_call: :*,
+    local_call: :*,
+    should_be_present: :*
   ]
 ]

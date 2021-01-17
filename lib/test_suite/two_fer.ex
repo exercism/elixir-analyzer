@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
+defmodule ElixirAnalyzer.TestSuite.TwoFer do
   @dialyzer generated: true
   @moduledoc """
   This is an exercise analyzer extension module for the exercise TwoFer
@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.TwoFer do
   use ElixirAnalyzer.ExerciseTest
 
   #
-  # Two-fer feature_tests
+  # Two-fer feature tests
   #
 
   feature "has spec" do

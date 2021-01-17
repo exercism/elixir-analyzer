@@ -1,6 +1,6 @@
-defmodule ElixirAnalyzer.ExerciseTest.TakeANumberTest do
+defmodule ElixirAnalyzer.TestSuite.TakeANumberTest do
   use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.ExerciseTest.TakeANumber
+    exercise_test_module: ElixirAnalyzer.TestSuite.TakeANumber
 
   test_exercise_analysis "example solution",
     comments: [],

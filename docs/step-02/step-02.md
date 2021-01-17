@@ -40,7 +40,7 @@ Line 3 allows the use of the macros found in `ElixirAnalyzer.ExerciseTest`, spec
 
 ## How to use the extension
 
-The extension module should then be placed into the `lib/` folder of the mix project, ideally in `lib/elixir_analyzer/exercise_test/` folder for convention.
+The extension module should then be placed into the `lib/` folder of the mix project, ideally in `lib/elixir_analyzer/test_suite/` folder for convention.
 
 Then we can run the elixir analyzer:
 
