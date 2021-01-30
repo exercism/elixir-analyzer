@@ -1,4 +1,4 @@
-name: Elixir External Text
+name: Elixir External Test
 
 on: [push, pull_request]
 
