@@ -1,4 +1,4 @@
-name: Elixir Test
+name: Elixir External Text
 
 on: [push, pull_request]
 
@@ -18,4 +18,4 @@ jobs:
         mix local.hex --force
         mix deps.get
     - name: Run Tests
-      run: mix test --exclude external
+      run: mix test --only external
