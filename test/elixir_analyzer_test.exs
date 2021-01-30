@@ -27,7 +27,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
-      {\"comments\":[\"elixir.solution.use_module_doc\",\"elixir.solution.raise_fn_clause_error\",\"elixir.two_fer.use_of_function_header\",\"elixir.solution.use_specification\"],\"status\":\"refer_to_mentor\"}
+      {\"comments\":[\"elixir.solution.use_module_doc\",\"elixir.solution.raise_fn_clause_error\",\"elixir.two-fer.use_of_function_header\",\"elixir.solution.use_specification\"],\"status\":\"refer_to_mentor\"}
       """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
