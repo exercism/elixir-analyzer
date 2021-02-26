@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-./elixir_analyzer "${1}" "${2}" "${3}"
+./bin/elixir_analyzer "${1}" "${2}" "${3}"
