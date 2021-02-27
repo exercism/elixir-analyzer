@@ -10,7 +10,7 @@ defmodule ElixirAnalyzer.TestSuite.PacmanRules do
 
   feature "requires using strictly boolean operators" do
     find :none
-    on_fail :disapprove
+    type :essential
     comment Constants.pacman_rules_use_strictly_boolean_operators()
 
     form do

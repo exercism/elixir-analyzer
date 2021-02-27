@@ -6,29 +6,25 @@ defmodule ElixirAnalyzer.Summary do
   alias ElixirAnalyzer.Submission
 
   @doc """
-  From the Submission, return a string represenation of the summary of the Analysis
+  From the Submission, return a string representation of the Analysis summary
   """
   @spec summary(Submission.t(), map()) :: String.t()
   def summary(s = %Submission{}, params) do
     """
-    #{params.exercise} analysis ... #{result_to_string(:halted, s)}!
+    ElixirAnalyzer Report
+    ---------------------
 
-    Analysis ... #{result_to_string(:analyzed, s)}
+    Exercise: #{params.exercise}
+    Status: #{result_to_string(s)}
     Output written to ... #{Path.join(params.output_path, params.output_file)}
     """
   end
 
-  defp result_to_string(:halted, s = %Submission{}) do
-    cond do
-      s.halted -> "Halted"
-      true -> "Completed"
-    end
-  end
-
-  defp result_to_string(:analyzed, s = %Submission{}) do
-    cond do
-      s.analyzed -> "Analysis Complete"
-      true -> "Analysis Error"
+  defp result_to_string(s = %Submission{}) do
+    case {s.halted, s.analyzed} do
+      {true, _} -> "Halted"
+      {_, false} -> "Analysis Incomplete"
+      {_, true} -> "Analysis Complete"
     end
   end
 end

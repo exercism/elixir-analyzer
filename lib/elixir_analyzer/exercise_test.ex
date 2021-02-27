@@ -12,7 +12,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @auto_approvable true
     end
   end
 
@@ -22,7 +21,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   defmacro __before_compile__(env) do
     feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
-    auto_approvable = Module.get_attribute(env.module, :auto_approvable, true)
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
@@ -32,94 +30,59 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     quote do
       @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(s = %Submission{}, code_as_string) do
+      def analyze(submission = %Submission{}, code_as_string) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests)
             feature_results = filter_suppressed_results(feature_results)
 
-            auto_approvable = unquote(auto_approvable)
-
-            s
-            |> append_test_comments(feature_results)
-            |> determine_status(feature_results, auto_approvable)
+            append_test_comments(submission, feature_results)
 
           {:error, e} ->
-            append_analysis_failure(s, e)
+            append_analysis_failure(submission, e)
         end
       end
 
       defp filter_suppressed_results(feature_results) do
         feature_results
-        |> Enum.filter(fn
+        |> Enum.reject(fn
           {_test_result, %{suppress_if: condition}} when condition !== false ->
             [suppress_on_test_name, suppress_on_result] = condition
 
-            suppressed =
-              Enum.any?(feature_results, fn {result, test} ->
-                case {result, test.name} do
-                  {^suppress_on_result, ^suppress_on_test_name} -> true
-                  _ -> false
-                end
-              end)
-
-            # If the test should be suppressed, return false to filter the result
-            case suppressed do
-              true -> false
-              _ -> true
-            end
+            Enum.any?(feature_results, fn {result, test} ->
+              case {result, test.name} do
+                {^suppress_on_result, ^suppress_on_test_name} -> true
+                _ -> false
+              end
+            end)
 
           _result ->
-            true
+            false
         end)
       end
 
-      defp append_test_comments(s = %Submission{}, feature_results) do
-        Enum.reduce(feature_results, s, fn
-          {:pass, _description}, s ->
-            s
+      defp append_test_comments(submission = %Submission{}, feature_results) do
+        Enum.reduce(feature_results, submission, fn
+          {:skip, _description}, submission ->
+            submission
 
-          {:skip, _description}, s ->
-            s
-
-          {:fail, description}, s when is_map(description) ->
-            if Map.has_key?(description, :params) do
-              Submission.append_comment(s, {description.comment, description.params})
+          {:pass, description}, submission ->
+            if Map.get(description, :type, false) == :celebratory do
+              Submission.append_comment(submission, description)
             else
-              Submission.append_comment(s, description.comment)
+              submission
+            end
+
+          {:fail, description}, submission ->
+            if Map.get(description, :type, false) != :celebratory do
+              Submission.append_comment(submission, description)
+            else
+              submission
             end
 
           _, s ->
             s
         end)
-      end
-
-      defp determine_status(s = %Submission{}, feature_results, auto_approvable) do
-        referred =
-          Enum.any?(feature_results, fn
-            {:fail, %{on_fail: :refer}} -> true
-            _ -> false
-          end)
-
-        disapproved =
-          Enum.any?(feature_results, fn
-            {:fail, %{on_fail: :disapprove}} -> true
-            _ -> false
-          end)
-
-        approved =
-          Enum.all?(feature_results, fn
-            {:fail, %{on_fail: :disapprove}} -> false
-            {:fail, %{on_fail: :refer}} -> false
-            _ -> true
-          end) and auto_approvable
-
-        case {approved, disapproved, referred} do
-          {_, _, true} -> Submission.refer(s)
-          {_, true, false} -> Submission.disapprove(s)
-          {true, false, false} -> Submission.approve(s)
-          _truth_table -> s
-        end
       end
 
       defp append_analysis_failure(s = %Submission{}, {location, error, token}) do
@@ -131,7 +94,10 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
         comment_params = %{line: line, error: "#{error}#{token}"}
 
-        Submission.append_comment(s, {Constants.general_parsing_error(), comment_params})
+        Submission.append_comment(
+          s,
+          %{comment: Constants.general_parsing_error(), params: comment_params}
+        )
       end
     end
   end
@@ -140,7 +106,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     name = Keyword.fetch!(feature_data, :name)
     comment = Keyword.fetch!(feature_data, :comment)
     status = Keyword.get(feature_data, :status, :test)
-    on_fail = Keyword.get(feature_data, :on_fail, :disapprove)
+    type = Keyword.get(feature_data, :type, :informative)
     find_type = Keyword.get(feature_data, :find, :all)
     find_at_depth = Keyword.get(feature_data, :depth, nil)
     suppress_if = Keyword.get(feature_data, :suppress_if, false)
@@ -151,27 +117,28 @@ defmodule ElixirAnalyzer.ExerciseTest do
       |> Enum.reduce(:start, &combine_compiled_forms(find_type, &1, &2))
       |> handle_combined_compiled_forms(find_type)
 
+    test_description =
+      Macro.escape(%{
+        name: name,
+        comment: comment,
+        status: status,
+        type: type,
+        suppress_if: suppress_if
+      })
+
     case status do
       :test ->
         quote do
-          test_description = %{
-            name: unquote(name),
-            comment: unquote(comment),
-            status: unquote(status),
-            on_fail: unquote(on_fail),
-            suppress_if: unquote(suppress_if)
-          }
-
           if unquote(form_expr) do
-            {:pass, test_description}
+            {:pass, unquote(test_description)}
           else
-            {:fail, test_description}
+            {:fail, unquote(test_description)}
           end
         end
 
       :skip ->
         quote do
-          {:skip, test_description}
+          {:skip, unquote(test_description)}
         end
     end
   end

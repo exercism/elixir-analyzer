@@ -4,13 +4,15 @@ defmodule ElixirAnalyzer do
   matching.
   """
 
+  require Logger
+
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Submission
 
   import ElixirAnalyzer.Summary, only: [summary: 2]
 
   # defaults
-  @exercise_config "./config/exercise_data.json"
+  @exercise_config Application.get_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
   @lib_dir "lib"
 
@@ -49,25 +51,32 @@ defmodule ElixirAnalyzer do
   """
   @spec analyze_exercise(String.t(), String.t(), String.t(), keyword()) :: Submission.t()
   def analyze_exercise(exercise, input_path, output_path, opts \\ []) do
+    Logger.info("Analyzing #{exercise}")
+
+    Logger.debug("Input: #{input_path}, Output: #{output_path}")
+
     params = get_params(exercise, input_path, output_path, opts)
 
-    s =
+    submission =
       init(params)
       |> check(params)
       |> analyze(params)
-      |> Submission.finalize()
       |> write_results(params)
 
     if params.puts_summary do
-      summary(s, params) |> IO.puts()
+      summary(submission, params) |> IO.puts()
     end
 
-    s
+    Logger.info("analyze_exercise/4 done")
+
+    submission
   end
 
   # translate arguments to a param map, adding in defaults
   @spec get_params(String.t(), String.t(), String.t(), Keyword.t()) :: map()
   defp get_params(exercise, input_path, output_path, opts) do
+    Logger.debug("Getting initial params")
+
     defaults = [
       {:exercise, exercise},
       {:path, input_path},
@@ -86,40 +95,57 @@ defmodule ElixirAnalyzer do
   # Do init work
   # -read config, create the initial Submission struct
   defp init(params) do
-    {:ok, config_contents} = File.read(params.exercise_config)
-    {:ok, config} = Jason.decode(config_contents)
-    exercise_config = config[params.exercise]
-
-    {code_path, code_file, analysis_module} = do_init(params, exercise_config)
+    submission = %Submission{
+      path: params.path,
+      code_path: nil,
+      code_file: nil,
+      analysis_module: nil
+    }
 
     try do
-      %Submission{
+      Logger.debug("Getting the exercise config")
+      exercise_config = params.exercise_config[params.exercise]
+      {code_path, code_file, analysis_module} = do_init(params, exercise_config)
+
+      Logger.debug("Initialization successful",
         path: params.path,
         code_path: code_path,
-        code_file: code_file,
-        analysis_module: String.to_existing_atom("Elixir.#{analysis_module}")
+        analysis_module: analysis_module
+      )
+
+      case Code.ensure_compiled(analysis_module) do
+        {:error, reason} ->
+          Logger.error("Loading exercise test suite '#{analysis_module}' failed (#{reason}).")
+          raise ArgumentError
+
+        {:module, m} ->
+          Logger.info("Exercise test suite '#{m}' found and loaded.")
+      end
+
+      %{
+        submission
+        | code_path: code_path,
+          code_file: code_file,
+          analysis_module: analysis_module
       }
     rescue
-      # String.to_existing_atom/1 may fail if the test suite for the exercise does not exist
       ArgumentError ->
-        if params.write_results do
-          {:ok, json} =
-            Jason.encode(%{
-              "status" => "skipped",
-              "comments" => ["Analysis skipped, no analysis suite exists for this exercise"]
-            })
+        Logger.warning("TestSuite halted, ArgumentError")
 
-          :ok = File.write("#{params.output_path}/#{params.output_file}", json)
-        end
+        submission
+        |> Submission.halt()
+        |> Submission.set_halt_reason(
+          "Analysis skipped, no analysis suite exists for this exercise"
+        )
     end
   end
 
   # When file is nil, pull code params from config file
   defp do_init(%{file: nil} = params, exercise_config) do
     {
-      "#{params.path}/#{@lib_dir}",
-      exercise_config["code_file"],
-      exercise_config["analyzer_module"]
+      Path.join(params.path, @lib_dir),
+      exercise_config.code_file,
+      exercise_config.analyzer_module
     }
   end
 
@@ -128,7 +154,7 @@ defmodule ElixirAnalyzer do
     {
       params.path,
       params.file,
-      "ElixirAnalyzer.ExerciseTest.#{params.module}"
+      String.to_existing_atom("ElixirAnalyzer.ExerciseTest.#{params.module}")
     }
   end
 
@@ -136,21 +162,29 @@ defmodule ElixirAnalyzer do
   # - check if the file exists
   # - read in the code
   # - compile
-  defp check(s = %Submission{}, _params) do
-    with path_to_code <- "#{s.code_path}/#{s.code_file}",
+  defp check(submission = %Submission{halted: true}, _params) do
+    Logger.warning("Check not performed, halted previously")
+    submission
+  end
+
+  defp check(submission = %Submission{}, _params) do
+    with path_to_code <- Path.join(submission.code_path, submission.code_file),
+         :ok <- Logger.info("Attempting to read code file", code_file_path: path_to_code),
          {:code_read, {:ok, code_str}} <- {:code_read, File.read(path_to_code)},
-         {:code_str, s} <- {:code_str, %{s | code: code_str}} do
-      s
+         :ok <- Logger.info("Code file read successfully"),
+         {:code_str, submission} <- {:code_str, %{submission | code: code_str}} do
+      submission
     else
       {:code_read, {:error, _}} ->
-        s
+        Logger.warning("TestSuite halted: Code file not found")
+
+        submission
         |> Submission.halt()
-        |> Submission.disapprove()
         |> Submission.append_comment({
           Constants.general_file_not_found(),
           %{
-            "file_name" => s.code_file,
-            "path" => s.path
+            "file_name" => submission.code_file,
+            "path" => submission.path
           }
         })
     end
@@ -158,23 +192,35 @@ defmodule ElixirAnalyzer do
 
   # Analyze
   # - Start the static analysis
-  defp analyze(s = %Submission{}, _params) do
-    cond do
-      s.halted ->
-        s
-        |> Submission.refer()
-
-      true ->
-        s.analysis_module.analyze(s, s.code)
-        |> Submission.set_analyzed(true)
-    end
+  defp analyze(submission = %Submission{halted: true}, _params) do
+    Logger.warning("Analysis not performed, halted previously")
+    submission
   end
 
-  defp write_results(s = %Submission{}, params) do
+  defp analyze(submission = %Submission{}, _params) do
+    Logger.info("Analyzing code started")
+
+    submission =
+      submission
+      |> submission.analysis_module.analyze(submission.code)
+      |> Submission.set_analyzed(true)
+
+    Logger.info("Analyzing code complete")
+
+    submission
+  end
+
+  defp write_results(submission = %Submission{}, params) do
     if params.write_results do
-      :ok = File.write(Path.join(params.output_path, params.output_file), Submission.to_json(s))
+      Logger.info("Writing final results.json to file")
+
+      :ok =
+        File.write(
+          Path.join(params.output_path, params.output_file),
+          Submission.to_json(submission)
+        )
     end
 
-    s
+    submission
   end
 end

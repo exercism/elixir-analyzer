@@ -13,6 +13,7 @@
     called_from: :*,
     global_call: :*,
     local_call: :*,
-    should_be_present: :*
+    should_be_present: :*,
+    type: :*
   ]
 ]
