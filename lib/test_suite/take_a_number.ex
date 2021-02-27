@@ -10,7 +10,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumber do
 
   feature "forbids usage of abstractions like Agent or GenServer" do
     find :none
-    on_fail :disapprove
+    type :essential
     comment Constants.take_a_number_do_not_use_abstractions()
 
     form do

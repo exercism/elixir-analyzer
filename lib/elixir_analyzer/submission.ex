@@ -8,130 +8,78 @@ defmodule ElixirAnalyzer.Submission do
     "status": "...",
     "comments": [
       {
-        "comment": "ruby.general.some_paramaterised_message",
+        "comment": "elixir.general.some_paramaterised_message",
         "params": { "foo": "param1", "bar": "param2" }
       },
       {
-        "comment": "ruby.general.some_paramaterised_message"
+        "comment": "elixir.general.some_paramaterised_message"
       },
-      "ruby.general.some_paramaterised_message"
+      "elixir.general.some_paramaterised_message"
     ]
   }
   The following statuses are valid:
 
+  skipped: Something caused the analysis to be skipped
   approve: To be used when a solution meets critera of a passing solution, comments MAY BE provided for improvement towards optimal.
   disapprove: To be used when a solution can be disapproved as suboptimal and an actionable comment MUST BE provided.
   refer_to_mentor: default status, a comment MAY BE provided.
   """
 
-  @status_map %{
-    :approve => "approve",
-    :disapprove => "disapprove",
-    :refer => "refer_to_mentor"
-  }
-
   @enforce_keys [:code_file, :code_path, :path, :analysis_module]
   defstruct halted: false,
+            halt_reason: nil,
             analyzed: false,
-            status: nil,
             comments: [],
             path: nil,
             code_path: nil,
             code_file: nil,
             code: nil,
-            analysis_module: nil,
-            final: false
+            analysis_module: nil
 
   @type t() :: %__MODULE__{
           halted: boolean,
+          halt_reason: String.t() | nil,
           analyzed: boolean,
-          status: atom(),
           comments: list([binary | map]),
           path: String.t(),
           code_path: String.t(),
           code_file: String.t(),
           code: String.t(),
-          analysis_module: atom(),
-          final: boolean
+          analysis_module: atom()
         }
 
-  def to_json(r = %__MODULE__{}) do
-    Jason.encode!(%{status: @status_map[r.status], comments: r.comments})
+  def to_json(submission = %__MODULE__{}) do
+    Jason.encode!(%{summary: get_summary(submission), comments: submission.comments})
   end
 
-  def approve(r = %__MODULE__{status: nil}), do: %{r | status: :approve}
-  def approve(r), do: r
-
-  def disapprove(r = %__MODULE__{status: s}) when s in [nil, :approve],
-    do: %{r | status: :disapprove}
-
-  def disapprove(r), do: r
-
-  def refer(r = %__MODULE__{}), do: %{r | status: :refer}
-
-  def finalize(r = %__MODULE__{status: nil, final: false}),
-    do: %{r | status: :refer} |> finalize()
-
-  def finalize(r = %__MODULE__{final: false}) do
-    Map.put(r, :final, true)
+  @doc false
+  def halt(submission = %__MODULE__{}) do
+    %{submission | halted: true}
   end
 
-  def prepend_comment(r = %__MODULE__{}, comment) when is_binary(comment) do
-    do_prepend_comment(r, comment)
+  def set_halt_reason(submission = %__MODULE__{}, reason) when is_binary(reason) do
+    %{submission | halt_reason: reason}
   end
 
-  def prepend_comment(r = %__MODULE__{}, {comment}) when is_binary(comment) do
-    do_prepend_comment(r, %{"comment" => comment})
+  @doc false
+  def set_analyzed(submission = %__MODULE__{}, value) when is_boolean(value) do
+    %{submission | analyzed: value}
   end
 
-  def prepend_comment(r = %__MODULE__{}, {comment, params})
-      when is_binary(comment) and is_map(params) do
-    params
-    |> Map.keys()
-    |> Enum.all?(fn key -> Kernel.is_atom(key) or Kernel.is_binary(key) end)
-    |> case do
-      false ->
-        raise ArgumentError, "key type must be atom or binary"
+  @doc false
+  def append_comment(submission = %__MODULE__{}, meta) when is_map(meta) do
+    comment =
+      Enum.filter(meta, fn
+        {key, _} when key in [:comment, :type, :params] -> true
+        _ -> false
+      end)
 
-      true ->
-        do_prepend_comment(r, %{"comment" => comment, "params" => params})
+    %{submission | comments: submission.comments ++ [comment]}
+  end
+
+  defp get_summary(submission = %__MODULE__{}) do
+    if submission.halted do
+      submission.halt_reason
     end
-  end
-
-  defp do_prepend_comment(r = %__MODULE__{}, comment) do
-    %{r | comments: [comment | r.comments]}
-  end
-
-  def append_comment(r = %__MODULE__{}, comment) when is_binary(comment) do
-    do_append_comment(r, comment)
-  end
-
-  def append_comment(r = %__MODULE__{}, {comment}) when is_binary(comment) do
-    do_append_comment(r, %{"comment" => comment})
-  end
-
-  def append_comment(r = %__MODULE__{}, {comment, params})
-      when is_binary(comment) and is_map(params) do
-    Map.keys(params)
-    |> Enum.all?(fn key -> Kernel.is_atom(key) or Kernel.is_binary(key) end)
-    |> case do
-      false ->
-        raise ArgumentError, "key type must be atom or binary"
-
-      true ->
-        do_append_comment(r, %{"comment" => comment, "params" => params})
-    end
-  end
-
-  defp do_append_comment(r = %__MODULE__{}, comment) do
-    %{r | comments: [comment | Enum.reverse(r.comments)] |> Enum.reverse()}
-  end
-
-  def halt(r = %__MODULE__{}) do
-    %{r | halted: true}
-  end
-
-  def set_analyzed(r = %__MODULE__{}, value) when is_boolean(value) do
-    %{r | analyzed: value}
   end
 end

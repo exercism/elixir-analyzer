@@ -36,7 +36,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   end
 
   defp gather_feature_data({field, _, [f]} = node, acc)
-       when field in [:comment, :on_fail, :find, :status] do
+       when field in [:comment, :type, :find, :status] do
     {node, put_in(acc, [field], f)}
   end
 
