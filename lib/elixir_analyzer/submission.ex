@@ -77,9 +77,59 @@ defmodule ElixirAnalyzer.Submission do
     %{submission | comments: submission.comments ++ [comment]}
   end
 
-  defp get_summary(submission = %__MODULE__{}) do
-    if submission.halted do
-      submission.halt_reason
+  defp get_summary(submission = %__MODULE__{halted: true, comments: comments})
+       when length(comments) == 0 do
+    case submission.halt_reason do
+      nil -> "Analysis was halted."
+      _ -> "Analysis was halted. #{submission.halt_reason}"
     end
   end
+
+  @comment_types ~w{celebratory essential actionable informative}a
+  @default_type_frequencies @comment_types |> Enum.map(&{&1, 0}) |> Enum.into(%{})
+
+  defp get_summary(%__MODULE__{comments: comments}) do
+    type_frequencies_in_comments = Enum.frequencies_by(comments, fn comment -> comment.type end)
+
+    summary =
+      @default_type_frequencies
+      |> Map.merge(type_frequencies_in_comments)
+      |> build_summary_response()
+
+    case summary do
+      nil -> "Submission analyzed. No automated suggestions. Great work! 🚀"
+      _ -> summary
+    end
+  end
+
+  defp build_summary_response(type_frequencies, keys_to_build \\ @comment_types, acc \\ nil)
+  defp build_summary_response(_type_frequencies, [], acc), do: acc
+
+  # Celebratory
+  defp build_summary_response(t = %{celebratory: 0}, [:celebratory | rest], acc),
+    do: build_summary_response(t, rest, acc)
+
+  defp build_summary_response(t = %{celebratory: _}, [:celebratory | rest], _acc),
+    do: build_summary_response(t, rest, "🎉")
+
+  # Essential
+  defp build_summary_response(t = %{essential: 0}, [:essential | rest], acc),
+    do: build_summary_response(t, rest, acc)
+
+  defp build_summary_response(_, [:essential | _], acc),
+    do: "#{acc} Check out the comments for things to fix." |> String.trim_leading()
+
+  # Actionable
+  defp build_summary_response(t = %{actionable: 0}, [:actionable | rest], acc),
+    do: build_summary_response(t, rest, acc)
+
+  defp build_summary_response(_, [:actionable | _], acc),
+    do: "#{acc} Check out the comments for some code suggestions." |> String.trim_leading()
+
+  # Informative
+  defp build_summary_response(t = %{informative: 0}, [:informative | rest], acc),
+    do: build_summary_response(t, rest, acc)
+
+  defp build_summary_response(_, [:informative | _], acc),
+    do: "#{acc} Check out the comments for some things to learn." |> String.trim_leading()
 end

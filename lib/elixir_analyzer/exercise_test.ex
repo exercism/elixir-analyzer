@@ -85,19 +85,22 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_analysis_failure(s = %Submission{}, {location, error, token}) do
+      defp append_analysis_failure(submission = %Submission{}, {location, error, token}) do
         line =
           case location do
-            l when is_integer(l) -> l
-            l when is_list(l) -> Keyword.get(location, :line)
+            location when is_integer(location) -> location
+            location when is_list(location) -> Keyword.get(location, :line)
           end
 
         comment_params = %{line: line, error: "#{error}#{token}"}
 
-        Submission.append_comment(
-          s,
-          %{comment: Constants.general_parsing_error(), params: comment_params}
-        )
+        submission
+        |> Submission.halt()
+        |> Submission.append_comment(%{
+          comment: Constants.general_parsing_error(),
+          params: comment_params,
+          type: :actionable
+        })
       end
     end
   end
