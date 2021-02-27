@@ -95,13 +95,17 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
               unquote(Macro.to_string(code))
             )
 
+          comments =
+            result.comments
+            |> Enum.map(fn comment_details -> comment_details.comment end)
+
           Enum.map(Keyword.keys(unquote(assertions)), fn key ->
             case key do
               :comments ->
                 expected_comments = unquote(assertions[:comments])
 
                 if expected_comments do
-                  assert Enum.sort(result.comments) == Enum.sort(expected_comments)
+                  assert Enum.sort(comments) == Enum.sort(expected_comments)
                 end
 
               :comments_include ->
@@ -109,7 +113,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
                 if comments_include do
                   Enum.each(comments_include, fn comment ->
-                    assert comment in result.comments
+                    assert comment in comments
                   end)
                 end
 
@@ -118,15 +122,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
                 if comments_exclude do
                   Enum.each(comments_exclude, fn comment ->
-                    refute comment in result.comments
+                    refute comment in comments
                   end)
-                end
-
-              :status ->
-                expected_status = unquote(assertions[:status])
-
-                if expected_status do
-                  assert result.status == expected_status
                 end
 
               _ ->

@@ -73,6 +73,7 @@ defmodule ElixirAnalyzer.Submission do
         {key, _} when key in [:comment, :type, :params] -> true
         _ -> false
       end)
+      |> Enum.into(%{})
 
     %{submission | comments: submission.comments ++ [comment]}
   end
