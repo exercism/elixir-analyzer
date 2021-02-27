@@ -228,15 +228,16 @@ defmodule ElixirAnalyzer.TestSuite.Example do
 end
 ```
 
-##### `on_fail`
+##### `type`
 
-`on_fail` tells our analyzer how to treat the solution when it fails the test. There are 3 accepted actions:
+`type` tells our analyzer how to the solution the purpose of the test. There are 3 accepted actions:
 
-- `:info` - append the comment associated with this test
-- `:disapprove` - disapprove the submission if the test fails, append the comment associated with this test
-- `:refer` - the analyzer is unable to determine if the submission should be approved or disapproved, flag that it requires manual attention.
+- `:celebratory` - if the test passes, append a comment to celebrate the student's acheivement
+- `:actionable` - append a comment with an actionable improvement to the solution
+- `:informative` - append a comment with a point of learning
+- `:essential` - append a comment which soft-blocks the student on the website
 
-For our test, let's disapprove of the solution if the pattern doesn't match the submission:
+For our test, let's soft-block the solution if the pattern doesn't match the submission:
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
@@ -245,7 +246,7 @@ defmodule ElixirAnalyzer.TestSuite.Example do
 
   feature "has a parameter called 'name'" do
     find :all
-+   on_fail :disapprove
++   type :essential
 
     form do
       def hello(name) do
@@ -271,7 +272,7 @@ defmodule ElixirAnalyzer.TestSuite.Example do
 
   feature "has a parameter called 'name'" do
     find :all
-    on_fail :disapprove
+    type :essential
 +   comment "elixir.example.use_name_parameter"
 
     form do

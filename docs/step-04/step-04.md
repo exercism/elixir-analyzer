@@ -11,7 +11,7 @@
      exercise_test_module: ElixirAnalyzer.ExerciseTest.Example
    ```
 
-3. Use the `test_exercise_analysis` macro to define test cases. It expects a test name, assertions about the analysis result status/comments, and a code snippet or list of code snippets in the `do` block. Refer to the macro's documentation for more details.
+3. Use the `test_exercise_analysis` macro to define test cases. It expects a test name, assertions about the analysis result comments, and a code snippet or list of code snippets in the `do` block. Refer to the macro's documentation for more details.
 
    ```elixir
    # 04-example-analysis-test.exs
@@ -20,7 +20,6 @@
          exercise_test_module: ElixirAnalyzer.TestSuite.Example
 
      test_exercise_analysis "perfect solution",
-       status: :approve,
        comments: [] do
        defmodule Example do
          @moduledoc """
