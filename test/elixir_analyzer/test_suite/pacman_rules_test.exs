@@ -3,8 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.PacmanRulesTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.PacmanRules
 
   test_exercise_analysis "example solution",
-    comments: [],
-    status: :approve do
+    comments: [] do
     defmodule Rules do
       def eat_ghost?(power_pellet_active, touching_ghost) do
         power_pellet_active and touching_ghost

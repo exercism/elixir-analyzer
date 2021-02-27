@@ -3,7 +3,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.TwoFer
 
   test_exercise_analysis "perfect solution",
-    status: :approve,
     comments: [] do
     defmodule TwoFer do
       @moduledoc """
