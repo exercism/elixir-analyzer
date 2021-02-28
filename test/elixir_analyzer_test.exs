@@ -14,7 +14,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
-      {\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions. Great work! 🚀\"}
+      {\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}
       """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -27,7 +27,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
-      {\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"essential\"},{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"}],\"summary\":\"Check out the comments for things to fix.\"}
+      {\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"essential\"},{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
       """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -40,7 +40,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
-      {\"comments\":[{\"comment\":\"elixir.general.parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 1)\",\"line\":14},\"type\":\"actionable\"}],\"summary\":\"Check out the comments for some code suggestions.\"}
+      {\"comments\":[{\"comment\":\"elixir.general.parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 1)\",\"line\":14},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
       """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
