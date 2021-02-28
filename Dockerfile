@@ -1,18 +1,10 @@
-FROM elixir:1.10-alpine as builder
+FROM hexpm/elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119 as builder
 
-# Install SSL ca certificates
-RUN apk update && \
-  apk add ca-certificates && \
-  apk add curl && \
-  apk add bash
+RUN apt-get update && \
+  apt-get install bash -y
 
 # Create appuser
-RUN adduser -D -g '' appuser
-
-# Get exercism's tooling_webserver
-RUN curl -L -o /usr/local/bin/tooling_webserver \
-  https://github.com/exercism/tooling-webserver/releases/download/0.10.0/tooling_webserver && \
-  chmod +x /usr/local/bin/tooling_webserver
+RUN useradd -ms /bin/bash appuser
 
 # Get the source code
 WORKDIR /elixir-analyzer
@@ -21,13 +13,13 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN ./bin/build.sh
 
-FROM elixir:1.10-alpine
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+FROM hexpm/elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119
 COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /usr/local/bin/tooling_webserver /usr/local/bin/tooling_webserver
+
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
-RUN apk update && \
-  apk add bash
+RUN apt-get update && \
+  apt-get install bash -y
+
 USER appuser
 WORKDIR /opt/analyzer
 ENTRYPOINT ["/opt/analyzer/bin/run.sh"]
