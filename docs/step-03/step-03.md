@@ -230,12 +230,12 @@ end
 
 ##### `type`
 
-`type` tells our analyzer how to the solution the purpose of the test. There are 3 accepted actions:
+`type` tells our analyzer the purpose of the test. There are 4 types:
 
-- `:celebratory` - if the test passes, append a comment to celebrate the student's acheivement
-- `:actionable` - append a comment with an actionable improvement to the solution
-- `:informative` - append a comment with a point of learning
-- `:essential` - append a comment which soft-blocks the student on the website
+- `:celebratory` - if the test passes, append a comment to celebrate the student's achievement
+- `:actionable` - if the test fails, append a comment with an actionable improvement to the solution
+- `:informative` - if the test fails, append a comment with a point of learning
+- `:essential` - if the test fails, append a comment which soft-blocks the student on the website
 
 For our test, let's soft-block the solution if the pattern doesn't match the submission:
 
