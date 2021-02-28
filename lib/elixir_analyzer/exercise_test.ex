@@ -99,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         |> Submission.append_comment(%{
           comment: Constants.general_parsing_error(),
           params: comment_params,
-          type: :actionable
+          type: :essential
         })
       end
     end
