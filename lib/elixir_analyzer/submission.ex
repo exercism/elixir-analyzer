@@ -98,7 +98,7 @@ defmodule ElixirAnalyzer.Submission do
       |> build_summary_response()
 
     case summary do
-      nil -> "Submission analyzed. No automated suggestions. Great work! 🚀"
+      nil -> "Submission analyzed. No automated suggestions found."
       _ -> summary
     end
   end
