@@ -28,7 +28,7 @@ config :elixir_analyzer,
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     },
     "pacman-rules" => %{
-      code_file: "pacman_rules.ex",
+      code_file: "rules.ex",
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
     "take-a-number" => %{
