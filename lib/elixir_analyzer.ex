@@ -180,12 +180,13 @@ defmodule ElixirAnalyzer do
 
         submission
         |> Submission.halt()
-        |> Submission.append_comment({
-          Constants.general_file_not_found(),
-          %{
+        |> Submission.append_comment(%{
+          comment: Constants.general_file_not_found(),
+          params: %{
             "file_name" => submission.code_file,
             "path" => submission.path
-          }
+          },
+          type: :essential
         })
     end
   end
