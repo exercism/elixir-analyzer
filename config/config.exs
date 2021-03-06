@@ -38,6 +38,7 @@ config :elixir_analyzer,
   }
 
 config :logger, :console,
+  format: {ElixirAnalyzer.LogFormatter, :format},
   metadata: [:input_path, :output_path, :path, :code_path, :analysis_module, :code_file_path]
 
 # It is also possible to import configuration files, relative to this
