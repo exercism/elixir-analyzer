@@ -14,7 +14,7 @@ defmodule ElixirAnalyzer do
   # defaults
   @exercise_config Application.get_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
-  @lib_dir "lib"
+  @meta_config ".meta/config.json"
 
   @doc """
   This is the main entry point to the analyzer.
@@ -129,24 +129,41 @@ defmodule ElixirAnalyzer do
           analysis_module: analysis_module
       }
     rescue
-      ArgumentError ->
-        Logger.warning("TestSuite halted, ArgumentError")
+      e in ArgumentError ->
+        Logger.warning("TestSuite halted, ArgumentError", error_message: e.message)
 
         submission
         |> Submission.halt()
         |> Submission.set_halt_reason(
           "Analysis skipped, no analysis suite exists for this exercise"
         )
+
+      e in File.Error ->
+        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+
+        submission
+        |> Submission.halt()
+        |> Submission.set_halt_reason("Analysis skipped, not able to read solution config.")
+
+      e in Jason.DecodeError ->
+        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+
+        submission
+        |> Submission.halt()
+        |> Submission.set_halt_reason("Analysis skipped, not able to decode solution config.")
     end
   end
 
   # When file is nil, pull code params from config file
   defp do_init(%{file: nil} = params, exercise_config) do
-    {
-      Path.join(params.path, @lib_dir),
-      exercise_config.code_file,
-      exercise_config.analyzer_module
-    }
+    meta_config = Path.join(params.path, @meta_config) |> File.read!() |> Jason.decode!()
+    relative_code_path = meta_config["files"]["solution"] |> hd()
+    full_code_path = Path.join(params.path, relative_code_path)
+
+    code_path = Path.dirname(full_code_path)
+    code_file = Path.basename(full_code_path)
+
+    {code_path, code_file, exercise_config.analyzer_module}
   end
 
   # Else, use passed in params to analyze
@@ -175,8 +192,11 @@ defmodule ElixirAnalyzer do
          {:code_str, submission} <- {:code_str, %{submission | code: code_str}} do
       submission
     else
-      {:code_read, {:error, _}} ->
-        Logger.warning("TestSuite halted: Code file not found")
+      {:code_read, {:error, reason}} ->
+        Logger.warning("TestSuite halted: Code file not found. Reason: #{reason}",
+          path: submission.path,
+          file_name: submission.code_file
+        )
 
         submission
         |> Submission.halt()
@@ -194,7 +214,7 @@ defmodule ElixirAnalyzer do
   # Analyze
   # - Start the static analysis
   defp analyze(submission = %Submission{halted: true}, _params) do
-    Logger.warning("Analysis not performed, halted previously")
+    Logger.info("Analysis not performed, halted previously")
     submission
   end
 
@@ -207,19 +227,16 @@ defmodule ElixirAnalyzer do
       |> Submission.set_analyzed(true)
 
     Logger.info("Analyzing code complete")
-
     submission
   end
 
   defp write_results(submission = %Submission{}, params) do
     if params.write_results do
-      Logger.info("Writing final results.json to file")
-
-      :ok =
-        File.write(
-          Path.join(params.output_path, params.output_file),
-          Submission.to_json(submission)
-        )
+      output_file_path = Path.join(params.output_path, params.output_file)
+      Logger.info("Writing final results.json to file", path: output_file_path)
+      :ok = File.write(output_file_path, Submission.to_json(submission))
+    else
+      Logger.info("Final results not written to file")
     end
 
     submission

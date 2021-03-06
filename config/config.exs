@@ -24,22 +24,28 @@ use Mix.Config
 config :elixir_analyzer,
   exercise_config: %{
     "two-fer" => %{
-      code_file: "two_fer.ex",
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     },
     "pacman-rules" => %{
-      code_file: "rules.ex",
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
     "take-a-number" => %{
-      code_file: "take_a_number.ex",
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     }
   }
 
 config :logger, :console,
   format: {ElixirAnalyzer.LogFormatter, :format},
-  metadata: [:input_path, :output_path, :path, :code_path, :analysis_module, :code_file_path]
+  metadata: [
+    :input_path,
+    :output_path,
+    :path,
+    :code_path,
+    :analysis_module,
+    :code_file_path,
+    :error_message,
+    :file_name
+  ]
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
