@@ -43,8 +43,9 @@ defmodule ElixirAnalyzer.ExerciseTest do
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
             assert_call_results = unquote(assert_call_tests)
 
-            append_test_comments(submission, feature_results)
-            append_test_comments(submission, assert_call_results)
+            submission
+            |> append_test_comments(feature_results)
+            |> append_test_comments(assert_call_results)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
@@ -69,8 +70,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_test_comments(submission = %Submission{}, feature_results) do
-        Enum.reduce(feature_results, submission, fn
+      defp append_test_comments(submission = %Submission{}, results) do
+        Enum.reduce(results, submission, fn
           {:skip, _description}, submission ->
             submission
 
