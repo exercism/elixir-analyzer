@@ -1,7 +1,7 @@
-defmodule ElixirAnalyzer.TestSuite.AnalyzerVerification.AssertCall do
+defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall do
   @dialyzer generated: true
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Pacman Rules
+  This is an exercise analyzer extension module to test the assert_call macro
   """
 
   use ElixirAnalyzer.ExerciseTest

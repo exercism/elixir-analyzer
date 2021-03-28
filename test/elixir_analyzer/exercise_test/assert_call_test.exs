@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
   use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.TestSuite.AnalyzerVerification.AssertCall
+    exercise_test_module: ElixirAnalyzer.Support.AnalyzerVerification.AssertCall
 
   test_exercise_analysis "perfect solution",
     comments: [] do
