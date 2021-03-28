@@ -24,11 +24,19 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   }
   """
   defmacro assert_call(description, do: block) do
+    parse(description, block, true)
+  end
+
+  defmacro assert_no_call(description, do: block) do
+    parse(description, block, false)
+  end
+
+  defp parse(description, block, should_call) do
     test_data =
       block
       |> walk_assert_call_block()
       |> Map.put(:description, description)
-      |> Map.put(:should_call, true)
+      |> Map.put(:should_call, should_call)
       |> Map.put_new(:type, :informational)
       |> Map.put_new(:calling_fn, nil)
 
@@ -43,12 +51,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     end
   end
 
-  def walk_assert_call_block(block, test_data \\ %{}) do
+  defp walk_assert_call_block(block, test_data \\ %{}) do
     {_, test_data} = Macro.prewalk(block, test_data, &do_walk_assert_call_block/2)
     test_data
   end
 
-  def do_walk_assert_call_block({:calling_fn, _, [function_signature]} = node, test_data) do
+  defp do_walk_assert_call_block({:calling_fn, _, [function_signature]} = node, test_data) do
     case FunctionSignature.parse(function_signature) do
       %{global: true} = signature ->
         {node, Map.put(test_data, :calling_fn, signature)}
@@ -63,27 +71,27 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     end
   end
 
-  def do_walk_assert_call_block({:called_fn, _, [:global, function_signature]} = node, test_data) do
+  defp do_walk_assert_call_block({:called_fn, _, [:global, function_signature]} = node, test_data) do
     signature = do_called_fn(function_signature)
     {node, Map.put(test_data, :called_fn, signature)}
   end
 
-  def do_walk_assert_call_block({:called_fn, _, [:local, function_signature]} = node, test_data) do
+  defp do_walk_assert_call_block({:called_fn, _, [:local, function_signature]} = node, test_data) do
     signatures = do_called_fn(function_signature, true)
     {node, Map.put(test_data, :called_fn, signatures)}
   end
 
-  def do_walk_assert_call_block({:comment, _, [comment]} = node, test_data)
-      when is_binary(comment) do
+  defp do_walk_assert_call_block({:comment, _, [comment]} = node, test_data)
+       when is_binary(comment) do
     {node, Map.put(test_data, :comment, comment)}
   end
 
-  def do_walk_assert_call_block({:type, _, [type]} = node, test_data)
-      when type in ~w[essential actionable informational celebratory]a do
+  defp do_walk_assert_call_block({:type, _, [type]} = node, test_data)
+       when type in ~w[essential actionable informational celebratory]a do
     {node, Map.put(test_data, :type, type)}
   end
 
-  def do_walk_assert_call_block(node, test_data) do
+  defp do_walk_assert_call_block(node, test_data) do
     {node, test_data}
   end
 
