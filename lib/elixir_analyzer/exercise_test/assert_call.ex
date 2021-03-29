@@ -1,6 +1,8 @@
 defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   @moduledoc false
 
+  @type function_signature() :: {list(atom()), atom()} | {nil, atom()}
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -56,29 +58,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     test_data
   end
 
-  defp do_walk_assert_call_block({:calling_fn, _, [function_signature]} = node, test_data) do
-    case FunctionSignature.parse(function_signature) do
-      %{global: true} = signature ->
-        {node, Map.put(test_data, :calling_fn, signature)}
-
-      %{global: false} ->
-        raise ElixirAnalyzer.ExerciseTest.AssertCall.SyntaxError,
-              "re-specify :calling_fn function with global context"
-
-      _ ->
-        raise ElixirAnalyzer.ExerciseTest.AssertCall.SyntaxError,
-              "specified :calling_fn function is invalid"
-    end
+  defp do_walk_assert_call_block({:calling_fn, _, [signature]} = node, test_data) do
+    formatted_signature = do_calling_fn(signature)
+    {node, Map.put(test_data, :calling_fn, formatted_signature)}
   end
 
-  defp do_walk_assert_call_block({:called_fn, _, [:global, function_signature]} = node, test_data) do
-    signature = do_called_fn(function_signature)
-    {node, Map.put(test_data, :called_fn, signature)}
-  end
-
-  defp do_walk_assert_call_block({:called_fn, _, [:local, function_signature]} = node, test_data) do
-    signatures = do_called_fn(function_signature, true)
-    {node, Map.put(test_data, :called_fn, signatures)}
+  defp do_walk_assert_call_block({:called_fn, _, [signature]} = node, test_data) do
+    formatted_signature = do_called_fn(signature)
+    {node, Map.put(test_data, :called_fn, formatted_signature)}
   end
 
   defp do_walk_assert_call_block({:comment, _, [comment]} = node, test_data)
@@ -95,17 +82,56 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     {node, test_data}
   end
 
-  defp do_called_fn(function_signature, make_local \\ false) do
-    case {FunctionSignature.parse(function_signature), make_local} do
-      {:error, _} ->
-        raise ElixirAnalyzer.ExerciseTest.AssertCall.SyntaxError,
-              "specified :calling_fn function signature is invalid"
+  @spec do_calling_fn(Keyword.t()) :: function_signature()
+  defp do_calling_fn(function_signature) do
+    case validate_signature(function_signature) do
+      {nil, _} ->
+        raise ArgumentError, "calling function signature requires :module to be an atom"
 
-      {signature, true} ->
-        FunctionSignature.convert_to_local(signature)
-
-      {signature, _} ->
+      signature ->
         signature
     end
+  end
+
+  @spec do_called_fn(Keyword.t()) :: function_signature()
+  defp do_called_fn(function_signature) do
+    validate_signature(function_signature)
+  end
+
+  @spec validate_signature(Keyword.t()) :: function_signature()
+  defp validate_signature(function_signature) do
+    function_signature =
+      function_signature
+      |> validate_module()
+      |> validate_name()
+
+    {function_signature[:module], function_signature[:name]}
+  end
+
+  defp validate_module(signature) do
+    module =
+      case signature[:module] do
+        nil ->
+          nil
+
+        {:__aliases__, _, module} ->
+          module
+
+        _ ->
+          raise ArgumentError,
+                "calling function signature requires :module to be nil or a module atom"
+      end
+
+    Keyword.put(signature, :module, module)
+  end
+
+  defp validate_name(signature) do
+    module =
+      case signature[:name] do
+        name when is_atom(name) -> name
+        _ -> raise ArgumentError, "calling function signature requires :name to be an atom"
+      end
+
+    Keyword.put(signature, :name, module)
   end
 end

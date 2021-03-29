@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   of an if statement which then returns :pass or :fail as required by `ElixirAnalyzer.ExerciseTest.analyze/4`.
   """
 
-  alias FunctionSignature, as: FS
+  alias ElixirAnalyzer.ExerciseTest.AssertCall
 
   def compile(assert_call_data, code_ast) do
     name = assert_call_data.description
@@ -46,7 +46,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     end
   end
 
-  def assert(ast, called_fn = %FS{}, calling_fn) do
+  def assert(ast, called_fn, calling_fn) do
     acc = %{
       in_function_def: nil,
       found_called: false,
@@ -126,19 +126,19 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   compare a node to the function_signature, looking for a match for a called function
   """
-  @spec matching_function_call?(Macro.t(), %FunctionSignature{}) :: boolean()
+  @spec matching_function_call?(Macro.t(), nil | AssertCall.function_signature()) :: boolean()
   def matching_function_call?(_node, nil), do: false
 
   def matching_function_call?(
         {{:., _, [{:__aliases__, _, module_path}, name]}, _, _args},
-        %FS{global: true, name: name, module_path: module_path, arity: _arity}
+        {module_path, name}
       ) do
     true
   end
 
   def matching_function_call?(
         {name, _, _args},
-        %FS{global: false, name: name, module_path: _module_path, arity: _arity}
+        {_, name}
       ) do
     true
   end
@@ -148,14 +148,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   compare a node to the function_signature, looking for a match for a called function
   """
-  @spec matching_function_def?(Macro.t(), %FunctionSignature{}) :: boolean()
+  @spec matching_function_def?(Macro.t(), AssertCall.function_signature()) :: boolean()
   def matching_function_def?(_node, nil), do: false
 
   def matching_function_def?(
-        {def_type, _, [{name, _, args}, [do: {:__block__, _, [_ | _]}]]},
-        %FS{global: true, name: name, module_path: _module_path, arity: arity}
+        {def_type, _, [{name, _, _args}, [do: {:__block__, _, [_ | _]}]]},
+        {_module_path, name}
       )
-      when arity == length(args) and def_type in ~w[def defp]a do
+      when def_type in ~w[def defp]a do
     true
   end
 
@@ -183,6 +183,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   compare the name of the function to the function signature, if they match return true
   """
-  def in_function?(name, %FS{name: name}), do: true
+  def in_function?(name, {_module_path, name}), do: true
   def in_function?(_, _), do: false
 end
