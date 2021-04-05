@@ -18,7 +18,7 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
   code =
     Enum.map(not_allowed_functions, fn {module, function} ->
       quote do
-        assert_no_call "does not call Enum.sum" do
+        assert_no_call "does not call #{unquote(module)}.#{unquote(function)}" do
           type :essential
           called_fn module: unquote(module), name: unquote(function)
           comment unquote(Constants.bird_count_use_recursion())
@@ -27,4 +27,28 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
     end)
 
   Code.eval_quoted(code, [], __ENV__)
+
+  feature "doesn't use list comprehensions" do
+    find :none
+    type :essential
+    comment Constants.bird_count_use_recursion()
+
+    form do
+      for _ignore <- _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      for _ignore <- _ignore, _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      for _ignore <- _ignore, _ignore, into: _ignore do
+        _ignore
+      end
+    end
+  end
 end
