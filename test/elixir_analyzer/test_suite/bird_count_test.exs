@@ -37,6 +37,90 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
       ]
     end
 
+    test_exercise_analysis "detects List",
+      comments_include: [Constants.bird_count_use_recursion()] do
+      [
+        defmodule BirdCount do
+          def today(list), do: List.first(list)
+        end,
+        defmodule BirdCount do
+          def total(list), do: List.foldl(list, 0, fn a, b -> a + b end)
+        end,
+        defmodule BirdCount do
+          def total(list), do: List.foldr(list, 0, fn a, b -> a + b end)
+        end
+      ]
+    end
+
+    test_exercise_analysis "detects Stream",
+      comments_include: [Constants.bird_count_use_recursion()] do
+      defmodule BirdCount do
+        def today(list), do: Stream.take(list, 1)
+      end
+    end
+
+    test_exercise_analysis "detects list comprehensions",
+      comments_include: [Constants.bird_count_use_recursion()] do
+      [
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] != for day <- list, day == 0, do: day
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 do
+                day
+              end
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 do
+                :something
+                day
+              end
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 && is_integer(day) do
+                day
+              end
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 && is_integer(day) do
+                3 + 4
+                day
+              end
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 && is_integer(day), into: [] do
+                day
+              end
+          end
+        end,
+        defmodule BirdCount do
+          def has_day_without_birds?(list) do
+            [] !=
+              for day <- list, day == 0 && is_integer(day), into: [] do
+                :foo > :bar
+                day
+              end
+          end
+        end
+      ]
+    end
+
     # TOOD: detects List, Stream, and list comprehensions
   end
 end
