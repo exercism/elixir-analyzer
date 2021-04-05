@@ -120,7 +120,5 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
         end
       ]
     end
-
-    # TOOD: detects List, Stream, and list comprehensions
   end
 end
