@@ -117,9 +117,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
         {:__aliases__, _, module} ->
           module
 
-        _ ->
+        x ->
           raise ArgumentError,
-                "calling function signature requires :module to be nil or a module atom"
+                "calling function signature requires :module to be nil or a module atom, got: #{
+                  inspect(x)
+                }"
       end
 
     Keyword.put(signature, :module, module)
@@ -128,8 +130,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   defp validate_name(signature) do
     module =
       case signature[:name] do
-        name when is_atom(name) -> name
-        _ -> raise ArgumentError, "calling function signature requires :name to be an atom"
+        name when is_atom(name) ->
+          name
+
+        x ->
+          raise ArgumentError,
+                "calling function signature requires :name to be an atom, got: #{inspect(x)}"
       end
 
     Keyword.put(signature, :name, module)

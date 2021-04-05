@@ -38,7 +38,10 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.pacman-rules.use_strictly_boolean_operators",
 
     # Take A Number Comments
-    take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions"
+    take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
+
+    # Bird Count Comments
+    bird_count_use_recursion: "elixir.bird-count.use_recursion"
   ]
 
   for {constant, markdown} <- @constants do
