@@ -130,6 +130,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_call?(_node, nil), do: false
 
   def matching_function_call?(
+        {{:., _, [{:__aliases__, _, module_path}, _name]}, _, _args},
+        {module_path, :*}
+      ) do
+    true
+  end
+
+  def matching_function_call?(
         {{:., _, [{:__aliases__, _, module_path}, name]}, _, _args},
         {module_path, name}
       ) do
