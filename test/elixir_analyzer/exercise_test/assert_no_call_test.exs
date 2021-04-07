@@ -96,4 +96,24 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       end
     end
   end
+
+  test_exercise_analysis "test wildcard",
+    comments: [
+      "don't call List module functions"
+    ] do
+    defmodule AssertNoCallVerification do
+      def function() do
+        "something"
+        List.last([])
+      end
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
+  end
 end

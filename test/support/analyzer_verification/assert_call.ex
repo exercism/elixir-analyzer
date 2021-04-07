@@ -44,4 +44,17 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall do
     calling_fn module: AssertCallVerification, name: :function
     comment "didn't find a call to IO.puts/1 in function/0"
   end
+
+  assert_call "finds call to any List function anywhere" do
+    type :informational
+    called_fn module: List, name: :_
+    comment "didn't find a call to a List function"
+  end
+
+  assert_call "finds call to any List function anywhere" do
+    type :informational
+    called_fn module: List, name: :_
+    calling_fn module: AssertCallVerification, name: :function
+    comment "didn't find a call to a List function in function/0"
+  end
 end

@@ -31,4 +31,10 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     called_fn module: Atom, name: :to_string
     comment "found a call to Atom.to_string/1 in helper/0 function in solution"
   end
+
+  assert_no_call "does not call any function from List module" do
+    type :informational
+    called_fn module: List, name: :_
+    comment "don't call List module functions"
+  end
 end
