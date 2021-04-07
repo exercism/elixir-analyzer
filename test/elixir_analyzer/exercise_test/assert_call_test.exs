@@ -120,7 +120,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
 
   test_exercise_analysis "missing call to a List function in function/0 solution",
     comments: [
-      "didn't find a call to a List function in function/0"
+      "didn't find a call to a List function in function/0",
+      "mock.constant"
     ] do
     defmodule AssertCallVerification do
       def function() do
@@ -144,7 +145,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
   test_exercise_analysis "missing call to a List function in solution",
     comments: [
       "didn't find a call to a List function",
-      "didn't find a call to a List function in function/0"
+      "didn't find a call to a List function in function/0",
+      "mock.constant"
     ] do
     defmodule AssertCallVerification do
       def function() do

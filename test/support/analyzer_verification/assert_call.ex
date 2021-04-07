@@ -57,4 +57,11 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall do
     calling_fn module: AssertCallVerification, name: :function
     comment "didn't find a call to a List function in function/0"
   end
+
+  assert_call "allows use of constants function" do
+    type :informational
+    called_fn module: List, name: :_
+    calling_fn module: AssertCallVerification, name: :function
+    comment ElixirAnalyzer.Support.Constants.mock_constant()
+  end
 end
