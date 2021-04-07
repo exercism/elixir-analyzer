@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     name = assert_call_data.description
     called_fn = Macro.escape(assert_call_data.called_fn)
     calling_fn = Macro.escape(assert_call_data.calling_fn)
-    comment = assert_call_data.comment
+    {comment, _} = Code.eval_quoted(assert_call_data.comment)
     should_call = assert_call_data.should_call
     type = assert_call_data.type
 

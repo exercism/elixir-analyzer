@@ -69,7 +69,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   end
 
   defp do_walk_assert_call_block({:comment, _, [comment]} = node, test_data) do
-    {comment, _} = Code.eval_quoted(comment)
     {node, Map.put(test_data, :comment, comment)}
   end
 
