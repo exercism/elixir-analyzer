@@ -4,29 +4,28 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
   This is an exercise analyzer extension module for the concept exercise Bird Count
   """
 
+  use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
 
-  use ElixirAnalyzer.ExerciseTest
+  assert_no_call "does not call any Enum functions" do
+    type :essential
+    called_fn module: Enum, name: :_
+    comment Constants.bird_count_use_recursion()
+  end
 
-  not_allowed_functions =
-    [{quote(do: Enum), Enum}, {quote(do: List), List}, {quote(do: Stream), Stream}]
-    |> Enum.flat_map(fn {quoted_module, module} ->
-      Enum.map(module.module_info(:exports), fn {fun, _arity} -> {quoted_module, fun} end)
-    end)
-    |> Enum.uniq()
+  assert_no_call "does not call any Stream functions" do
+    type :essential
+    called_fn module: Stream, name: :_
+    comment Constants.bird_count_use_recursion()
+  end
 
-  code =
-    Enum.map(not_allowed_functions, fn {module, function} ->
-      quote do
-        assert_no_call "does not call #{unquote(module)}.#{unquote(function)}" do
-          type :essential
-          called_fn module: unquote(module), name: unquote(function)
-          comment unquote(Constants.bird_count_use_recursion())
-        end
-      end
-    end)
+  assert_no_call "does not call any List functions" do
+    type :essential
+    called_fn module: List, name: :_
+    comment Constants.bird_count_use_recursion()
+  end
 
-  Code.eval_quoted(code, [], __ENV__)
+  # TODO: also detect aliasing and importing those modules
 
   feature "doesn't use list comprehensions" do
     find :none
