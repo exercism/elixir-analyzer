@@ -68,8 +68,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     {node, Map.put(test_data, :called_fn, formatted_signature)}
   end
 
-  defp do_walk_assert_call_block({:comment, _, [comment]} = node, test_data)
-       when is_binary(comment) do
+  defp do_walk_assert_call_block({:comment, _, [comment]} = node, test_data) do
     {node, Map.put(test_data, :comment, comment)}
   end
 
