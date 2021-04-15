@@ -5,24 +5,23 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
   """
 
   use ElixirAnalyzer.ExerciseTest
-  alias ElixirAnalyzer.Constants
 
   assert_no_call "does not call any Enum functions" do
     type :essential
     called_fn module: Enum, name: :_
-    comment Constants.bird_count_use_recursion()
+    comment ElixirAnalyzer.Constants.bird_count_use_recursion()
   end
 
   assert_no_call "does not call any Stream functions" do
     type :essential
     called_fn module: Stream, name: :_
-    comment Constants.bird_count_use_recursion()
+    comment ElixirAnalyzer.Constants.bird_count_use_recursion()
   end
 
   assert_no_call "does not call any List functions" do
     type :essential
     called_fn module: List, name: :_
-    comment Constants.bird_count_use_recursion()
+    comment ElixirAnalyzer.Constants.bird_count_use_recursion()
   end
 
   # TODO: also detect aliasing and importing those modules
@@ -30,7 +29,7 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
   feature "doesn't use list comprehensions" do
     find :none
     type :essential
-    comment Constants.bird_count_use_recursion()
+    comment ElixirAnalyzer.Constants.bird_count_use_recursion()
 
     form do
       for _ignore <- _ignore do
