@@ -33,6 +33,18 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
         end,
         defmodule BirdCount do
           def total(list), do: Enum.sum(list)
+        end,
+        defmodule BirdCount do
+          import Enum
+          def total(list), do: sum(list)
+        end,
+        defmodule BirdCount do
+          import Enum, only: [sum: 1]
+          def total(list), do: sum(list)
+        end,
+        defmodule BirdCount do
+          alias Enum, as: E
+          def total(list), do: E.sum(list)
         end
       ]
     end
@@ -48,15 +60,41 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
         end,
         defmodule BirdCount do
           def total(list), do: List.foldr(list, 0, fn a, b -> a + b end)
+        end,
+        defmodule BirdCount do
+          import List
+          def today(list), do: first(list)
+        end,
+        defmodule BirdCount do
+          import List, only: [first: 1]
+          def today(list), do: first(list)
+        end,
+        defmodule BirdCount do
+          alias List, as: L
+          def today(list), do: L.first(list)
         end
       ]
     end
 
     test_exercise_analysis "detects Stream",
       comments_include: [Constants.bird_count_use_recursion()] do
-      defmodule BirdCount do
-        def today(list), do: Stream.take(list, 1)
-      end
+      [
+        defmodule BirdCount do
+          def today(list), do: Stream.take(list, 1)
+        end,
+        defmodule BirdCount do
+          import Stream
+          def today(list), do: take(list, 1)
+        end,
+        defmodule BirdCount do
+          import Stream, only: [take: 2]
+          def today(list), do: take(list, 1)
+        end,
+        defmodule BirdCount do
+          alias Stream, as: S
+          def today(list), do: S.take(list, 1)
+        end
+      ]
     end
 
     test_exercise_analysis "detects list comprehensions",
