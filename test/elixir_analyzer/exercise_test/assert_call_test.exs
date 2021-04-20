@@ -169,7 +169,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
   test_exercise_analysis "usages of the underscore don't fool the missing call check",
     comments: [
       "didn't find a call to a List function",
-      "didn't find a call to a List function in function/0"
+      "didn't find a call to a List function in function/0",
+      "mock.constant"
     ] do
     defmodule AssertCallVerification do
       def function() do
