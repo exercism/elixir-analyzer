@@ -145,7 +145,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   def matching_function_call?(
         {name, _, _args},
-        {_, name}
+        {nil, name}
       ) do
     true
   end
