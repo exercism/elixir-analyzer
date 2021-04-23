@@ -23,6 +23,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
+    # credo:disable-for-previous-line Credo.Check.Refactor.CyclomaticComplexity
     feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
 
@@ -56,17 +57,21 @@ defmodule ElixirAnalyzer.ExerciseTest do
         feature_results
         |> Enum.reject(fn
           {_test_result, %{suppress_if: condition}} when condition !== false ->
-            [suppress_on_test_name, suppress_on_result] = condition
-
-            Enum.any?(feature_results, fn {result, test} ->
-              case {result, test.name} do
-                {^suppress_on_result, ^suppress_on_test_name} -> true
-                _ -> false
-              end
-            end)
+            any_result_matches_suppress_condition?(feature_results, condition)
 
           _result ->
             false
+        end)
+      end
+
+      defp any_result_matches_suppress_condition?(feature_results, condition) do
+        [suppress_on_test_name, suppress_on_result] = condition
+
+        Enum.any?(feature_results, fn {result, test} ->
+          case {result, test.name} do
+            {^suppress_on_result, ^suppress_on_test_name} -> true
+            _ -> false
+          end
         end)
       end
 
