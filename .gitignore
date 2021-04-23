@@ -33,3 +33,6 @@ test_results.json
 analysis.json
 
 tmp/
+
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
