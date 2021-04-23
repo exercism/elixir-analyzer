@@ -12,7 +12,8 @@ defmodule ElixirAnalyzer.MixProject do
       escript: escript(),
       dialyzer: [
         plt_core_path: "priv/plts",
-        plt_file: {:no_warn, "priv/plts/eventstore.plt"}
+        plt_file: {:no_warn, "priv/plts/eventstore.plt"},
+        ignore_warnings: ".dialyzer_ignore.exs"
       ]
     ]
   end
