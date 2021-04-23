@@ -1,5 +1,4 @@
 defmodule ElixirAnalyzer.TestSuite.TwoFer do
-  @dialyzer generated: true
   @moduledoc """
   This is an exercise analyzer extension module for the exercise TwoFer
 

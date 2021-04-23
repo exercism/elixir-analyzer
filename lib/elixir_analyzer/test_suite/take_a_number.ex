@@ -1,5 +1,4 @@
 defmodule ElixirAnalyzer.TestSuite.TakeANumber do
-  @dialyzer generated: true
   @moduledoc """
   This is an exercise analyzer extension module for the concept exercise Take-A-Number
   """
