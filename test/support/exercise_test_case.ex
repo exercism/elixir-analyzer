@@ -100,14 +100,14 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             |> Enum.map(fn comment_details -> comment_details.comment end)
 
           Enum.map(Keyword.keys(unquote(assertions)), fn key ->
-            xxx(comments, key, unquote(assertions))
+            assert_comments(comments, key, unquote(assertions))
           end)
         end
       end
     end)
   end
 
-  def xxx(comments, :comments, assertions) do
+  def assert_comments(comments, :comments, assertions) do
     expected_comments = assertions[:comments]
 
     if expected_comments do
@@ -115,7 +115,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     end
   end
 
-  def xxx(comments, :comments_include, assertions) do
+  def assert_comments(comments, :comments_include, assertions) do
     comments_include = assertions[:comments_include]
 
     if comments_include do
@@ -125,7 +125,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     end
   end
 
-  def xxx(comments, :comments_exclude, assertions) do
+  def assert_comments(comments, :comments_exclude, assertions) do
     comments_exclude = assertions[:comments_exclude]
 
     if comments_exclude do
@@ -135,7 +135,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     end
   end
 
-  def xxx(_, _, _) do
+  def assert_comments(_, _, _) do
     :noop
   end
 end
