@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer do
   import ElixirAnalyzer.Summary, only: [summary: 2]
 
   # defaults
-  @exercise_config Application.get_env(:elixir_analyzer, :exercise_config)
+  @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
   @meta_config ".meta/config.json"
 
