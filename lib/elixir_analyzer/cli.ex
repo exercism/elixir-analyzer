@@ -1,4 +1,8 @@
 defmodule ElixirAnalyzer.CLI do
+  @moduledoc """
+  A CLI for running analysis on a single solution.
+  """
+
   @usage """
   Usage:
 

@@ -1,4 +1,9 @@
 defmodule ElixirAnalyzer.ExerciseTest.Feature do
+  @moduledoc """
+  Defines a `feature` macro that allows looking for specific snippets
+  whose AST matches part of the AST of the solution.
+  """
+
   @doc false
   defmacro __using__(_opts) do
     quote do
