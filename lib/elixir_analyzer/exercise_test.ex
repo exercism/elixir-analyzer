@@ -37,7 +37,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     quote do
       @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(submission = %Submission{}, code_as_string) do
+      def analyze(%Submission{} = submission, code_as_string) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
@@ -70,7 +70,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_test_comments(submission = %Submission{}, results) do
+      defp append_test_comments(%Submission{} = submission, results) do
         Enum.reduce(results, submission, fn
           {:skip, _description}, submission ->
             submission
@@ -94,7 +94,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_analysis_failure(submission = %Submission{}, {location, error, token}) do
+      defp append_analysis_failure(%Submission{} = submission, {location, error, token}) do
         line =
           case location do
             location when is_integer(location) -> location
