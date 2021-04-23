@@ -15,6 +15,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
+      @dialyzer generated: true
     end
   end
 

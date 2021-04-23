@@ -38,7 +38,6 @@ So now let's revisit the analyzer extension from step 2, and write an analyzer t
 
 ```elixir
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 end
 ```
@@ -49,7 +48,6 @@ We are going to add a call to the the macro `feature/1` which we gained use of b
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
 + feature "has a parameter called 'name'" do
@@ -121,7 +119,6 @@ Now we have the pattern to match, let's insert it into our extension:
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
   feature "has a parameter called 'name'" do
@@ -213,7 +210,6 @@ Because we only have one pattern, `:any`, `:all`, or `:one` would all produce th
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
   feature "has a parameter called 'name'" do
@@ -241,7 +237,6 @@ For our test, let's soft-block the solution if the pattern doesn't match the sub
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
   feature "has a parameter called 'name'" do
@@ -267,7 +262,6 @@ so lets add that to our analyzer as well:
 
 ```diff
 defmodule ElixirAnalyzer.TestSuite.Example do
-  @dialyzer generated: true
   use ElixirAnalyzer.ExerciseTest
 
   feature "has a parameter called 'name'" do
