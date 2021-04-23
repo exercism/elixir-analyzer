@@ -59,13 +59,13 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
 
   defp gather_feature_data({:form, _, [[do: form]]} = node, acc) do
     ast =
-      unless acc.meta.keep_meta do
+      if acc.meta.keep_meta do
+        from
+      else
         Macro.prewalk(form, fn
           {name, _, param} -> {name, :_ignore, param}
           node -> node
         end)
-      else
-        form
       end
 
     {ast, block_params} =
