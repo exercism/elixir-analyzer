@@ -75,7 +75,14 @@ defmodule ElixirAnalyzer.Submission do
       end)
       |> Enum.into(%{})
 
-    %{submission | comments: submission.comments ++ [comment]}
+    comments =
+      if Enum.member?(submission.comments, comment) do
+        submission.comments
+      else
+        submission.comments ++ [comment]
+      end
+
+    %{submission | comments: comments}
   end
 
   defp get_summary(submission = %__MODULE__{halted: true, comments: comments})
