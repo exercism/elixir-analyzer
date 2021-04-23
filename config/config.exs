@@ -31,6 +31,9 @@ config :elixir_analyzer,
     },
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
+    },
+    "bird-count" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
     }
   }
 
