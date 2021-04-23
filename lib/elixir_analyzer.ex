@@ -16,6 +16,10 @@ defmodule ElixirAnalyzer do
   @output_file "analysis.json"
   @meta_config ".meta/config.json"
 
+  def default_exercise_config() do
+    @exercise_config
+  end
+
   @doc """
   This is the main entry point to the analyzer.
 
@@ -84,7 +88,7 @@ defmodule ElixirAnalyzer do
       {:module, nil},
       {:output_path, output_path},
       {:output_file, @output_file},
-      {:exercise_config, @exercise_config},
+      {:exercise_config, default_exercise_config()},
       {:write_results, true},
       {:puts_summary, true}
     ]
