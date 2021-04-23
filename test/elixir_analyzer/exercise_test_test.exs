@@ -1,4 +1,4 @@
-defmodule Foo do
+defmodule ElixirAnalyzer.ExerciseTestTest.SameComment do
   use ElixirAnalyzer.ExerciseTest
 
   assert_no_call "essential comment for helper1_essential" do
@@ -47,7 +47,7 @@ defmodule Foo do
 end
 
 defmodule ElixirAnalyzer.ExerciseTestTest do
-  use ElixirAnalyzer.ExerciseTestCase, exercise_test_module: Foo
+  use ElixirAnalyzer.ExerciseTestCase, exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
 
   describe "comment de-duplication" do
     test_exercise_analysis "doesn't include the same comment of the same type twice",
