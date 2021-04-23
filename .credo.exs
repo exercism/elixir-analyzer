@@ -31,7 +31,17 @@
           "apps/*/test/",
           "apps/*/web/"
         ],
-        excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/"]
+        excluded: [
+          ~r"/_build/",
+          ~r"/deps/",
+          ~r"/node_modules/",
+          # exclude exercise analysis because of snippets in `feature do form do...`
+          # they can be unusual, e.g. `_ignore || _ignore`
+          "lib/elixir_analyzer/test_suite/",
+          # exclude exercise analysis test because of example solutions used in tests
+          # those mimic student solutions and might be "bad code" on purpose
+          "test/elixir_analyzer/test_suite/"
+        ]
       },
       #
       # Load and configure plugins here:
