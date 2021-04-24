@@ -47,7 +47,8 @@ defmodule ElixirAnalyzer.ExerciseTestTest.SameComment do
 end
 
 defmodule ElixirAnalyzer.ExerciseTestTest do
-  use ElixirAnalyzer.ExerciseTestCase, exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
+  use ElixirAnalyzer.ExerciseTestCase,
+    exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
 
   describe "comment de-duplication" do
     test_exercise_analysis "doesn't include the same comment of the same type twice",
