@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     comments: [] do
     defmodule AssertCallVerification do
       def function() do
-        List.first([1, 2, 3])
+        x = List.first([1, 2, 3])
         result = helper()
         IO.puts(result)
 
@@ -30,7 +30,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     ] do
     defmodule AssertCallVerification do
       def function() do
-        List.last([1, 2, 3])
+        x = List.last([1, 2, 3])
         private_helper() |> IO.puts()
       end
 
@@ -51,7 +51,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     ] do
     defmodule AssertCallVerification do
       def function() do
-        List.first([1, 2, 3])
+        x = List.first([1, 2, 3])
         other()
         IO.puts("1")
       end
@@ -78,7 +78,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     ] do
     defmodule AssertCallVerification do
       def function() do
-        List.flatten([1, 2, 3])
+        l = List.flatten([1, 2, 3])
         result = helper()
         private_helper()
       end
@@ -99,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     ] do
     defmodule AssertCallVerification do
       def function() do
-        List.first([1, 2, 3])
+        l = List.first([1, 2, 3])
         result = helper()
         private_helper() |> other()
       end
@@ -131,7 +131,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       def helper do
-        List.first([1, 2, 3])
+        l = List.first([1, 2, 3])
         :helped
       end
 
