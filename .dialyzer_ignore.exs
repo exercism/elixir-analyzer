@@ -1,6 +1,6 @@
 [
-    ~r/The test \d* =:= nil can never evaluate to 'true'/
-
+    ~r/The test \d* =:= nil can never evaluate to 'true'/,
+    ~r/lib\/elixir_analyzer\/test_suite\/.*\.ex:1:guard_fail/,
   #  # {short_description}
   #  {":0:unknown_function Function :erl_types.t_is_opaque/1/1 does not exist."},
   #  # {short_description, warning_type}
