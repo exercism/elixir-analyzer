@@ -1,4 +1,8 @@
 defmodule ElixirAnalyzer.LogFormatter do
+  @moduledoc """
+  Analyzer's custom formatter for the Logger.
+  """
+
   def format(level, message, timestamp, metadata) do
     "# #{fmt_timestamp(timestamp)} #{inspect(metadata)} [#{level}] #{message}\n"
   rescue

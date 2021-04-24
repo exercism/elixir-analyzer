@@ -23,6 +23,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   #
 
   defmacro __before_compile__(env) do
+    # credo:disable-for-previous-line Credo.Check.Refactor.CyclomaticComplexity
     feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
 
@@ -37,7 +38,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     quote do
       @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(submission = %Submission{}, code_as_string) do
+      def analyze(%Submission{} = submission, code_as_string) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
@@ -56,21 +57,25 @@ defmodule ElixirAnalyzer.ExerciseTest do
         feature_results
         |> Enum.reject(fn
           {_test_result, %{suppress_if: condition}} when condition !== false ->
-            [suppress_on_test_name, suppress_on_result] = condition
-
-            Enum.any?(feature_results, fn {result, test} ->
-              case {result, test.name} do
-                {^suppress_on_result, ^suppress_on_test_name} -> true
-                _ -> false
-              end
-            end)
+            any_result_matches_suppress_condition?(feature_results, condition)
 
           _result ->
             false
         end)
       end
 
-      defp append_test_comments(submission = %Submission{}, results) do
+      defp any_result_matches_suppress_condition?(feature_results, condition) do
+        [suppress_on_test_name, suppress_on_result] = condition
+
+        Enum.any?(feature_results, fn {result, test} ->
+          case {result, test.name} do
+            {^suppress_on_result, ^suppress_on_test_name} -> true
+            _ -> false
+          end
+        end)
+      end
+
+      defp append_test_comments(%Submission{} = submission, results) do
         Enum.reduce(results, submission, fn
           {:skip, _description}, submission ->
             submission
@@ -94,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_analysis_failure(submission = %Submission{}, {location, error, token}) do
+      defp append_analysis_failure(%Submission{} = submission, {location, error, token}) do
         line =
           case location do
             location when is_integer(location) -> location

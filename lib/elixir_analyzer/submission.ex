@@ -48,26 +48,26 @@ defmodule ElixirAnalyzer.Submission do
           analysis_module: atom()
         }
 
-  def to_json(submission = %__MODULE__{}) do
+  def to_json(%__MODULE__{} = submission) do
     Jason.encode!(%{summary: get_summary(submission), comments: submission.comments})
   end
 
   @doc false
-  def halt(submission = %__MODULE__{}) do
+  def halt(%__MODULE__{} = submission) do
     %{submission | halted: true}
   end
 
-  def set_halt_reason(submission = %__MODULE__{}, reason) when is_binary(reason) do
+  def set_halt_reason(%__MODULE__{} = submission, reason) when is_binary(reason) do
     %{submission | halt_reason: reason}
   end
 
   @doc false
-  def set_analyzed(submission = %__MODULE__{}, value) when is_boolean(value) do
+  def set_analyzed(%__MODULE__{} = submission, value) when is_boolean(value) do
     %{submission | analyzed: value}
   end
 
   @doc false
-  def append_comment(submission = %__MODULE__{}, meta) when is_map(meta) do
+  def append_comment(%__MODULE__{} = submission, meta) when is_map(meta) do
     comment =
       Enum.filter(meta, fn
         {key, _} when key in [:comment, :type, :params] -> true
@@ -78,8 +78,8 @@ defmodule ElixirAnalyzer.Submission do
     %{submission | comments: submission.comments ++ [comment]}
   end
 
-  defp get_summary(submission = %__MODULE__{halted: true, comments: comments})
-       when length(comments) == 0 do
+  defp get_summary(%__MODULE__{halted: true, comments: comments} = submission)
+       when comments == [] do
     case submission.halt_reason do
       nil -> "Analysis was halted."
       _ -> "Analysis was halted. #{submission.halt_reason}"
