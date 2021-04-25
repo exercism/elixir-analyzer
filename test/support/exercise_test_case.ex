@@ -11,6 +11,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
   use ExUnit.CaseTemplate
 
+  @dialyzer no_match: {:assert_comments, 3}
+
   using opts do
     quote do
       @exercise_test_module unquote(opts)[:exercise_test_module]
