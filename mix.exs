@@ -10,10 +10,19 @@ defmodule ElixirAnalyzer.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript(),
+      preferred_cli_env: [
+        # run dialyzer in test env so that files in test/support also get checked
+        dialyzer: :test
+      ],
       dialyzer: [
         plt_core_path: "priv/plts",
-        plt_file: {:no_warn, "priv/plts/eventstore.plt"},
-        ignore_warnings: ".dialyzer_ignore.exs"
+        plt_file: {:no_warn, "priv/plts/eventstore.plt"}
+        # important note:
+        # The option ignore_warnings only works when running `mix dialyzer` (from `dialyxir`),
+        # it DOES NOT work when ElixirLS runs dialyzer.
+        # VSC uses ElixirLS by default and reports dialyzer warnings,
+        # so to ensure the best experience for devs using VSC,
+        # try to disable dialyzer warnings using the `@dialyzer` module attribute
       ]
     ]
   end
@@ -30,7 +39,7 @@ defmodule ElixirAnalyzer.MixProject do
     [
       {:jason, "~> 1.2"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
