@@ -1,5 +1,4 @@
 defmodule ElixirAnalyzer.TestSuite.BirdCount do
-  @dialyzer generated: true
   @moduledoc """
   This is an exercise analyzer extension module for the concept exercise Bird Count
   """

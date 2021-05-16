@@ -20,9 +20,9 @@ defmodule ElixirAnalyzer.MixProject do
         # important note:
         # The option ignore_warnings only works when running `mix dialyzer` (from `dialyxir`),
         # it DOES NOT work when ElixirLS runs dialyzer.
-        # VSC uses ElixirLS by default and reports dialyzer warnings,
-        # so to ensure the best experience for devs using VSC,
-        # try to disable dialyzer warnings using the `@dialyzer` module attribute
+        # When using ElixirLS with VSCode reporting dialyzer warnings, obscuring code feedback.
+        # So to ensure the best experience for devs using VSCode, try to disable dialyzer
+        # warnings using the `@dialyzer` module attribute
       ]
     ]
   end

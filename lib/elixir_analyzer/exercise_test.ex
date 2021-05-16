@@ -100,7 +100,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_analysis_failure(submission = %Submission{}, {location, error, token}) do
+      defp append_analysis_failure(%Submission{} = submission, {location, error, token}) do
         line = Keyword.get(location, :line)
         comment_params = %{line: line, error: "#{error}#{token}"}
 
