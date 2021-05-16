@@ -1,4 +1,14 @@
 defmodule ElixirAnalyzer.Constants do
+  @moduledoc """
+  A list of Elixir analyzer comments, in the format:
+  ```
+  elixir.[directory].[filename]
+  ```
+
+  `[directory]` must correspond to a directory in https://github.com/exercism/website-copy/tree/main/analyzer-comments/elixir
+  and `[filename].md` must be a file in that directory.
+  """
+
   @constants [
     # Status Comments
     # status_approve: "elixir.status.approve",

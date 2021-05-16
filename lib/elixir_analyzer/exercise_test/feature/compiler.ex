@@ -73,23 +73,21 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
         {:__block__, _, params} = node, false, depth ->
           finding_depth = unquote(find_at_depth) in [nil, depth]
 
-          cond do
-            finding_depth and is_list(params) ->
-              found =
-                params
-                |> Enum.chunk_every(unquote(block_params), 1, :discard)
-                |> Enum.reduce(false, fn
-                  chunk, false ->
-                    match?(unquote(find_ast), chunk)
+          if finding_depth and is_list(params) do
+            found =
+              params
+              |> Enum.chunk_every(unquote(block_params), 1, :discard)
+              |> Enum.reduce(false, fn
+                chunk, false ->
+                  match?(unquote(find_ast), chunk)
 
-                  _chunk, true ->
-                    true
-                end)
+                _chunk, true ->
+                  true
+              end)
 
-              {node, found}
-
-            true ->
-              {node, false}
+            {node, found}
+          else
+            {node, false}
           end
 
         # If not a block, then we know it can't match, so pass
@@ -106,12 +104,10 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
         node, false, depth ->
           finding_depth = unquote(find_at_depth) in [nil, depth]
 
-          cond do
-            finding_depth ->
-              {node, match?(unquote(find_ast), node)}
-
-            true ->
-              {node, false}
+          if finding_depth do
+            {node, match?(unquote(find_ast), node)}
+          else
+            {node, false}
           end
 
         node, true, _depth ->

@@ -46,4 +46,30 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
   end
+
+  describe "config" do
+    test "every available exercise test suite assigned to an exercise slug in the config" do
+      {:ok, modules} = :application.get_key(:elixir_analyzer, :modules)
+
+      all_available_test_suites =
+        Enum.filter(modules, fn module ->
+          module
+          |> to_string
+          |> String.starts_with?("Elixir.ElixirAnalyzer.TestSuite.")
+        end)
+
+      test_suites_referenced_in_config =
+        Enum.map(ElixirAnalyzer.default_exercise_config(), fn {_, value} ->
+          value.analyzer_module
+        end)
+
+      unused_available_test_suites = all_available_test_suites -- test_suites_referenced_in_config
+
+      unavailable_test_suites_referenced_in_config =
+        test_suites_referenced_in_config -- all_available_test_suites
+
+      assert unused_available_test_suites == []
+      assert unavailable_test_suites_referenced_in_config == []
+    end
+  end
 end

@@ -22,7 +22,10 @@ defmodule ElixirAnalyzer.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:jason, "~> 1.2"}]
+    [
+      {:jason, "~> 1.2"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+    ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]

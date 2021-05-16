@@ -100,38 +100,42 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             |> Enum.map(fn comment_details -> comment_details.comment end)
 
           Enum.map(Keyword.keys(unquote(assertions)), fn key ->
-            case key do
-              :comments ->
-                expected_comments = unquote(assertions[:comments])
-
-                if expected_comments do
-                  assert Enum.sort(comments) == Enum.sort(expected_comments)
-                end
-
-              :comments_include ->
-                comments_include = unquote(assertions[:comments_include])
-
-                if comments_include do
-                  Enum.each(comments_include, fn comment ->
-                    assert comment in comments
-                  end)
-                end
-
-              :comments_exclude ->
-                comments_exclude = unquote(assertions[:comments_exclude])
-
-                if comments_exclude do
-                  Enum.each(comments_exclude, fn comment ->
-                    refute comment in comments
-                  end)
-                end
-
-              _ ->
-                :noop
-            end
+            assert_comments(comments, key, unquote(assertions))
           end)
         end
       end
     end)
+  end
+
+  def assert_comments(comments, :comments, assertions) do
+    expected_comments = assertions[:comments]
+
+    if expected_comments do
+      assert Enum.sort(comments) == Enum.sort(expected_comments)
+    end
+  end
+
+  def assert_comments(comments, :comments_include, assertions) do
+    comments_include = assertions[:comments_include]
+
+    if comments_include do
+      Enum.each(comments_include, fn comment ->
+        assert comment in comments
+      end)
+    end
+  end
+
+  def assert_comments(comments, :comments_exclude, assertions) do
+    comments_exclude = assertions[:comments_exclude]
+
+    if comments_exclude do
+      Enum.each(comments_exclude, fn comment ->
+        refute comment in comments
+      end)
+    end
+  end
+
+  def assert_comments(_, _, _) do
+    :noop
   end
 end

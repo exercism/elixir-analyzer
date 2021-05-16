@@ -12,9 +12,13 @@ defmodule ElixirAnalyzer do
   import ElixirAnalyzer.Summary, only: [summary: 2]
 
   # defaults
-  @exercise_config Application.get_env(:elixir_analyzer, :exercise_config)
+  @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
   @meta_config ".meta/config.json"
+
+  def default_exercise_config() do
+    @exercise_config
+  end
 
   @doc """
   This is the main entry point to the analyzer.
@@ -84,7 +88,7 @@ defmodule ElixirAnalyzer do
       {:module, nil},
       {:output_path, output_path},
       {:output_file, @output_file},
-      {:exercise_config, @exercise_config},
+      {:exercise_config, default_exercise_config()},
       {:write_results, true},
       {:puts_summary, true}
     ]
@@ -179,12 +183,12 @@ defmodule ElixirAnalyzer do
   # - check if the file exists
   # - read in the code
   # - compile
-  defp check(submission = %Submission{halted: true}, _params) do
+  defp check(%Submission{halted: true} = submission, _params) do
     Logger.warning("Check not performed, halted previously")
     submission
   end
 
-  defp check(submission = %Submission{}, _params) do
+  defp check(%Submission{} = submission, _params) do
     with path_to_code <- Path.join(submission.code_path, submission.code_file),
          :ok <- Logger.info("Attempting to read code file", code_file_path: path_to_code),
          {:code_read, {:ok, code_str}} <- {:code_read, File.read(path_to_code)},
@@ -213,12 +217,12 @@ defmodule ElixirAnalyzer do
 
   # Analyze
   # - Start the static analysis
-  defp analyze(submission = %Submission{halted: true}, _params) do
+  defp analyze(%Submission{halted: true} = submission, _params) do
     Logger.info("Analysis not performed, halted previously")
     submission
   end
 
-  defp analyze(submission = %Submission{}, _params) do
+  defp analyze(%Submission{} = submission, _params) do
     Logger.info("Analyzing code started")
 
     submission =
@@ -230,7 +234,7 @@ defmodule ElixirAnalyzer do
     submission
   end
 
-  defp write_results(submission = %Submission{}, params) do
+  defp write_results(%Submission{} = submission, params) do
     if params.write_results do
       output_file_path = Path.join(params.output_path, params.output_file)
       Logger.info("Writing final results.json to file", path: output_file_path)

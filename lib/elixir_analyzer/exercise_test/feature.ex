@@ -1,4 +1,9 @@
 defmodule ElixirAnalyzer.ExerciseTest.Feature do
+  @moduledoc """
+  Defines a `feature` macro that allows looking for specific snippets
+  whose AST matches part of the AST of the solution.
+  """
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -54,13 +59,13 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
 
   defp gather_feature_data({:form, _, [[do: form]]} = node, acc) do
     ast =
-      unless acc.meta.keep_meta do
+      if acc.meta.keep_meta do
+        form
+      else
         Macro.prewalk(form, fn
           {name, _, param} -> {name, :_ignore, param}
           node -> node
         end)
-      else
-        form
       end
 
     {ast, block_params} =
