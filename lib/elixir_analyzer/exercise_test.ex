@@ -24,7 +24,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   defmacro __before_compile__(env) do
     # credo:disable-for-previous-line Credo.Check.Refactor.CyclomaticComplexity
-    feature_test_data = Macro.escape(Module.get_attribute(env.module, :feature_tests))
+    feature_test_data = Module.get_attribute(env.module, :feature_tests)
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
 
     # ast placeholder for the submission code ast

@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
 
   def compile({feature_data, feature_forms}, code_ast) do
     name = Keyword.fetch!(feature_data, :name)
-    comment = Keyword.fetch!(feature_data, :comment)
+    {comment, _} = Code.eval_quoted(Keyword.fetch!(feature_data, :comment))
     status = Keyword.get(feature_data, :status, :test)
     type = Keyword.get(feature_data, :type, :informative)
     find_type = Keyword.get(feature_data, :find, :all)
