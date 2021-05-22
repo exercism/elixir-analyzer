@@ -81,5 +81,22 @@ defmodule ElixirAnalyzer.ExerciseTest.FreelancerRatesTest do
         end
       end
     end
+
+    test_exercise_analysis "calling function should match",
+      comments: [Constants.freelancer_rates_apply_discount_function_reuse()] do
+      defmodule FreelancerRates do
+        def daily_rate(hourly_rate) do
+          hourly_rate * 8.0
+        end
+
+        def apply_discount(before_discount, discount) do
+          before_discount - before_discount * (discount / 100.0)
+        end
+
+        def some_other_function() do
+          apply_discount(100, 3)
+        end
+      end
+    end
   end
 end

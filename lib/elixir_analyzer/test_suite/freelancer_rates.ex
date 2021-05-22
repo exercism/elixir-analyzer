@@ -7,14 +7,14 @@ defmodule ElixirAnalyzer.TestSuite.FreelancerRates do
 
   assert_call "monthly_rate/2 reuses apply_discount/2" do
     type :actionable
-    calling_function(module: FreelancerRates, name: :monthly_rate)
+    calling_fn module: FreelancerRates, name: :monthly_rate
     called_fn name: :apply_discount
     comment ElixirAnalyzer.Constants.freelancer_rates_apply_discount_function_reuse()
   end
 
   assert_call "days_in_budget/2 reuses apply_discount/2" do
     type :actionable
-    calling_function(module: FreelancerRates, name: :days_in_budget)
+    calling_fn module: FreelancerRates, name: :days_in_budget
     called_fn name: :apply_discount
     comment ElixirAnalyzer.Constants.freelancer_rates_apply_discount_function_reuse()
   end
