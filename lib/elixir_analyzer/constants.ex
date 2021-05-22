@@ -24,14 +24,15 @@ defmodule ElixirAnalyzer.Constants do
     solution_use_specification: "elixir.solution.use_specification",
     solution_raise_fn_clause_error: "elixir.solution.raise_fn_clause_error",
 
-    # Two-fer Error Comments
-    two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
-    two_fer_use_guards: "elixir.two-fer.use_guards",
-    two_fer_use_string_interpolation: "elixir.two-fer.use_string_interpolation",
-    two_fer_wrong_specification: "elixir.two-fer.wrong_specification",
-    two_fer_use_function_level_guard: "elixir.two-fer.use_function_level_guard",
-    two_fer_use_of_aux_functions: "elixir.two-fer.use_of_aux_functions",
-    two_fer_use_of_function_header: "elixir.two-fer.use_of_function_header",
+
+    # Concept exercises
+
+    # Bird Count Comments
+    bird_count_use_recursion: "elixir.bird-count.use_recursion",
+
+    # Freelancer Rates Comments
+    freelancer_rates_apply_discount_function_reuse:
+      "elixir.freelancer-rates.apply_discount_function_reuse",
 
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
@@ -40,8 +41,17 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
-    # Bird Count Comments
-    bird_count_use_recursion: "elixir.bird-count.use_recursion"
+
+    # Practice exercises
+
+    # Two-fer Error Comments
+    two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
+    two_fer_use_guards: "elixir.two-fer.use_guards",
+    two_fer_use_string_interpolation: "elixir.two-fer.use_string_interpolation",
+    two_fer_wrong_specification: "elixir.two-fer.wrong_specification",
+    two_fer_use_function_level_guard: "elixir.two-fer.use_function_level_guard",
+    two_fer_use_of_aux_functions: "elixir.two-fer.use_of_aux_functions",
+    two_fer_use_of_function_header: "elixir.two-fer.use_of_function_header"
   ]
 
   for {constant, markdown} <- @constants do

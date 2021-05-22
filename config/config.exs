@@ -23,8 +23,12 @@ use Mix.Config
 
 config :elixir_analyzer,
   exercise_config: %{
-    "two-fer" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
+    # concept exercises
+    "bird-count" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
+    },
+    "freelancer-rates" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.FreelancerRates
     },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
@@ -32,8 +36,10 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
-    "bird-count" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
+
+    # practice exercises
+    "two-fer" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     }
   }
 
