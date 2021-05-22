@@ -43,7 +43,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FreelancerRatesTest do
       end
     end
 
-    test_exercise_analysis "requires days_in_budget/2 to call apply_discount/2",
+    test_exercise_analysis "requires days_in_budget/3 to call apply_discount/2",
       comments: [Constants.freelancer_rates_apply_discount_function_reuse()] do
       defmodule FreelancerRates do
         def days_in_budget(budget, hourly_rate, discount) do
