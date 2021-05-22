@@ -24,7 +24,6 @@ defmodule ElixirAnalyzer.Constants do
     solution_use_specification: "elixir.solution.use_specification",
     solution_raise_fn_clause_error: "elixir.solution.raise_fn_clause_error",
 
-
     # Concept exercises
 
     # Bird Count Comments
@@ -40,7 +39,6 @@ defmodule ElixirAnalyzer.Constants do
 
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
-
 
     # Practice exercises
 
