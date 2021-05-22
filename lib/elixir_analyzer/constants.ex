@@ -29,6 +29,10 @@ defmodule ElixirAnalyzer.Constants do
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
 
+    # Boutique Suggestions Comments
+    boutique_suggestions_use_list_comprehensions:
+      "elixir.boutique-suggestions.use_list_comprehensions",
+
     # Freelancer Rates Comments
     freelancer_rates_apply_discount_function_reuse:
       "elixir.freelancer-rates.apply_discount_function_reuse",
