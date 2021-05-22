@@ -33,6 +33,10 @@ defmodule ElixirAnalyzer.Constants do
     boutique_suggestions_use_list_comprehensions:
       "elixir.boutique-suggestions.use_list_comprehensions",
 
+    # Freelancer Rates Comments
+    freelancer_rates_apply_discount_function_reuse:
+      "elixir.freelancer-rates.apply_discount_function_reuse",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",

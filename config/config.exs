@@ -30,6 +30,9 @@ config :elixir_analyzer,
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
+    "freelancer-rates" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.FreelancerRates
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
