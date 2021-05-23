@@ -49,7 +49,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
   end
 
   test_exercise_analysis "detects cheating with strings",
-    comments: [Constants.german_sysadmin_no_strings()] do
+    comments: [Constants.german_sysadmin_no_string()] do
     [
       defmodule Username do
         def sanitize(charlist) do
