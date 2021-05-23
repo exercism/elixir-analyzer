@@ -37,6 +37,10 @@ defmodule ElixirAnalyzer.Constants do
     freelancer_rates_apply_discount_function_reuse:
       "elixir.freelancer-rates.apply_discount_function_reuse",
 
+    # German Sysadmin Comments
+    german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
+    german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",

@@ -33,6 +33,9 @@ config :elixir_analyzer,
     "freelancer-rates" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FreelancerRates
     },
+    "german-sysadmin" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
