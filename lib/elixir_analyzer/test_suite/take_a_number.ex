@@ -17,55 +17,19 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumber do
     end
 
     form do
-      Agent.start(_ignore)
-    end
-
-    form do
-      Agent.start(_ignore, _ignore)
-    end
-
-    form do
-      Agent.start(_ignore, _ignore, _ignore)
-    end
-
-    form do
-      Agent.start(_ignore, _ignore, _ignore, _ignore)
-    end
-
-    form do
-      Agent.start_link(_ignore)
-    end
-
-    form do
-      Agent.start_link(_ignore, _ignore)
-    end
-
-    form do
-      Agent.start_link(_ignore, _ignore, _ignore)
-    end
-
-    form do
-      Agent.start_link(_ignore, _ignore, _ignore, _ignore)
-    end
-
-    form do
       use GenServer
     end
+  end
 
-    form do
-      GenServer.start(_ignore, _ignore)
-    end
+  assert_no_call "doesn't call any Agent functions" do
+    type :essential
+    called_fn module: Agent, name: :_
+    comment ElixirAnalyzer.Constants.take_a_number_do_not_use_abstractions()
+  end
 
-    form do
-      GenServer.start(_ignore, _ignore, _ignore)
-    end
-
-    form do
-      GenServer.start_link(_ignore, _ignore)
-    end
-
-    form do
-      GenServer.start_link(_ignore, _ignore, _ignore)
-    end
+  assert_no_call "doesn't call any GenServer functions" do
+    type :essential
+    called_fn module: GenServer, name: :_
+    comment ElixirAnalyzer.Constants.take_a_number_do_not_use_abstractions()
   end
 end
