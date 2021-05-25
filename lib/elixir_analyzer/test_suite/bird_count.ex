@@ -79,7 +79,7 @@ defmodule ElixirAnalyzer.TestSuite.BirdCount do
 
   assert_no_call "doesn't use list comprehensions" do
     type :essential
-    called_fn name: :<-
+    called_fn name: :for
     comment ElixirAnalyzer.Constants.bird_count_use_recursion()
   end
 end

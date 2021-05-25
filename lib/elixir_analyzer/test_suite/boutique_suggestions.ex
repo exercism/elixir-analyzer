@@ -7,7 +7,7 @@ defmodule ElixirAnalyzer.TestSuite.BoutiqueSuggestions do
 
   assert_call "uses list comprehensions" do
     type :essential
-    called_fn name: :<-
+    called_fn name: :for
     comment ElixirAnalyzer.Constants.boutique_suggestions_use_list_comprehensions()
   end
 
