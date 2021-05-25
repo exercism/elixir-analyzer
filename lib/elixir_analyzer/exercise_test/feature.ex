@@ -25,6 +25,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
       }
     }
 
+    :ok = validate_feature_block(block)
     {_, feature_data} = Macro.prewalk(block, feature_data, &gather_feature_data/2)
 
     # made into a key-val list for better quoting
@@ -38,6 +39,20 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
         {unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests
       ]
     end
+  end
+
+  @supported_expressions [:comment, :type, :find, :status, :suppress_if, :depth, :meta, :form]
+  defp validate_feature_block({:__block__, _, args}) do
+    Enum.each(args, fn {name, _, _} ->
+      if name not in @supported_expressions do
+        raise """
+        Unsupported expression `#{name}`.
+        The macro `feature` supports expressions: #{Enum.join(@supported_expressions, ", ")}.
+        """
+      end
+    end)
+
+    :ok
   end
 
   defp gather_feature_data({field, _, [f]} = node, acc)
