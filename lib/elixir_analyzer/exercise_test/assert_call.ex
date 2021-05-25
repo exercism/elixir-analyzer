@@ -26,16 +26,16 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   }
   """
   defmacro assert_call(description, do: block) do
+    :ok = validate_call_block(block, :assert_call)
     parse(description, block, true)
   end
 
   defmacro assert_no_call(description, do: block) do
+    :ok = validate_call_block(block, :assert_no_call)
     parse(description, block, false)
   end
 
   defp parse(description, block, should_call) do
-    :ok = validate_call_block(block, should_call)
-
     test_data =
       block
       |> walk_assert_call_block()
@@ -56,9 +56,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   end
 
   @supported_expressions [:comment, :type, :calling_fn, :called_fn]
-  defp validate_call_block({:__block__, _, args}, should_call) do
-    macro_name = if should_call, do: "assert_call", else: "assert_no_call"
-
+  defp validate_call_block({:__block__, _, args}, macro_name) do
     Enum.each(args, fn {name, _, _} ->
       if name not in @supported_expressions do
         raise """
