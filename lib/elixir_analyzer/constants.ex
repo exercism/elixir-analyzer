@@ -41,6 +41,12 @@ defmodule ElixirAnalyzer.Constants do
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
 
+    # Guessing Game Comments
+    guessing_game_use_default_argument: "elixir.guessing-game.use_default_argument",
+    guessing_game_use_multiple_clause_functions:
+      "elixir.guessing-game.use_multiple_clause_functions",
+    guessing_game_use_guards: "elixir.guessing-game.use_guards",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
