@@ -33,6 +33,9 @@ config :elixir_analyzer,
     "freelancer-rates" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FreelancerRates
     },
+    "guessing-game" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.GuessingGame
+    },
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
