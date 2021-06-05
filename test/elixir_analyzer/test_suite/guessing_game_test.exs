@@ -31,31 +31,60 @@ defmodule ElixirAnalyzer.ExerciseTest.GuessingGameTest do
     end
   end
 
-  test_exercise_analysis "another acceptable solution",
+  test_exercise_analysis "another acceptable solutions",
     comments: [] do
-    defmodule GuessingGame do
-      def compare(secret_number, g \\ :no_guess)
+    [
+      defmodule GuessingGame do
+        def compare(secret_number, g \\ :no_guess)
 
-      def compare(secret_number, secret_number) do
-        "Correct"
-      end
+        def compare(secret_number, secret_number) do
+          "Correct"
+        end
 
-      def compare(secret_number, g) when g in [secret_number + 1, secret_number - 1] do
-        "So close"
-      end
+        def compare(secret_number, g) when g in [secret_number + 1, secret_number - 1] do
+          "So close"
+        end
 
-      def compare(_secret_number, :no_guess) do
-        "Make a guess"
-      end
+        def compare(_secret_number, :no_guess) do
+          "Make a guess"
+        end
 
-      def compare(secret_number, g) when g > secret_number do
-        "Too high"
-      end
+        def compare(secret_number, g) when g > secret_number do
+          "Too high"
+        end
 
-      def compare(_secret_number, g) do
-        "Too low"
+        def compare(_secret_number, g) do
+          "Too low"
+        end
+      end,
+      defmodule GuessingGame do
+        def compare(secret_number, x \\ :no_guess)
+
+        def compare(_secret_number, :no_guess) do
+          "Make a guess"
+        end
+
+        def compare(secret_number, secret_number) do
+          "Correct"
+        end
+
+        def compare(secret_number, x) when x >= secret_number + 2 do
+          "Too high"
+        end
+
+        def compare(secret_number, x) when x <= secret_number - 2 do
+          "Too low"
+        end
+
+        def compare(secret_number, x) when x >= secret_number + 1 do
+          "So close"
+        end
+
+        def compare(secret_number, x) when x <= secret_number - 1 do
+          "So close"
+        end
       end
-    end
+    ]
   end
 
   test_exercise_analysis "requires using default arguments",

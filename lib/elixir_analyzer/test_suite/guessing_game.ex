@@ -23,6 +23,24 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
     end
 
     form do
+      def compare(_ignore, _ignore) when _ignore === _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore != _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore !== _ignore do
+        _ignore
+      end
+    end
+
+    form do
       def compare(_ignore, _ignore) when _ignore > _ignore do
         _ignore
       end
@@ -30,6 +48,42 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
 
     form do
       def compare(_ignore, _ignore) when _ignore < _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore < _ignore or _ignore > _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore > _ignore or _ignore < _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore >= _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore <= _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore >= _ignore or _ignore <= _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore) when _ignore <= _ignore or _ignore >= _ignore do
         _ignore
       end
     end
