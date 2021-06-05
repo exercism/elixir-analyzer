@@ -41,6 +41,9 @@ defmodule ElixirAnalyzer.Constants do
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
 
+    # High Score Comments
+    high_score_use_module_attribute: "elixir.high-score.use_module_attribute",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",

@@ -101,6 +101,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
         {atom, meta, param} = node ->
           cond do
             atom == :_ignore -> "_"
+            atom == :_shallow_ignore -> {"_", "_", param}
             meta == :_ignore -> {atom, "_", param}
             true -> node
           end

@@ -36,6 +36,9 @@ config :elixir_analyzer,
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
+    "high-score" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.HighScore
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },

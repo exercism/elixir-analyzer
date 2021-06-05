@@ -55,7 +55,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     end
   end
 
-  @supported_expressions [:comment, :type, :calling_fn, :called_fn]
+  @supported_expressions [:comment, :type, :calling_fn, :called_fn, :suppress_if]
   defp validate_call_block({:__block__, _, args}, macro_name) do
     Enum.each(args, fn {name, _, _} ->
       if name not in @supported_expressions do
@@ -91,6 +91,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   defp do_walk_assert_call_block({:type, _, [type]} = node, test_data)
        when type in ~w[essential actionable informational celebratory]a do
     {node, Map.put(test_data, :type, type)}
+  end
+
+  defp do_walk_assert_call_block({:suppress_if, _, [name, condition]} = node, test_data) do
+    {node, Map.put(test_data, :suppress_if, [name, condition])}
   end
 
   defp do_walk_assert_call_block(node, test_data) do
