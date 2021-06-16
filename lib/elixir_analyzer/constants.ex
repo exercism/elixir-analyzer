@@ -26,6 +26,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Concept exercises
 
+    # Accumulate Comments
+    accumulate_use_recursion: "elixir.accumulate.use_recursion",
+
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
 
