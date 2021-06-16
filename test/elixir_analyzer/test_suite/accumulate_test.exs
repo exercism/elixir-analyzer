@@ -76,5 +76,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AccumulateTest do
         end
       ]
     end
+
+    test_exercise_analysis "detects list comprehensions",
+      comments: [Constants.accumulate_use_recursion()] do
+      defmodule Accumulate do
+        def accumulate(list, fun) do
+          for element <- list, into: [], do: fun.(element)
+        end
+      end
+    end
   end
 end
