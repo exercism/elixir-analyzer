@@ -55,5 +55,26 @@ defmodule ElixirAnalyzer.ExerciseTest.AccumulateTest do
         end
       ]
     end
+
+    test_exercise_analysis "detects List",
+      comments: [Constants.accumulate_use_recursion()] do
+      [
+        defmodule Accumulate do
+          def accumulate(list, fun), do: List.foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
+        end,
+        defmodule Accumulate do
+          import List
+          def accumulate(list, fun), do: L.foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
+        end,
+        defmodule Accumulate do
+          import List, only: [foldr: 3]
+          def accumulate(list, fun), do: foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
+        end,
+        defmodule Accumulate do
+          alias List, as: L
+          def accumulate(list, fun), do: L.foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
+        end
+      ]
+    end
   end
 end
