@@ -76,4 +76,10 @@ defmodule ElixirAnalyzer.TestSuite.Accumulate do
       alias List, as: _ignore
     end
   end
+
+  assert_no_call "doesn't use list comprehensions" do
+    type :essential
+    called_fn name: :for
+    comment ElixirAnalyzer.Constants.accumulate_use_recursion()
+  end
 end
