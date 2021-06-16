@@ -34,5 +34,26 @@ defmodule ElixirAnalyzer.ExerciseTest.AccumulateTest do
         end
       ]
     end
+
+    test_exercise_analysis "detects Stream",
+      comments: [Constants.accumulate_use_recursion()] do
+      [
+        defmodule Accumulate do
+          def accumulate(list, fun), do: Stream.map(list, fun)
+        end,
+        defmodule Accumulate do
+          import Stream
+          def accumulate(list, fun), do: map(list, fun)
+        end,
+        defmodule Accumulate do
+          import Stream, only: [map: 2]
+          def accumulate(list, fun), do: map(list, fun)
+        end,
+        defmodule Accumulate do
+          alias Stream, as: S
+          def accumulate(list, fun), do: S.map(list, fun)
+        end
+      ]
+    end
   end
 end
