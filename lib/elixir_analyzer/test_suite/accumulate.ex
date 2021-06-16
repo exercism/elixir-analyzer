@@ -52,4 +52,28 @@ defmodule ElixirAnalyzer.TestSuite.Accumulate do
       alias Stream, as: _ignore
     end
   end
+
+  assert_no_call "does not call any List functions" do
+    type :essential
+    called_fn module: List, name: :_
+    comment ElixirAnalyzer.Constants.accumulate_use_recursion()
+  end
+
+  feature "does not alias or import List" do
+    find :none
+    type :essential
+    comment ElixirAnalyzer.Constants.accumulate_use_recursion()
+
+    form do
+      import List
+    end
+
+    form do
+      import List, _ignore
+    end
+
+    form do
+      alias List, as: _ignore
+    end
+  end
 end
