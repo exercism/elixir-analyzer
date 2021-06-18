@@ -47,6 +47,9 @@ config :elixir_analyzer,
     },
 
     # practice exercises
+    "accumulate" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
+    },
     "two-fer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     }

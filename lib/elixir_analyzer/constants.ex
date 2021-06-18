@@ -56,6 +56,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Practice exercises
 
+    # Accumulate Comments
+    accumulate_use_recursion: "elixir.accumulate.use_recursion",
+
     # Two-fer Error Comments
     two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
     two_fer_use_guards: "elixir.two-fer.use_guards",
