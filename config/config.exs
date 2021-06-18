@@ -24,9 +24,6 @@ use Mix.Config
 config :elixir_analyzer,
   exercise_config: %{
     # concept exercises
-    "accumulate" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
-    },
     "bird-count" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
     },
@@ -50,6 +47,9 @@ config :elixir_analyzer,
     },
 
     # practice exercises
+    "accumulate" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
+    },
     "two-fer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     }

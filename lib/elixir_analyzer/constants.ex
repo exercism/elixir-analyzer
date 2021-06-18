@@ -26,9 +26,6 @@ defmodule ElixirAnalyzer.Constants do
 
     # Concept exercises
 
-    # Accumulate Comments
-    accumulate_use_recursion: "elixir.accumulate.use_recursion",
-
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
 
@@ -58,6 +55,9 @@ defmodule ElixirAnalyzer.Constants do
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
     # Practice exercises
+
+    # Accumulate Comments
+    accumulate_use_recursion: "elixir.accumulate.use_recursion",
 
     # Two-fer Error Comments
     two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
