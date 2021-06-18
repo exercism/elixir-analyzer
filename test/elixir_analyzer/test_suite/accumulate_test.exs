@@ -64,7 +64,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AccumulateTest do
         end,
         defmodule Accumulate do
           import List
-          def accumulate(list, fun), do: L.foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
+          def accumulate(list, fun), do: foldr(list, [], fn x, acc -> [fun.(x) | acc] end)
         end,
         defmodule Accumulate do
           import List, only: [foldr: 3]
