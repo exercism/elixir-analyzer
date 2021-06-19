@@ -41,6 +41,12 @@ defmodule ElixirAnalyzer.Constants do
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
 
+    # Guessing Game Comments
+    guessing_game_use_default_argument: "elixir.guessing-game.use_default_argument",
+    guessing_game_use_multiple_clause_functions:
+      "elixir.guessing-game.use_multiple_clause_functions",
+    guessing_game_use_guards: "elixir.guessing-game.use_guards",
+
     # High Score Comments
     high_score_use_module_attribute: "elixir.high-score.use_module_attribute",
 
@@ -52,6 +58,9 @@ defmodule ElixirAnalyzer.Constants do
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
     # Practice exercises
+
+    # Accumulate Comments
+    accumulate_use_recursion: "elixir.accumulate.use_recursion",
 
     # Two-fer Error Comments
     two_fer_use_default_parameter: "elixir.two-fer.use_default_param",

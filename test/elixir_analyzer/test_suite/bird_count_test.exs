@@ -47,9 +47,8 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
           def total(list), do: E.sum(list)
         end,
         defmodule BirdCount do
-          alias Enum, as: E
-          def total(list), do: E.sum(list)
-          def today(list), do: Enum.at(list, 0)
+          alias Enum, as: En
+          def today(list), do: En.at(list, 0)
         end
       ]
     end
