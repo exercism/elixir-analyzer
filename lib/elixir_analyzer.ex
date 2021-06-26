@@ -167,7 +167,7 @@ defmodule ElixirAnalyzer do
     code_path = Path.dirname(full_code_path)
     code_file = Path.basename(full_code_path)
 
-    {code_path, code_file, exercise_config.analyzer_module}
+    {code_path, code_file, exercise_config[:analyzer_module]}
   end
 
   # Else, use passed in params to analyze
