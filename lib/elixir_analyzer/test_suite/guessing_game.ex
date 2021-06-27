@@ -11,79 +11,7 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
     comment ElixirAnalyzer.Constants.guessing_game_use_guards()
 
     form do
-      def compare(_ignore, _ignore) when _ignore in _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore == _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore === _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore != _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore !== _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore > _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore < _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore < _ignore or _ignore > _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore > _ignore or _ignore < _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore >= _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore <= _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore >= _ignore or _ignore <= _ignore do
-        _ignore
-      end
-    end
-
-    form do
-      def compare(_ignore, _ignore) when _ignore <= _ignore or _ignore >= _ignore do
+      def compare(_ignore, _ignore) when _ignore do
         _ignore
       end
     end
@@ -100,6 +28,12 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
 
     form do
       def compare(_ignore, _ignore \\ :no_guess) do
+        _ignore
+      end
+    end
+
+    form do
+      def compare(_ignore, _ignore \\ :no_guess) when _ignore do
         _ignore
       end
     end
