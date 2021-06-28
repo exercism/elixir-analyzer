@@ -101,6 +101,45 @@ defmodule ElixirAnalyzer.ExerciseTest.GuessingGameTest do
     ]
   end
 
+  test_exercise_analysis "detects technically correct but discouraged default argument without a function head",
+    comments_exclude: [Constants.guessing_game_use_default_argument()] do
+    [
+      defmodule GuessingGame do
+        def compare(_secret_number, guess \\ :no_guess) when guess == :no_guess do
+          "Make a guess"
+        end
+
+        def compare(secret_number, guess) when guess == secret_number do
+          "Correct"
+        end
+
+        # other cases
+      end,
+      defmodule GuessingGame do
+        def compare(_secret_number, :no_guess \\ :no_guess) do
+          "Make a guess"
+        end
+
+        def compare(secret_number, guess) when guess == secret_number do
+          "Correct"
+        end
+
+        # other cases
+      end,
+      defmodule GuessingGame do
+        # other cases
+
+        def compare(secret_number, guess) when guess < secret_number and is_integer(guess) do
+          "Too low"
+        end
+
+        def compare(_secret_number, guess \\ :no_guess) do
+          "Make a guess"
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "requires using multiple clause functions",
     comments_include: [Constants.guessing_game_use_multiple_clause_functions()],
     comments_exclude: [Constants.guessing_game_use_default_argument()] do
