@@ -150,4 +150,41 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       end
     end
   end
+
+  describe "suppress if" do
+    @comment "don't call AlternativeList module functions"
+    test_exercise_analysis "when suppress condition is false", comments_include: [@comment] do
+      defmodule AssertNoCallVerification do
+        def function() do
+          "something"
+          AlternativeList.last([])
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    end
+
+    test_exercise_analysis "when suppress condition is true", comments_exclude: [@comment] do
+      defmodule AssertNoCallVerification do
+        def function() do
+          "something"
+          List.last([])
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    end
+  end
 end
