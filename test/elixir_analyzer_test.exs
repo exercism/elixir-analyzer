@@ -45,6 +45,18 @@ defmodule ElixirAnalyzerTest do
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
+
+    test "solution for an exercise with no analyzer module" do
+      exercise = "not-a-real-exercise"
+      path = "./test_data/two_fer/error_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output = """
+      {\"comments\":[],\"summary\":\"Analysis was halted. Analysis skipped, no analysis suite exists for this exercise\"}
+      """
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
   end
 
   describe "config" do
