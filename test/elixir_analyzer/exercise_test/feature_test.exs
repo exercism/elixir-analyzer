@@ -92,7 +92,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
         end,
         defmodule Factorial do
           def calc(n) do
-            arg1 = (n + n - 1 - n) * 1
+            arg1 = rem(n + n - 1 - n, 1)
             n * calc(arg1)
           end
         end
@@ -230,13 +230,6 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
         defmodule Factorial do
           def strict_calc(n) do
             # oops, bug :)
-            arg1 = n * 1
-            n * calc(arg1)
-          end
-        end,
-        defmodule Factorial do
-          def strict_calc(n) do
-            # oops, bug :)
             arg1 = foo(n, 1)
             n * calc(arg1)
           end
@@ -262,7 +255,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
         end,
         defmodule Factorial do
           def strict_calc(n) do
-            arg1 = (n + n - 1 - n) * 1
+            arg1 = rem(n + n - 1 - n, 1)
             n * calc(arg1)
           end
         end
