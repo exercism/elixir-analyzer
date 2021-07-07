@@ -5,14 +5,27 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.Feature do
 
   use ElixirAnalyzer.ExerciseTest
 
-  feature "calc/1 must call some other function with one arguments named arg1" do
+  feature "calc/1 must call some other function of any arity" do
     type :essential
-    comment "calc/1 must call some other function with one arguments named arg1"
+    # sic! even though the form looks like it requires exactly 1 argument
+    comment "calc/1 must call some other function of any arity"
 
     form do
       def calc(n) do
-        arg1 = _ignore
+        arg1 = _ignore(n, 1)
         n * _ignore(arg1)
+      end
+    end
+  end
+
+  feature "strict_calc/1 must call some other function with one arguments named arg1" do
+    type :essential
+    comment "strict_calc/1 must call some other function with one arguments named arg1"
+
+    form do
+      def strict_calc(n) do
+        arg1 = _shallow_ignore(n, 1)
+        n * _shallow_ignore(arg1)
       end
     end
   end
