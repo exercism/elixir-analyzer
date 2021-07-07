@@ -31,6 +31,32 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
     end
   end
 
+  test_exercise_analysis "requires add_player to have a default argument that's a module attribute",
+    comments_include: [Constants.high_score_use_default_argument_with_module_attribute()] do
+    [
+      def HighScore do
+        def add_player(scores, name) do
+          Map.put(scores, name, @any_name)
+        end
+
+        def add_player(scores, name, score) do
+          Map.put(scores, name, score)
+        end
+      end,
+      def HighScore do
+        def add_player(scores, name, score \\ nil) do
+          score = score || @initial_score
+          Map.put(scores, name, score)
+        end
+      end,
+      def HighScore do
+        def add_player(scores, name, score \\ 0) do
+          Map.put(scores, name, score)
+        end
+      end
+    ]
+  end
+
   describe "looks for a module attribute with the initial score of 0" do
     test_exercise_analysis "only the value must match",
       comments_exclude: [Constants.high_score_use_module_attribute()] do
@@ -89,7 +115,7 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
     end
 
     test_exercise_analysis "missing, not used, or wrong value",
-      comments: [Constants.high_score_use_module_attribute()] do
+      comments_include: [Constants.high_score_use_module_attribute()] do
       [
         defmodule HighScore do
           def new(), do: %{}
@@ -139,19 +165,6 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
 
           def reset_score(scores, name) do
             Map.put(scores, name, 0)
-          end
-        end,
-        def HighScore do
-          @initial_score 0
-
-          def new(), do: %{}
-
-          def add_player(scores, name, score) do
-            Map.put(scores, name, score)
-          end
-
-          def reset_score(scores, name) do
-            Map.put(scores, name, @initial_score)
           end
         end
       ]

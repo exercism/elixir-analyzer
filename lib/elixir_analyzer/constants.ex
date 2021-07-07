@@ -49,6 +49,8 @@ defmodule ElixirAnalyzer.Constants do
 
     # High Score Comments
     high_score_use_module_attribute: "elixir.high-score.use_module_attribute",
+    high_score_use_default_argument_with_module_attribute:
+      "elixir.high-score.use_default_argument_with_module_attribute",
 
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
