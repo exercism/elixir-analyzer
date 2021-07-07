@@ -2,7 +2,7 @@
 
 This is an Elixir application to follow the specification of the Exercism automated mentor support project.
 
-See the project docs: https://github.com/exercism/docs/tree/main/anatomy/track-tooling/analyzers
+See the project docs: https://github.com/exercism/docs/tree/main/building/tooling/analyzers
 
 ## Current status / plan
 
