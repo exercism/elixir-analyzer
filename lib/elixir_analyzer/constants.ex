@@ -47,6 +47,9 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.guessing-game.use_multiple_clause_functions",
     guessing_game_use_guards: "elixir.guessing-game.use_guards",
 
+    # Lasagna Comments
+    lasagna_function_reuse: "elixir.lasagna.function_reuse",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
