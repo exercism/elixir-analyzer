@@ -52,6 +52,9 @@ defmodule ElixirAnalyzer.Constants do
     high_score_use_default_argument_with_module_attribute:
       "elixir.high-score.use_default_argument_with_module_attribute",
 
+    # Lasagna Comments
+    lasagna_function_reuse: "elixir.lasagna.function_reuse",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",

@@ -42,6 +42,9 @@ config :elixir_analyzer,
     "high-score" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.HighScore
     },
+    "lasagna" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
