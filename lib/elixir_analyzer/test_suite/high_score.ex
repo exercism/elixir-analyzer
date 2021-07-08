@@ -7,7 +7,7 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
 
   feature "uses a default argument" do
     find :any
-    type :essential
+    type :actionable
     comment ElixirAnalyzer.Constants.high_score_use_default_argument_with_module_attribute()
 
     form do
