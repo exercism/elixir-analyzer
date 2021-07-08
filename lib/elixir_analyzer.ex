@@ -8,6 +8,7 @@ defmodule ElixirAnalyzer do
 
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Submission
+  alias ElixirAnalyzer.Comment
 
   import ElixirAnalyzer.Summary, only: [summary: 2]
 
@@ -204,7 +205,7 @@ defmodule ElixirAnalyzer do
 
         submission
         |> Submission.halt()
-        |> Submission.append_comment(%{
+        |> Submission.append_comment(%Comment{
           comment: Constants.general_file_not_found(),
           params: %{
             "file_name" => submission.code_file,

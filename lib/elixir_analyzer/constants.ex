@@ -10,11 +10,6 @@ defmodule ElixirAnalyzer.Constants do
   """
 
   @constants [
-    # Status Comments
-    # status_approve: "elixir.status.approve",
-    # status_disapprove: "elixir.status.disapprove",
-    # status_refer_to_mentor: "elixir.status.refer_to_mentor",
-
     # General Error Comments
     general_file_not_found: "elixir.general.file_not_found",
     general_parsing_error: "elixir.general.parsing_error",

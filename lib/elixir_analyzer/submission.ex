@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.Submission do
   JSON format
 
   {
-    "status": "...",
+    "summary": "...",
     "comments": [
       {
         "comment": "elixir.general.some_paramaterised_message",
@@ -17,13 +17,9 @@ defmodule ElixirAnalyzer.Submission do
       "elixir.general.some_paramaterised_message"
     ]
   }
-  The following statuses are valid:
-
-  skipped: Something caused the analysis to be skipped
-  approve: To be used when a solution meets critera of a passing solution, comments MAY BE provided for improvement towards optimal.
-  disapprove: To be used when a solution can be disapproved as suboptimal and an actionable comment MUST BE provided.
-  refer_to_mentor: default status, a comment MAY BE provided.
   """
+
+  alias ElixirAnalyzer.Comment
 
   @enforce_keys [:code_file, :code_path, :path, :analysis_module]
   defstruct halted: false,
@@ -40,7 +36,7 @@ defmodule ElixirAnalyzer.Submission do
           halted: boolean,
           halt_reason: String.t() | nil,
           analyzed: boolean,
-          comments: list([binary | map]),
+          comments: list([Comment.t()]),
           path: String.t(),
           code_path: String.t(),
           code_file: String.t(),
@@ -67,10 +63,13 @@ defmodule ElixirAnalyzer.Submission do
   end
 
   @doc false
-  def append_comment(%__MODULE__{} = submission, meta) when is_map(meta) do
+  def append_comment(%__MODULE__{} = submission, %Comment{} = comment) do
     comment =
-      Enum.filter(meta, fn
-        {key, _} when key in [:comment, :type, :params] -> true
+      comment
+      |> Map.from_struct()
+      |> Enum.filter(fn
+        {key, _} when key in [:comment, :type] -> true
+        {key, value} when key in [:params] and value != nil -> true
         _ -> false
       end)
       |> Enum.into(%{})
