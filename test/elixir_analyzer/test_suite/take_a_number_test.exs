@@ -32,8 +32,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberTest do
 
   describe "forbids abstractions" do
     test_exercise_analysis "detects Agent",
-      comments_include: [Constants.take_a_number_do_not_use_abstractions()],
-      status: :disapprove do
+      comments_include: [Constants.take_a_number_do_not_use_abstractions()] do
       defmodule TakeANumber do
         use Agent
 
@@ -63,8 +62,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberTest do
     end
 
     test_exercise_analysis "detects GenServer",
-      comments_include: [Constants.take_a_number_do_not_use_abstractions()],
-      status: :disapprove do
+      comments_include: [Constants.take_a_number_do_not_use_abstractions()] do
       defmodule TakeANumber do
         use GenServer
 
