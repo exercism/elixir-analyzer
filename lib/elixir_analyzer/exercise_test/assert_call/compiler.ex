@@ -15,12 +15,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     {comment, _} = Code.eval_quoted(assert_call_data.comment)
     should_call = assert_call_data.should_call
     type = assert_call_data.type
+    suppress_if = Map.get(assert_call_data, :suppress_if, false)
 
     test_description =
       Macro.escape(%{
         name: name,
         comment: comment,
-        type: type
+        type: type,
+        suppress_if: suppress_if
       })
 
     assert_result = assert_expr(code_ast, should_call, called_fn, calling_fn)

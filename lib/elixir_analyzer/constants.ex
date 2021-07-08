@@ -47,6 +47,11 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.guessing-game.use_multiple_clause_functions",
     guessing_game_use_guards: "elixir.guessing-game.use_guards",
 
+    # High Score Comments
+    high_score_use_module_attribute: "elixir.high-score.use_module_attribute",
+    high_score_use_default_argument_with_module_attribute:
+      "elixir.high-score.use_default_argument_with_module_attribute",
+
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",
 

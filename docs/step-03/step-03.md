@@ -131,6 +131,8 @@ defmodule ElixirAnalyzer.TestSuite.Example do
 end
 ```
 
+`_ignore` will match any node in the AST. In some special cases, that might be too permissive. You can use `_shallow_ignore` to match any node (name and metadata), but continue matching its children.
+
 ##### 2.1 Limitations
 
 Slightly different syntax can produce exactly the same AST. That means that certain details cannot be distinguished by this analyzer. If they cannot be distinguished, they cannot be verified by the analyzer, but they also don't need to be both listed when specifying all of the forms for a feature.

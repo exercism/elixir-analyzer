@@ -39,6 +39,9 @@ config :elixir_analyzer,
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
+    "high-score" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.HighScore
+    },
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
