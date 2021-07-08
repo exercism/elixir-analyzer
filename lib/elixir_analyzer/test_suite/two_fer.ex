@@ -39,7 +39,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   feature "has default parameter" do
     # status :skip
     find :any
-    type :essential
+    type :actionable
     comment Constants.two_fer_use_default_parameter()
 
     # function header
@@ -76,7 +76,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   feature "uses guards" do
     # status :skip
     find :any
-    type :essential
+    type :actionable
     comment Constants.two_fer_use_guards()
 
     form do
@@ -126,7 +126,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   feature "uses string interpolation" do
     # status :skip
     find :any
-    type :essential
+    type :actionable
     comment Constants.two_fer_use_string_interpolation()
 
     form do
@@ -137,7 +137,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   feature "raises function clause error" do
     # status :skip
     find :none
-    type :essential
+    type :actionable
     comment Constants.solution_raise_fn_clause_error()
 
     form do
