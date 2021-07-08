@@ -2,6 +2,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
   @moduledoc false
 
   alias ElixirAnalyzer.QuoteUtil
+  alias ElixirAnalyzer.Comment
 
   def compile({feature_data, feature_forms}, code_ast) do
     name = Keyword.fetch!(feature_data, :name)
@@ -19,7 +20,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
       |> handle_combined_compiled_forms(find_type)
 
     test_description =
-      Macro.escape(%{
+      Macro.escape(%Comment{
         name: name,
         comment: comment,
         status: status,

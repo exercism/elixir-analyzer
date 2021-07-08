@@ -46,6 +46,18 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
+    test "missing file solution" do
+      exercise = "two-fer"
+      path = "./test_data/two_fer/missing_file_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output = """
+      {\"comments\":[{\"comment\":\"elixir.general.file_not_found\",\"params\":{\"file_name\":\"two_fer.ex\",\"path\":\"./test_data/two_fer/missing_file_solution/\"},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
+      """
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
     test "solution for an exercise with no analyzer module" do
       exercise = "not-a-real-exercise"
       path = "./test_data/two_fer/error_solution/"

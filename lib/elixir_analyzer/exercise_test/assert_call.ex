@@ -94,7 +94,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   end
 
   defp do_walk_assert_call_block({:suppress_if, _, [name, condition]} = node, test_data) do
-    {node, Map.put(test_data, :suppress_if, [name, condition])}
+    {node, Map.put(test_data, :suppress_if, {name, condition})}
   end
 
   defp do_walk_assert_call_block(node, test_data) do

@@ -6,6 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Comment
 
   @doc false
   defmacro __using__(_opts) do
@@ -66,7 +67,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
       end
 
       defp any_result_matches_suppress_condition?(feature_results, condition) do
-        [suppress_on_test_name, suppress_on_result] = condition
+        {suppress_on_test_name, suppress_on_result} = condition
 
         Enum.any?(feature_results, fn {result, test} ->
           case {result, test.name} do
@@ -81,16 +82,16 @@ defmodule ElixirAnalyzer.ExerciseTest do
           {:skip, _description}, submission ->
             submission
 
-          {:pass, description}, submission ->
-            if Map.get(description, :type, false) == :celebratory do
-              Submission.append_comment(submission, description)
+          {:pass, %Comment{} = comment}, submission ->
+            if Map.get(comment, :type, false) == :celebratory do
+              Submission.append_comment(submission, comment)
             else
               submission
             end
 
-          {:fail, description}, submission ->
-            if Map.get(description, :type, false) != :celebratory do
-              Submission.append_comment(submission, description)
+          {:fail, %Comment{} = comment}, submission ->
+            if Map.get(comment, :type, false) != :celebratory do
+              Submission.append_comment(submission, comment)
             else
               submission
             end
@@ -106,7 +107,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
         submission
         |> Submission.halt()
-        |> Submission.append_comment(%{
+        |> Submission.append_comment(%Comment{
           comment: Constants.general_parsing_error(),
           params: comment_params,
           type: :essential

@@ -7,6 +7,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
 
   alias ElixirAnalyzer.ExerciseTest.AssertCall
+  alias ElixirAnalyzer.Comment
 
   def compile(assert_call_data, code_ast) do
     name = assert_call_data.description
@@ -18,7 +19,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     suppress_if = Map.get(assert_call_data, :suppress_if, false)
 
     test_description =
-      Macro.escape(%{
+      Macro.escape(%Comment{
         name: name,
         comment: comment,
         type: type,
