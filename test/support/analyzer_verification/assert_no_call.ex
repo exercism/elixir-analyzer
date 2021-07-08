@@ -41,6 +41,6 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     type :informational
     called_fn module: AlternativeList, name: :_
     comment "don't call AlternativeList module functions"
-    suppress_if "does not call any function from List module"
+    suppress_if "does not call any function from List module", :fail
   end
 end
