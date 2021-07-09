@@ -134,15 +134,6 @@ defmodule ElixirAnalyzer do
           analysis_module: analysis_module
       }
     rescue
-      e in ArgumentError ->
-        Logger.warning("TestSuite halted, ArgumentError", error_message: e.message)
-
-        submission
-        |> Submission.halt()
-        |> Submission.set_halt_reason(
-          "Analysis skipped, no analysis suite exists for this exercise"
-        )
-
       e in File.Error ->
         Logger.warning("Unable to decode 'config.json'", error_message: e.message)
 
@@ -156,6 +147,13 @@ defmodule ElixirAnalyzer do
         submission
         |> Submission.halt()
         |> Submission.set_halt_reason("Analysis skipped, not able to decode solution config.")
+
+      e ->
+        Logger.warning("TestSuite halted, #{e.__struct__}", error_message: e.message)
+
+        submission
+        |> Submission.halt()
+        |> Submission.set_halt_reason("Analysis skipped, unexpected error #{e.__struct__}")
     end
   end
 
@@ -168,7 +166,7 @@ defmodule ElixirAnalyzer do
     code_path = Path.dirname(full_code_path)
     code_file = Path.basename(full_code_path)
 
-    {code_path, code_file, exercise_config[:analyzer_module]}
+    {code_path, code_file, exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
   end
 
   # Else, use passed in params to analyze

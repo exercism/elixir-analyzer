@@ -29,7 +29,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
-      {\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}
+      {\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}
       """
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -63,15 +63,15 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
-    test "solution for an exercise with no analyzer module" do
+    test "solution for an exercise with no analyzer module uses the default module" do
       exercise = "not-a-real-exercise"
-      path = "./test_data/two_fer/error_solution/"
+      path = "./test_data/two_fer/imperfect_solution/"
 
       capture_log(fn ->
         analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
         expected_output = """
-        {\"comments\":[],\"summary\":\"Analysis was halted. Analysis skipped, no analysis suite exists for this exercise\"}
+        {\"comments\":[{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}
         """
 
         assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -96,6 +96,9 @@ defmodule ElixirAnalyzerTest do
         end)
 
       unused_available_test_suites = all_available_test_suites -- test_suites_referenced_in_config
+
+      unused_available_test_suites =
+        unused_available_test_suites -- [ElixirAnalyzer.TestSuite.Default]
 
       unavailable_test_suites_referenced_in_config =
         test_suites_referenced_in_config -- all_available_test_suites
