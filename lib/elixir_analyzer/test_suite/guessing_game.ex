@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.GuessingGame do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Bird Count
+  This is an exercise analyzer extension module for the concept exercise Guessing Game
   """
 
   use ElixirAnalyzer.ExerciseTest

@@ -23,7 +23,7 @@ defmodule ElixirAnalyzer.ExerciseTest.PacmanRulesTest do
     end
   end
 
-  describe "requires strictly boolean operators" do
+  describe "suggests strictly boolean operators" do
     test_exercise_analysis "detects &&",
       comments_include: [Constants.pacman_rules_use_strictly_boolean_operators()] do
       [

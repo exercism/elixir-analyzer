@@ -44,7 +44,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
-            assert_call_results = unquote(assert_call_tests)
+            assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
 
             submission
             |> append_test_comments(feature_results)

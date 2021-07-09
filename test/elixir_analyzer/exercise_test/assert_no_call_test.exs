@@ -174,6 +174,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       defmodule AssertNoCallVerification do
         def function() do
           "something"
+          AlternativeList.last([])
           List.last([])
         end
 
