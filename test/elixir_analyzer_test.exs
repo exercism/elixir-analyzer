@@ -10,9 +10,9 @@ defmodule ElixirAnalyzerTest do
     @options [puts_summary: false, write_results: false]
 
     # @tag :pending
-    test "approved solution" do
+    test "solution with no comments" do
       exercise = "two-fer"
-      path = "./test_data/two_fer/approved_solution/"
+      path = "./test_data/two_fer/perfect_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
