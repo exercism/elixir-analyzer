@@ -2,6 +2,8 @@ defmodule ElixirAnalyzerTest do
   use ExUnit.Case
   doctest ElixirAnalyzer
 
+  import ExUnit.CaptureLog
+
   alias ElixirAnalyzer.Submission
 
   describe "ElixirAnalyzer" do
@@ -37,13 +39,16 @@ defmodule ElixirAnalyzerTest do
     test "error solution" do
       exercise = "two-fer"
       path = "./test_data/two_fer/error_solution/"
-      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
-      expected_output = """
-      {\"comments\":[{\"comment\":\"elixir.general.parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 1)\",\"line\":14},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
-      """
+      capture_log(fn ->
+        analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
-      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+        expected_output = """
+        {\"comments\":[{\"comment\":\"elixir.general.parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 1)\",\"line\":14},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
+        """
+
+        assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+      end)
     end
 
     test "missing file solution" do
