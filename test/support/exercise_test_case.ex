@@ -29,7 +29,6 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
     ```
     test_exercise_analysis "missing moduledoc",
-      status: :approve,
       comments: [Constants.solution_use_moduledoc()] do
       defmodule TwoFer do
         @spec two_fer(String.t()) :: String.t()
@@ -44,7 +43,6 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
     All assertions are optional, but at least one is required.
 
-    - `:status` - an atom, e.g. `:approve`, `:refer`, `:disapprove`.
     - `:comments` - checks that the comments produced by the analysis and this list have the same elements, ignoring their order.
     - `:comments_include` - checks that the comments produced by the analysis include all elements from this list.
     - `:comments_exclude` - checks that the comments produced by the analysis include none of the elements from this list.
@@ -55,7 +53,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     Passing a list of code blocks is also supported.
   """
   defmacro test_exercise_analysis(name, assertions, do: test_cases) do
-    supported_assertions_keys = [:comments, :comments_include, :comments_exclude, :status]
+    supported_assertions_keys = [:comments, :comments_include, :comments_exclude]
     assertions_keys = Keyword.keys(assertions)
     assertions_key_diff = assertions_keys -- supported_assertions_keys
 
