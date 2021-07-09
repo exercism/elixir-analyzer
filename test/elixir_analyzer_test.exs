@@ -25,7 +25,7 @@ defmodule ElixirAnalyzerTest do
     # @tag :pending
     test "referred solution with comments" do
       exercise = "two-fer"
-      path = "./test_data/two_fer/referred_solution/"
+      path = "./test_data/two_fer/imperfect_solution/"
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output = """
