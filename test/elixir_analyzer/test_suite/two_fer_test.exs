@@ -16,6 +16,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
   end
 
   test_exercise_analysis "missing moduledoc",
+    status: :approve,
     comments: [Constants.solution_use_moduledoc()] do
     defmodule TwoFer do
       @spec two_fer(String.t()) :: String.t()
@@ -37,7 +38,8 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       end
     end
 
-    test_exercise_analysis "when wrong spec",
+    test_exercise_analysis "refer when wrong spec",
+      status: :refer,
       comments_include: [Constants.two_fer_wrong_specification()] do
       [
         defmodule TwoFer do
@@ -52,6 +54,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
     end
 
     test_exercise_analysis "info when missing spec",
+      status: :approve,
       comments_include: [Constants.solution_use_specification()] do
       defmodule TwoFer do
         @moduledoc """
@@ -79,7 +82,8 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       ]
     end
 
-    test_exercise_analysis "when not using a default parameter",
+    test_exercise_analysis "disapprove when not using a default parameter",
+      status: :disapprove,
       comments_include: [Constants.two_fer_use_default_parameter()] do
       [
         defmodule TwoFer do
@@ -110,6 +114,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
 
   describe "function header" do
     test_exercise_analysis "refer when using a function header",
+      status: :refer,
       comments_include: [Constants.two_fer_use_of_function_header()] do
       defmodule TwoFer do
         def two_fer(name \\ "you")
@@ -119,6 +124,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
 
   describe "guards" do
     test_exercise_analysis "usage of is_binary or is_bitstring is required",
+      status: :disapprove,
       comments_include: [Constants.two_fer_use_guards()] do
       defmodule TwoFer do
         def two_fer(name \\ "you") do
@@ -127,7 +133,8 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       end
     end
 
-    test_exercise_analysis "when is_binary or is_bitstring in used outside of the function head",
+    test_exercise_analysis "refer when is_binary or is_bitstring in used outside of the function head",
+      status: :refer,
       comments_include: [Constants.two_fer_use_function_level_guard()] do
       [
         defmodule TwoFer do
@@ -164,7 +171,8 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
     end
 
     test_exercise_analysis "refer there are other functions than two_fer/1",
-      comments_include: [Constants.two_fer_use_of_aux_functions()] do
+      comments_include: [Constants.two_fer_use_of_aux_functions()],
+      status: :refer do
       [
         defmodule TwoFer do
           def two_fer(name \\ "you") do
@@ -201,7 +209,8 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
 
   describe "string interpolation" do
     test_exercise_analysis "doesn't allow string concatenation",
-      comments_include: [Constants.two_fer_use_string_interpolation()] do
+      comments_include: [Constants.two_fer_use_string_interpolation()],
+      status: :disapprove do
       defmodule TwoFer do
         def two_fer(name \\ "you") when is_binary(name) do
           "One for " <> name <> ", one for me"
