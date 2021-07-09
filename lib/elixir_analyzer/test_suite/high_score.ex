@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.HighScore do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Bird Count
+  This is an exercise analyzer extension module for the concept exercise High Score
   """
 
   use ElixirAnalyzer.ExerciseTest
