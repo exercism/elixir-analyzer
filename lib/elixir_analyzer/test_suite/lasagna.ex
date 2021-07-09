@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.Lasagna do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Take-A-Number
+  This is an exercise analyzer extension module for the concept exercise Lasagna
   """
 
   use ElixirAnalyzer.ExerciseTest
