@@ -47,6 +47,8 @@ defmodule ElixirAnalyzer.ExerciseTestTest.SameComment do
 end
 
 defmodule ElixirAnalyzer.ExerciseTestTest do
+  alias ElixirConstants.Constants
+
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
 

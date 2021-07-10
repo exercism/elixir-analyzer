@@ -57,7 +57,7 @@ As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyze
 ### `ElixirAnalyzer`
 
 - The is the main application module. A function call to `start_analyze/3` begins the analysis (either through IEX or the CLI escript [if generated]).
-- A configuation in `config/config.exs` holds data for each exercise supported
+- A configuration in `config/config.exs` holds data for each exercise supported
 
 ```elixir
 config :elixir_analyzer,
@@ -110,7 +110,7 @@ Contains macro to generate a function returning the comment path on the `exercis
 
 ### `ElixirAnalyzer.CLI`
 
-This module is a module for the CLI escript to parse the command line arguements and start the processing
+This module is a module for the CLI escript to parse the command line arguments and start the processing
 
 ### `ElixirAnalyzer.ExerciseTest.________`
 

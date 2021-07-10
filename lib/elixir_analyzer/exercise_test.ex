@@ -3,9 +3,11 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.ExerciseTest.Feature.Compiler, as: FeatureCompiler
   alias ElixirAnalyzer.ExerciseTest.AssertCall.Compiler, as: AssertCallCompiler
+  alias ElixirAnalyzer.ExerciseTest.CommonChecks
 
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Comment
 
   @doc false
   defmacro __using__(_opts) do
@@ -44,10 +46,12 @@ defmodule ElixirAnalyzer.ExerciseTest do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
             assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
+            common_checks_results = CommonChecks.run(code_ast, code_as_string)
 
             submission
             |> append_test_comments(feature_results)
             |> append_test_comments(assert_call_results)
+            |> append_test_comments(common_checks_results)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
@@ -66,7 +70,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
       end
 
       defp any_result_matches_suppress_condition?(feature_results, condition) do
-        [suppress_on_test_name, suppress_on_result] = condition
+        {suppress_on_test_name, suppress_on_result} = condition
 
         Enum.any?(feature_results, fn {result, test} ->
           case {result, test.name} do
@@ -81,16 +85,16 @@ defmodule ElixirAnalyzer.ExerciseTest do
           {:skip, _description}, submission ->
             submission
 
-          {:pass, description}, submission ->
-            if Map.get(description, :type, false) == :celebratory do
-              Submission.append_comment(submission, description)
+          {:pass, %Comment{} = comment}, submission ->
+            if Map.get(comment, :type, false) == :celebratory do
+              Submission.append_comment(submission, comment)
             else
               submission
             end
 
-          {:fail, description}, submission ->
-            if Map.get(description, :type, false) != :celebratory do
-              Submission.append_comment(submission, description)
+          {:fail, %Comment{} = comment}, submission ->
+            if Map.get(comment, :type, false) != :celebratory do
+              Submission.append_comment(submission, comment)
             else
               submission
             end
@@ -106,7 +110,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
         submission
         |> Submission.halt()
-        |> Submission.append_comment(%{
+        |> Submission.append_comment(%Comment{
           comment: Constants.general_parsing_error(),
           params: comment_params,
           type: :essential

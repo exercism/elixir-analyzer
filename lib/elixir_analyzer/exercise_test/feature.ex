@@ -61,7 +61,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   end
 
   defp gather_feature_data({:suppress_if, _, [name, condition]} = node, acc) do
-    {node, put_in(acc, [:suppress_if], [name, condition])}
+    {node, put_in(acc, [:suppress_if], {name, condition})}
   end
 
   defp gather_feature_data({:depth, _, [f]} = node, acc) when is_integer(f) do

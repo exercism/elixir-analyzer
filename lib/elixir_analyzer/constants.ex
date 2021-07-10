@@ -10,11 +10,6 @@ defmodule ElixirAnalyzer.Constants do
   """
 
   @constants [
-    # Status Comments
-    # status_approve: "elixir.status.approve",
-    # status_disapprove: "elixir.status.disapprove",
-    # status_refer_to_mentor: "elixir.status.refer_to_mentor",
-
     # General Error Comments
     general_file_not_found: "elixir.general.file_not_found",
     general_parsing_error: "elixir.general.parsing_error",
@@ -23,6 +18,8 @@ defmodule ElixirAnalyzer.Constants do
     solution_use_moduledoc: "elixir.solution.use_module_doc",
     solution_use_specification: "elixir.solution.use_specification",
     solution_raise_fn_clause_error: "elixir.solution.raise_fn_clause_error",
+    solution_module_attribute_name_snake_case: "elixir.solution.module_attribute_name_snake_case",
+    solution_function_name_snake_case: "elixir.solution.function_name_snake_case",
 
     # Concept exercises
 
