@@ -143,46 +143,62 @@
 # https://github.com/exercism/org-wide-files/blob/main/global-files/.github/labels.yml.     #
 # ----------------------------------------------------------------------------------------- #
 
-- name: "analyzer interface"
+- name: "analyzer interface ⚙️"
   description: ""
-  color: "9af4a1"
+  color: "cbe5f2"
 
-- name: "bug"
-  description: "Something isn't working"
-  color: "d73a4a"
+- name: "bug 🐛"
+  description: ""
+  color: "8e2c2c"
 
-- name: "documentation"
+- name: "dependencies"
+  description: "Pull requests that update a dependency file"
+  color: "0366d6"
+
+- name: "discussion 💬"
+  description: ""
+  color: "23296d"
+
+- name: "documentation 📖"
   description: "Improvements or additions to documentation"
-  color: "0075ca"
+  color: "23296d"
 
 - name: "duplicate"
   description: "This issue or pull request already exists"
-  color: "cfd3d7"
+  color: "cccccc"
 
-- name: "enhancement"
-  description: "New feature or request"
-  color: "a2eeef"
+- name: "enhancement ⭐️"
+  description: "A nice-to-have"
+  color: "c3dcf7"
 
-- name: "good first issue"
-  description: "Good for newcomers"
-  color: "7057ff"
+- name: "good first issue 🐥"
+  description: ""
+  color: "C2E0C6"
 
-- name: "help wanted"
-  description: "Extra attention is needed"
-  color: "008672"
+- name: "help wanted 🤝"
+  description: ""
+  color: "ccd4fc"
+
+- name: "in progress 🚧"
+  description: "Already being worked on"
+  color: "FEF6EE"
 
 - name: "invalid"
   description: "This doesn't seem right"
-  color: "e4e669"
+  color: "fce0e2"
 
-- name: "question"
-  description: "Further information is requested"
-  color: "d876e3"
-
-- name: "refactoring"
+- name: "question ❔"
   description: ""
-  color: "54eae5"
+  color: "23296d"
 
-- name: "wontfix"
-  description: "This will not be worked on"
-  color: "ffffff"
+- name: "refactoring 💅"
+  description: ""
+  color: "efcbf2"
+
+- name: "waiting ⏳"
+  description: "Waiting for something else to happen first"
+  color: "FEF6EE"
+
+- name: "won't fix ⛔️"
+  description: ""
+  color: "fce0e2"
