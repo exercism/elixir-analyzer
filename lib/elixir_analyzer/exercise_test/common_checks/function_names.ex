@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames do
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
     wrong_name = List.last(names)
-    
+
     if wrong_name do
       wrong_name = to_string(wrong_name)
       correct_name = to_snake_case(wrong_name)

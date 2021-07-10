@@ -14,16 +14,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames do
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
+    wrong_name = List.last(names)
 
-    if names == [] do
-      []
-    else
-      wrong_name =
-        names
-        |> Enum.reverse()
-        |> hd()
-        |> to_string()
-
+    if wrong_name do
+      wrong_name = to_string(wrong_name)
       correct_name = to_snake_case(wrong_name)
 
       [
@@ -37,6 +31,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames do
            }
          }}
       ]
+    else
+      []
     end
   end
 
