@@ -3,6 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.ExerciseTest.Feature.Compiler, as: FeatureCompiler
   alias ElixirAnalyzer.ExerciseTest.AssertCall.Compiler, as: AssertCallCompiler
+  alias ElixirAnalyzer.ExerciseTest.CommonChecks
 
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.Constants
@@ -45,10 +46,12 @@ defmodule ElixirAnalyzer.ExerciseTest do
           {:ok, code_ast} ->
             feature_results = unquote(feature_tests) |> filter_suppressed_results()
             assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
+            common_checks_results = CommonChecks.run(code_ast, code_as_string)
 
             submission
             |> append_test_comments(feature_results)
             |> append_test_comments(assert_call_results)
+            |> append_test_comments(common_checks_results)
 
           {:error, e} ->
             append_analysis_failure(submission, e)

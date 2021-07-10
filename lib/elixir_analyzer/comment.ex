@@ -11,6 +11,7 @@ defmodule ElixirAnalyzer.Comment do
           comment: String.t(),
           type: :essential | :actionable | :informative | :celebratory,
           status: :skip | :test,
-          suppress_if: false | {String.t(), :pass | :fail}
+          suppress_if: false | {String.t(), :pass | :fail},
+          params: map()
         }
 end
