@@ -20,6 +20,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_raise_fn_clause_error: "elixir.solution.raise_fn_clause_error",
     solution_module_attribute_name_snake_case: "elixir.solution.module_attribute_name_snake_case",
     solution_function_name_snake_case: "elixir.solution.function_name_snake_case",
+    solution_unless_with_else: "elixir.solution.unless_with_else",
 
     # Concept exercises
 
