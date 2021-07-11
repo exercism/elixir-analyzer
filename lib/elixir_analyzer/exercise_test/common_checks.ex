@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   """
 
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames
+  alias ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames
   alias ElixirAnalyzer.Comment
 
@@ -11,6 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   def run(code_ast, code_as_string) when is_binary(code_as_string) do
     [
       FunctionNames.run(code_ast),
+      VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast)
     ]
     |> List.flatten()
