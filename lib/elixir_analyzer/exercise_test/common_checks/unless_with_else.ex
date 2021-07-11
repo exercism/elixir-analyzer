@@ -33,8 +33,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.UnlessWithElse do
 
   defp traverse({:unless, meta, args} = ast, issues) do
     if else_block?(args) do
-      a = {ast, issues}
-      IO.inspect(a, label: "a")
+      {ast, issues}
     else
       nil
     end
