@@ -97,4 +97,46 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
               }}
            ]
   end
+  
+  test "reports a module name with many segments" do
+    code =
+      quote do
+        defmodule MyLibrary.Math_ops.Factorial do
+        end
+      end
+
+    assert ModulePascalCase.run(code) == [
+             {:fail,
+               %Comment{
+                 type: :actionable,
+                 comment: Constants.solution_module_pascal_case(),
+                 params: %{
+                   expected: "MyLibrary.MathOps.Factorial",
+                   actual: "MyLibrary.Math_ops.Factorial"
+                 }
+               }}
+           ]
+  end
+
+  test "reports an inner module name with many segments" do
+    code =
+      quote do
+        defmodule MyLibrary do
+          defmodule Math_ops.Factorial do
+          end
+        end
+      end
+
+    assert ModulePascalCase.run(code) == [
+             {:fail,
+               %Comment{
+                 type: :actionable,
+                 comment: Constants.solution_module_pascal_case(),
+                 params: %{
+                   expected: "MathOps.Factorial",
+                   actual: "Math_ops.Factorial"
+                 }
+               }}
+           ]
+  end
 end
