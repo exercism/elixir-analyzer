@@ -35,7 +35,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
   test "returns an actionable comment with params" do
     code =
       quote do
-        defmodule factorial do
+        defmodule Factorial_module do
         end
       end
 
@@ -45,8 +45,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
                 type: :actionable,
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
-                  expected: "Factorial",
-                  actual: "factorial"
+                  expected: "FactorialModule",
+                  actual: "Factorial_module"
                 }
               }}
            ]
@@ -55,8 +55,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
   test "only reports the first module name" do
     code =
       quote do
-        defmodule factorial do
-          defmodule factorial_submodule do
+        defmodule Factorial_module do
+          defmodule Factorial_submodule do
             defstruct :!
           end
         end
@@ -68,8 +68,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
                 type: :actionable,
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
-                  expected: "Factorial",
-                  actual: "factorial"
+                  expected: "FactorialModule",
+                  actual: "Factorial_module"
                 }
               }}
            ]
@@ -79,7 +79,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
     code =
       quote do
         defmodule Factorial do
-          defmodule factorial_submodule do
+          defmodule Factorial_submodule do
             defstruct :!
           end
         end
@@ -92,7 +92,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "FactorialSubmodule",
-                  actual: "factorial_submodule"
+                  actual: "Factorial_submodule"
                 }
               }}
            ]

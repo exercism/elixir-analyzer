@@ -17,8 +17,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
     wrong_name = List.last(names)
 
     if wrong_name do
-      wrong_name = to_string(wrong_name)
-      correct_name = to_pascal_case(wrong_name)
+      correct_name = Enum.map_join(wrong_name, ".", fn n -> n |> to_string |> to_pascal_case end)
+      wrong_name = Enum.map_join(wrong_name, ".", &to_string/1)
 
       [
         {:fail,
@@ -36,19 +36,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
     end
   end
 
-  defp traverse({:defmodule, _meta, [{:__aliases__, _meta2, [name]}, _do]} = ast, names) do
-    if pascal_case?(name) do
-      {ast, names}
+  defp traverse({:defmodule, _meta, [{:__aliases__, _meta2, names}, _do]} = ast, wrong_names) do
+    if Enum.all?(names, &pascal_case?/1) do
+      {ast, wrong_names}
     else
-      {ast, [name | names]}
-    end
-  end
-
-  defp traverse({:defmodule, _meta, [{name, _meta2, _nil}, _do]} = ast, names) do
-    if pascal_case?(name) do
-      {ast, names}
-    else
-      {ast, [name | names]}
+      {ast, [names | wrong_names]}
     end
   end
 

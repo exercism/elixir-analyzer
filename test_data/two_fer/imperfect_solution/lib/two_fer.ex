@@ -1,7 +1,7 @@
 defmodule TwoFer do
   @someUnusedModuleAttribute 1
 
-  defmodule my_empty_module do
+  defmodule My_empty_module do
   end
 
   @doc """

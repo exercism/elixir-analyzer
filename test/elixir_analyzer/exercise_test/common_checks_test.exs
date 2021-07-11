@@ -146,6 +146,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
 
           defmodule SomeOtherSubModule do
           end
+        end,
+        defmodule Some.Module do
+          defmodule Some.Sub.Module do
+          end
         end
       ]
     end
@@ -157,14 +161,20 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
           nil
         end,
         defmodule SomeModule do
-          defmodule someSubModule do
+          defmodule Some_subModule do
           end
         end,
         defmodule SomeModule do
           defmodule SomeSubModule do
           end
 
-          defmodule someOtherSubModule do
+          defmodule Some_otherSubModule do
+          end
+        end,
+        defmodule Some.Sub_module do
+        end,
+        defmodule Some.Module do
+          defmodule Some.Sub_module do
           end
         end
       ]
