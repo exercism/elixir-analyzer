@@ -150,7 +150,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
 
-    test_exercise_analysis "reports a module attribute that doesn't use snake_case",
+    test_exercise_analysis "reports a module attribute that doesn't use PascalCase",
       comments_include: [Constants.solution_module_pascal_case()] do
       [
         defmodule Some_module do
