@@ -19,6 +19,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_use_specification: "elixir.solution.use_specification",
     solution_raise_fn_clause_error: "elixir.solution.raise_fn_clause_error",
     solution_module_attribute_name_snake_case: "elixir.solution.module_attribute_name_snake_case",
+    solution_module_pascal_case: "elixir.solution.module_pascal_case",
     solution_function_name_snake_case: "elixir.solution.function_name_snake_case",
 
     # Concept exercises
