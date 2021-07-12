@@ -1,5 +1,7 @@
 # credo:disable-for-this-file Credo.Check.Readability.ModuleAttributeNames
 # credo:disable-for-this-file Credo.Check.Readability.FunctionNames
+# credo:disable-for-this-file Credo.Check.Readability.VariableNames
+# credo:disable-for-this-file Credo.Check.Readability.ModuleNames
 
 defmodule ElixirAnalyzer.ExerciseTestTest.Empty do
   use ElixirAnalyzer.ExerciseTest
@@ -123,6 +125,108 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
         end,
         defmodule SomeModule do
           @someValue 3
+        end
+      ]
+    end
+  end
+
+  describe "module names in PascalCase" do
+    test_exercise_analysis "doesn't report correct module names",
+      comments_exclude: [Constants.solution_module_pascal_case()] do
+      [
+        defmodule SomeModule do
+          nil
+        end,
+        defmodule SomeModule do
+          defmodule SomeSubModule do
+          end
+        end,
+        defmodule SomeModule do
+          defmodule SomeSubModule do
+          end
+
+          defmodule SomeOtherSubModule do
+          end
+        end,
+        defmodule Some.Module do
+          defmodule Some.Sub.Module do
+          end
+        end
+      ]
+    end
+
+    test_exercise_analysis "reports a module attribute that doesn't use PascalCase",
+      comments_include: [Constants.solution_module_pascal_case()] do
+      [
+        defmodule Some_module do
+          nil
+        end,
+        defmodule SomeModule do
+          defmodule Some_subModule do
+          end
+        end,
+        defmodule SomeModule do
+          defmodule SomeSubModule do
+          end
+
+          defmodule Some_otherSubModule do
+          end
+        end,
+        defmodule Some.Sub_module do
+        end,
+        defmodule Some.Module do
+          defmodule Some.Sub_module do
+          end
+        end
+      ]
+    end
+  end
+
+  describe "variable names" do
+    test_exercise_analysis "doesn't report snake_case variable names",
+      comments_exclude: [Constants.solution_variable_name_snake_case()] do
+      [
+        defmodule Module do
+          def f(some_variable) do
+            another_variable = [some_variable]
+          end
+        end,
+        defmodule Module do
+          a = 1
+          b = 2
+          {var_one, var_two} = {a, b}
+          [b, var_two | var_one]
+        end,
+        defmodule Module do
+          "hi " <> first_name = polite_morning_greeting
+          %{first_name: first_name}
+        end,
+        defmodule Module do
+          def fun(some_value), do: ^some_value == nil
+        end
+      ]
+    end
+
+    test_exercise_analysis "reports non snake_case variable names",
+      comments_include: [Constants.solution_variable_name_snake_case()] do
+      [
+        defmodule Module do
+          def f(someVariable) do
+            another_variable = [someVariable]
+          end
+        end,
+        defmodule Module do
+          a = 1
+          b = 2
+          {var_one, varTwwo} = {a, b}
+          [b, varTwwo | var_one]
+        end,
+        defmodule Module do
+          "hi " <> first_name = polite_morningGreeting
+          %{first_name: first_name}
+        end,
+        defmodule Module do
+          def fun(some_value), do: ^someValue == nil
         end
       ]
     end

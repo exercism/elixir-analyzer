@@ -50,7 +50,7 @@ This assumes the solution has the file of the proper name and also a test unit b
 
 At this time "two-fer" is the only solution implemented at a most basic level. All that gets validated is if it passes the test unit completely. Goal will be to able to recognize the optimal solution through ast search for specific patterns.
 
-As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyzer.analyze("two-fer", "./test_data/two_fer/passing_solution/", "./test_data/results/")`.
+As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyzer.analyze_exercise("two-fer", "./test_data/two_fer/passing_solution/", "./test_data/two_fer/passing_solution/")`.
 
 ## Design
 

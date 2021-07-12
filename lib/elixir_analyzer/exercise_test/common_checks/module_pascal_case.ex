@@ -1,6 +1,6 @@
-defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
+defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
   @moduledoc """
-  Reports the first variable with a name that's not snake_case.
+  Report the first defined module names that is not in PascalCase 
 
   Doesn't report more if there are more.
   A single comment should be enough for the student to know what to fix.
@@ -11,22 +11,20 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  # @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
-
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
     wrong_name = List.last(names)
 
     if wrong_name do
-      wrong_name = to_string(wrong_name)
-      correct_name = to_snake_case(wrong_name)
+      correct_name = Enum.map_join(wrong_name, ".", fn n -> n |> to_string |> to_pascal_case end)
+      wrong_name = Enum.map_join(wrong_name, ".", &to_string/1)
 
       [
         {:fail,
          %Comment{
            type: :actionable,
-           comment: Constants.solution_variable_name_snake_case(),
+           comment: Constants.solution_module_pascal_case(),
            params: %{
              expected: correct_name,
              actual: wrong_name
@@ -38,11 +36,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
     end
   end
 
-  defp traverse({name, _meta, module} = ast, names) when is_atom(module) do
-    if snake_case?(name) do
-      {ast, names}
+  defp traverse({:defmodule, _meta, [{:__aliases__, _meta2, names}, _do]} = ast, wrong_names) do
+    if Enum.all?(names, &pascal_case?/1) do
+      {ast, wrong_names}
     else
-      {ast, [name | names]}
+      {ast, [names | wrong_names]}
     end
   end
 
@@ -50,14 +48,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
     {ast, names}
   end
 
-  defp snake_case?(name) do
+  defp pascal_case?(name) do
     # the code had to compile and pass all the tests to get to the analyzer
     # so we can assume the name is otherwise valid
-    to_snake_case(name) == to_string(name)
+    to_pascal_case(name) == to_string(name)
   end
 
-  defp to_snake_case(name) do
-    # Macro.underscore is good enough because a module attribute name must be a valid Elixir identifier anyway
-    Macro.underscore(to_string(name))
+  defp to_pascal_case(name) do
+    # Macro.camelize is good enough because a module attribute name must be a valid Elixir identifier anyway
+    Macro.camelize(to_string(name))
   end
 end
