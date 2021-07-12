@@ -65,6 +65,9 @@ defmodule ElixirAnalyzer.Constants do
     # Accumulate Comments
     accumulate_use_recursion: "elixir.accumulate.use_recursion",
 
+    # Square Root Comments
+    square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",
+
     # Two-fer Error Comments
     two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
     two_fer_use_guards: "elixir.two-fer.use_guards",

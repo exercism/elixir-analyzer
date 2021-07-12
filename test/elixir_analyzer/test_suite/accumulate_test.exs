@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AccumulateTest do
     test_exercise_analysis "detects Enum",
       comments: [Constants.accumulate_use_recursion()] do
       [
-        defmodule Accumulate do
+        defmodule Accumulate    do
           def accumulate(list, fun), do: Enum.map(list, fun)
         end,
         defmodule Accumulate do
