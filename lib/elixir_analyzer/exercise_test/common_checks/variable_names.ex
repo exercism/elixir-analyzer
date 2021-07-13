@@ -11,8 +11,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  # @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
-
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
@@ -38,8 +36,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
     end
   end
 
+  @special_var_names [:__CALLER__, :__DIR__, :__ENV__, :__MODULE__, :__STACKTRACE__, :...]
+
+  # "The third element is either a list of arguments for the function call or an atom. When this element is an atom, it means the tuple represents a variable."
+  #   https://elixir-lang.org/getting-started/meta/quote-and-unquote.html
   defp traverse({name, _meta, module} = ast, names) when is_atom(module) do
-    if snake_case?(name) do
+    if snake_case?(name) or name in @special_var_names do
       {ast, names}
     else
       {ast, [name | names]}
