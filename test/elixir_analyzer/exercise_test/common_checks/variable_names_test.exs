@@ -25,16 +25,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
               "e" <> some_value = parameter1
               ^some_value = parameter1
               %{some_value: some_value} = parameter1
-              ... = parameter1 
+              ... = parameter1
               latency_μs = 5
               user = %__MODULE__{}
-              IO.inspect(__DIR__)
-              IO.inspect(__ENV__)
+              :math.pow(__DIR__)
+              some_value.(__ENV__)
             end
 
             defmacro foo() do
-              IO.inspect(__CALLER__)
-              IO.inspect(__STACKTRACE__)
+              some_function(__CALLER__, __STACKTRACE__)
             end
           end
         end
