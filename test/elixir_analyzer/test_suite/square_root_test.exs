@@ -41,5 +41,39 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
         end
       ]
     end
+
+    test_exercise_analysis "detects :math.pow",
+      comments: [Constants.square_root_do_not_use_built_in_sqrt()] do
+      [
+        defmodule SquareRoot do
+          def calculate(n), do: :math.pow(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          import :math, only: [pow: 2]
+          def calculate(n), do: pow(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          alias :math, as: Math
+          def calculate(n), do: Math.pow(n / 1, 0.5) |> floor()
+        end
+      ]
+    end
+
+    test_exercise_analysis "detects :math.sqrt",
+      comments: [Constants.square_root_do_not_use_built_in_sqrt()] do
+      [
+        defmodule SquareRoot do
+          def calculate(n), do: :math.sqrt(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          import :math, only: [sqrt: 1]
+          def calculate(n), do: sqrt(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          alias :math, as: Math
+          def calculate(n), do: Math.sqrt(n / 1, 0.5) |> floor()
+        end
+      ]
+    end
   end
 end
