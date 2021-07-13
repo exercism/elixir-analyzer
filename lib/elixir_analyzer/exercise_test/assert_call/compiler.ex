@@ -139,8 +139,24 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     true
   end
 
+  # For erlang libraries: :math._
+  def matching_function_call?(
+        {{:., _, [module_path, _name]}, _, _args},
+        {module_path, :_}
+      ) do
+    true
+  end
+
   def matching_function_call?(
         {{:., _, [{:__aliases__, _, module_path}, name]}, _, _args},
+        {module_path, name}
+      ) do
+    true
+  end
+
+  # For erlang libraries: :math.pow
+  def matching_function_call?(
+        {{:., _, [module_path, name]}, _, _args},
         {module_path, name}
       ) do
     true
