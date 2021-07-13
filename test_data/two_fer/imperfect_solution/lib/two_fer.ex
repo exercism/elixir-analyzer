@@ -13,5 +13,5 @@ defmodule TwoFer do
     "One for #{name}, one for me"
   end
 
-  def two_fer(_name), do: raise(FunctionClauseError)
+  def two_fer(_nameInPascalCase), do: raise(FunctionClauseError)
 end
