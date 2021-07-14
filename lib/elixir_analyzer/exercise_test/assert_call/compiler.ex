@@ -52,6 +52,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def assert(ast, called_fn, calling_fn) do
     acc = %{
       in_function_def: nil,
+      modules_in_scope: %{},
       found_called: false,
       called_fn: called_fn,
       calling_fn: calling_fn
@@ -74,6 +75,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
+    case add_directive?(node) do
+      {alias, module} ->
+        acc = %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, module)}
+    end
+
     function_def? = function_def?(node)
     name = extract_function_name(node)
 
@@ -99,6 +105,24 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       {node, acc}
     end
   end
+
+  @doc """
+  While traversing the AST, check nodes for uses of `import` or `alias` to keep track of modules in scope
+  """
+  @spec add_directive(Macro.t()) :: nil | {[atom], [atom]}
+  # TODO erlang modules
+  # TODO import/alias A.B.{C, D.E}
+  # TODO scoped import/alias:  def foo() do import A end
+  def add_directive?({:import, _, [{:__aliases__, _, module_path} | _]}),
+    do: {module_path, module_path}
+
+  def add_directive?({:alias, _, [{:__aliases__, _, module_path}]}),
+    do: {List.last(module_path), module_path}
+
+  def add_directive?(
+        {:alias, _, [{:__aliases__, _, module_path}, [as: {:__aliases__, _, alias_path}]]}
+      ),
+      do: {alias_path, module_path}
 
   @doc """
   While traversing the AST, compare a node to check if it is a function call matching the called_fn
