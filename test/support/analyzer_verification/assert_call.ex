@@ -44,17 +44,43 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall do
     comment "didn't find a call to IO.puts/1 in function/0"
   end
 
+  assert_call "finds call to :rand.normal function anywhere" do
+    type :informational
+    called_fn module: :rand, name: :normal
+    comment "didn't find a call to :rand.normal anywhere in solution"
+  end
+
+  assert_call "finds call to :ran.normal in function/0" do
+    type :informational
+    called_fn module: :rand, name: :normal
+    calling_fn module: AssertCallVerification, name: :function
+    comment "didn't find a call to :rand.normal/0 in function/0"
+  end
+
   assert_call "finds call to any List function anywhere" do
     type :informational
     called_fn module: List, name: :_
     comment "didn't find a call to a List function"
   end
 
-  assert_call "finds call to any List function anywhere" do
+  assert_call "finds call to any List function in function/0" do
     type :informational
     called_fn module: List, name: :_
     calling_fn module: AssertCallVerification, name: :function
     comment "didn't find a call to a List function in function/0"
+  end
+
+  assert_call "find a call to any :rand function from anywhere" do
+    type :informational
+    called_fn module: :rand, name: :_
+    comment "didn't find any call to a :rand function"
+  end
+
+  assert_call "finds call to any :rand function in function/0" do
+    type :informational
+    called_fn module: :rand, name: :_
+    calling_fn module: AssertCallVerification, name: :function
+    comment "didn't find a call to a :rand function in function/0"
   end
 
   assert_call "allows use of constants function" do

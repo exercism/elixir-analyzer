@@ -188,4 +188,91 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       end
     end
   end
+
+  test_exercise_analysis "found a call of a :rand function",
+    comments: ["found a call to :rand in module functions"] do
+    defmodule AssertNoCallVerification do
+      def function() do
+        IO.puts("string")
+        private_helper()
+      end
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+        :rand.uniform_real()
+      end
+    end
+  end
+
+  test_exercise_analysis "found a call of a :rand function in a specific function",
+    comments: [
+      "found a call to :rand in module functions in helper/0 function in solution",
+      "found a call to :rand in module functions"
+    ] do
+    defmodule AssertNoCallVerification do
+      def function() do
+        IO.puts("string")
+        private_helper()
+      end
+
+      def helper do
+        :helped
+        :rand.uniform_real()
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
+  end
+
+  test_exercise_analysis "found a call of :rand.normal/0",
+    comments: [
+      "found a call to :rand in module functions",
+      "found a call to :rand.normal in solution"
+    ] do
+    defmodule AssertNoCallVerification do
+      def function() do
+        IO.puts("string")
+        private_helper()
+        :rand.normal()
+      end
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
+  end
+
+  test_exercise_analysis "found a call of :rand.normal/0 in specific function",
+    comments: [
+      "found a call to :rand in module functions",
+      "found a call to :rand in module functions in helper/0 function in solution",
+      "found a call to :rand.normal in helper/0 function in solution",
+      "found a call to :rand.normal in solution"
+    ] do
+    defmodule AssertNoCallVerification do
+      def function() do
+        IO.puts("string")
+        private_helper()
+      end
+
+      def helper do
+        :rand.normal()
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
+  end
 end

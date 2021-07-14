@@ -24,6 +24,18 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     comment "found a call to Enum.map in solution"
   end
 
+  assert_no_call "does not call :rand.normal function" do
+    type :informational
+    called_fn module: :rand, name: :normal
+    comment "found a call to :rand.normal in solution"
+  end
+  assert_no_call "does not call :rand.normal in specific function" do
+    type :informational
+    calling_fn module: AssertNoCallVerification, name: :helper
+    called_fn module: :rand, name: :normal
+    comment "found a call to :rand.normal in helper/0 function in solution"
+  end
+
   assert_no_call "does not call other Atom.to_string in specific function" do
     type :informational
     calling_fn module: AssertNoCallVerification, name: :helper
@@ -35,6 +47,18 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     type :informational
     called_fn module: List, name: :_
     comment "don't call List module functions"
+  end
+
+  assert_no_call "does not call any function from the :rand module" do
+    type :informational
+    called_fn module: :rand, name: :_
+    comment "found a call to :rand in module functions"
+  end
+  assert_no_call "does not call any function from the :rand module in specific function" do
+    type :informational
+    calling_fn module: AssertNoCallVerification, name: :helper
+    called_fn module: :rand, name: :_
+    comment "found a call to :rand in module functions in helper/0 function in solution"
   end
 
   assert_no_call "does not call any function from AlternativeList module" do
