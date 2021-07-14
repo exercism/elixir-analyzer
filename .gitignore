@@ -36,6 +36,3 @@ tmp/
 
 /priv/plts/*.plt
 /priv/plts/*.plt.hash
-
-# Vim temporary files
-*.swp
