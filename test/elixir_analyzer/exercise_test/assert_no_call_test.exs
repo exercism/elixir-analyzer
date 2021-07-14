@@ -78,7 +78,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
     end
   end
 
-  test_exercise_analysis "calling a function with the same name or imported doesn't trigger the check",
+  test_exercise_analysis "calling a function with the same name doesn't trigger the check",
     comments: [] do
     [
       defmodule AssertNoCallVerification do
@@ -93,7 +93,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         defp private_helper do
           :privately_helped
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "calling a function with an imported name triggers the check",
+    comments: ["found a call to Enum.map in solution"] do
+    [
       defmodule AssertNoCallVerification do
         import Enum
 
