@@ -15,6 +15,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       def helper do
+        A.B.C.efg()
         :helped
       end
 
@@ -36,8 +37,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         :rand.normal()
       end
 
+      alias A.B.C, as: A
+
       def helper do
         :helped
+        A.efg()
       end
 
       defp private_helper do
@@ -65,6 +69,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       def helper do
+        import A.B.C
+        efg()
         :helped
       end
 
@@ -88,6 +94,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       def helper do
+        alias A.B.C
+        C.efg()
         :helped
       end
 
@@ -113,7 +121,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         IO.puts(x)
       end
 
+      alias A.B.C, as: D
+
       def helper do
+        D.efg()
         :helped
       end
 
@@ -143,6 +154,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       defp private_helper do
+        alias A.B
+        B.C.efg()
         :privately_helped
       end
     end
@@ -163,7 +176,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         private_helper() |> IO.puts()
       end
 
+      alias A.{X.Y, B.C}
+
       def helper do
+        C.efg()
         :helped
       end
 
@@ -190,7 +206,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         _ = private_helper() |> IO.puts()
       end
 
+      alias A.{B.C, X.Y}
+
       def helper do
+        C.efg()
         :helped
       end
 
@@ -217,6 +236,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
 
       def helper do
+        import A.B
+        C.efg()
         :helped
       end
 
@@ -242,7 +263,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         r = :rand.uniform_real()
       end
 
+      import A
+
       def helper do
+        B.C.efg()
         :helped
       end
 
@@ -265,6 +289,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
 
         private_helper() |> IO.puts()
       end
+
+      alias A.B, as: X
+      X.C.efg()
 
       def helper do
         r = :rand.normal()

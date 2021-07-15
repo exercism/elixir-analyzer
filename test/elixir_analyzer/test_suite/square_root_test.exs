@@ -38,6 +38,18 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
         defmodule SquareRoot do
           alias Float, as: F
           def calculate(n), do: F.pow(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            import Float, only: [pow: 2]
+            pow(n / 1, 0.5) |> floor()
+          end
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            alias Float, as: F
+            F.pow(n / 1, 0.5) |> floor()
+          end
         end
       ]
     end
@@ -55,6 +67,18 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
         defmodule SquareRoot do
           alias :math, as: Math
           def calculate(n), do: Math.pow(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            import :math, only: [pow: 2]
+            pow(n / 1, 0.5) |> floor()
+          end
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            alias :math, as: Math
+            Math.pow(n / 1, 0.5) |> floor()
+          end
         end
       ]
     end
@@ -63,15 +87,27 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
       comments: [Constants.square_root_do_not_use_built_in_sqrt()] do
       [
         defmodule SquareRoot do
-          def calculate(n), do: :math.sqrt(n / 1, 0.5) |> floor()
+          def calculate(n), do: :math.sqrt(n / 1) |> floor()
         end,
         defmodule SquareRoot do
           import :math, only: [sqrt: 1]
-          def calculate(n), do: sqrt(n / 1, 0.5) |> floor()
+          def calculate(n), do: sqrt(n / 1) |> floor()
         end,
         defmodule SquareRoot do
           alias :math, as: Math
-          def calculate(n), do: Math.sqrt(n / 1, 0.5) |> floor()
+          def calculate(n), do: Math.sqrt(n / 1) |> floor()
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            import :math, only: [sqrt: 1]
+            sqrt(n / 1) |> floor()
+          end
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            alias :math, as: Math
+            Math.sqrt(n / 1) |> floor()
+          end
         end
       ]
     end

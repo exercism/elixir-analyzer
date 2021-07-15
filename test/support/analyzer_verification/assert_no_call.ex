@@ -29,6 +29,13 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     called_fn module: :rand, name: :normal
     comment "found a call to :rand.normal in solution"
   end
+
+  assert_no_call "does not call A.B.C.efg() function" do
+    type :informational
+    called_fn module: A.B.C, name: :efg
+    comment "found a call to A.B.C.efg() in solution"
+  end
+
   assert_no_call "does not call :rand.normal in specific function" do
     type :informational
     calling_fn module: AssertNoCallVerification, name: :helper
@@ -54,6 +61,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertNoCall do
     called_fn module: :rand, name: :_
     comment "found a call to :rand in module functions"
   end
+
   assert_no_call "does not call any function from the :rand module in specific function" do
     type :informational
     calling_fn module: AssertNoCallVerification, name: :helper

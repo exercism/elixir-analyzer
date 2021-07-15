@@ -40,6 +40,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "found a local call to from specific function",
     comments: [
+      "found a call to A.B.C.efg() in solution",
       "found a local call to helper/0",
       "found a local call to private_helper/0 from helper/0"
     ] do
@@ -53,6 +54,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         :helped
       end
 
+      A.B.C.efg()
+
       defp private_helper do
         :privately_helped
       end
@@ -61,6 +64,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "found a call to other module function anywhere",
     comments: [
+      "found a call to A.B.C.efg() in solution",
       "found a call to Enum.map in solution"
     ] do
     defmodule AssertNoCallVerification do
@@ -71,6 +75,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       def helper do
         :helped
       end
+
+      alias A.B.C
+      C.efg()
 
       defp private_helper do
         :privately_helped
@@ -88,7 +95,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
         def helper do
           :helped
+          alias A.B.C
         end
+
+        C.efg()
 
         defp private_helper do
           :privately_helped
@@ -98,7 +108,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
   end
 
   test_exercise_analysis "calling a function with an imported name triggers the check",
-    comments: ["found a call to Enum.map in solution"] do
+    comments: ["found a call to A.B.C.efg() in solution", "found a call to Enum.map in solution"] do
     [
       defmodule AssertNoCallVerification do
         import Enum
@@ -110,6 +120,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         def helper do
           :helped
         end
+
+        import A.B.C
+        efg()
 
         defp private_helper do
           :privately_helped
@@ -129,7 +142,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
       def helper do
         :helped |> Atom.to_string()
+        import A.B.C
       end
+
+      efg()
 
       defp private_helper do
         :privately_helped
@@ -146,6 +162,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         "something"
         List.last([])
       end
+
+      efg()
 
       def helper do
         :helped
@@ -166,6 +184,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
           AlternativeList.last([])
         end
 
+        A.B.C.D.efg()
+
         def helper do
           :helped
         end
@@ -183,6 +203,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
           AlternativeList.last([])
           List.last([])
         end
+
+        alias A.B.C
+        alias A.X, as: C
+        C.def()
 
         def helper do
           :helped
@@ -206,6 +230,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
       def helper do
         :helped
       end
+
+      import A.B.C.D
+      efg()
 
       defp private_helper do
         :privately_helped
