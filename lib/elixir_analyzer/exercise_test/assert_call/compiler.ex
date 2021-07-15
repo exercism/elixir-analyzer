@@ -181,7 +181,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
         {module_path, name},
         modules
       ) do
-    module_path == nil or Map.has_key?(modules, module_path)
+    module_path == nil or Map.has_key?(modules, List.wrap(module_path))
   end
 
   def matching_function_call?(
@@ -274,5 +274,5 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   def get_paths(path, _type) when is_atom(path),
-    do: [{path, path}]
+    do: [{[path], [path]}]
 end
