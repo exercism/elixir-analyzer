@@ -76,9 +76,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
+    imports = track_imports(node) ++ track_aliases(node)
+
     acc =
-      add_directive(node)
-      |> Enum.reduce(acc, fn {alias, full_path}, acc ->
+      Enum.reduce(imports, acc, fn {alias, full_path}, acc ->
         if acc.in_function_def,
           do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
           else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
@@ -109,21 +110,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       {node, acc}
     end
   end
-
-  @doc """
-  While traversing the AST, check nodes for uses of `import` or `alias` to keep track of modules in scope
-  """
-  @spec add_directive(Macro.t()) :: nil | [{[atom], [atom]}]
-  def add_directive({:import, _, [module_path | _]}),
-    do: get_paths(module_path, :import)
-
-  def add_directive({:alias, _, [module_path]}),
-    do: get_paths(module_path, :alias)
-
-  def add_directive({:alias, _, [module_path, [as: {:__aliases__, _, [alias]}]]}),
-    do: get_paths(module_path, :alias) |> Enum.map(fn {_, path} -> {[alias], path} end)
-
-  def add_directive(_), do: []
 
   @doc """
   While traversing the AST, compare a node to check if it is a function call matching the called_fn
@@ -245,34 +231,46 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def in_function?(name, {_module_path, name}), do: true
   def in_function?(_, _), do: false
 
-  @doc """
-  Extract paths from AST path, considering branching from calls like `import A.B.{C, D.E}`
-  and return a list of pairs of alias and full path
-  """
-  def get_paths({:__aliases__, _, path}, :import),
+  defp track_imports({:import, _, [module_path | _]}),
+    do: get_import_paths(module_path)
+
+  defp track_imports(_), do: []
+
+  defp get_import_paths({:__aliases__, _, path}),
     do: [{path, path}]
 
-  def get_paths({{:., _, [root, :{}]}, _, branches}, :import) do
-    [{root_path, _}] = get_paths(root, :import)
+  defp get_import_paths({{:., _, [root, :{}]}, _, branches}) do
+    [{root_path, _}] = get_import_paths(root)
 
     for branch <- branches,
-        {path, _} <- get_paths(branch, :import) do
+        {path, _} <- get_import_paths(branch) do
       {root_path ++ path, root_path ++ path}
     end
   end
 
-  def get_paths({:__aliases__, _, path}, :alias),
+  defp get_import_paths(path) when is_atom(path),
+    do: [{[path], [path]}]
+
+  defp track_aliases({:alias, _, [module_path]}),
+    do: get_alias_paths(module_path)
+
+  defp track_aliases({:alias, _, [module_path, [as: {:__aliases__, _, [alias]}]]}),
+    do: get_alias_paths(module_path) |> Enum.map(fn {_, path} -> {[alias], path} end)
+
+  defp track_aliases(_), do: []
+
+  defp get_alias_paths({:__aliases__, _, path}),
     do: [{[List.last(path)], path}]
 
-  def get_paths({{:., _, [root, :{}]}, _, branches}, :alias) do
-    [{_, root_path}] = get_paths(root, :alias)
+  defp get_alias_paths({{:., _, [root, :{}]}, _, branches}) do
+    [{_, root_path}] = get_alias_paths(root)
 
     for branch <- branches,
-        {last, full_path} <- get_paths(branch, :alias) do
+        {last, full_path} <- get_alias_paths(branch) do
       {last, root_path ++ full_path}
     end
   end
 
-  def get_paths(path, _type) when is_atom(path),
+  defp get_alias_paths(path) when is_atom(path),
     do: [{[path], [path]}]
 end
