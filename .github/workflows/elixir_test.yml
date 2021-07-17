@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: hexpm/elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119
+      image: hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325
 
     steps:
       - uses: actions/checkout@v1
@@ -32,7 +32,7 @@ jobs:
         id: plt-cache
         with:
           path: priv/plts
-          key: elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
+          key: elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
 
       - name: Create PLTs
         if: steps.plt-cache.outputs.cache-hit != 'true'
