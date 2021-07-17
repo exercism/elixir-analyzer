@@ -4,21 +4,62 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
 
   test_exercise_analysis "example solution",
     comments: [] do
-    defmodule RPNCalculator.Output do
-      def write(resource, filename, equation) do
-        {:ok, file} = resource.open(filename)
+    [
+      defmodule RPNCalculator.Output do
+        def write(resource, filename, equation) do
+          {:ok, file} = resource.open(filename)
 
-        try do
-          IO.write(file, equation)
-        rescue
-          _ -> {:error, "Unable to write to resource"}
-        else
-          :ok -> {:ok, equation}
-        after
-          resource.close(file)
+          try do
+            IO.write(file, equation)
+          rescue
+            _ -> {:error, "Unable to write to resource"}
+          else
+            :ok -> {:ok, equation}
+          after
+            resource.close(file)
+          end
+        end
+      end,
+      defmodule RPNCalculator.Output do
+        def write(my_resource, my_filename, my_equation) do
+          {:ok, file} = my_resource.open(my_filename)
+
+          try do
+            IO.write(file, my_equation)
+          rescue
+            _ -> {:error, "Unable to write to resource"}
+          else
+            :ok -> {:ok, my_equation}
+          after
+            my_resource.close(file)
+          end
+        end
+      end,
+      defmodule RPNCalculator.Output do
+        def write(resource, filename, equation) do
+          1
+          2
+          {:ok, file} = resource.open(filename)
+          4
+
+          try do
+            :ok
+            IO.write(file, equation)
+          rescue
+            _ -> {:error, "Unable to write to resource"}
+            _ -> :unreachable
+          else
+            :foo -> :bar
+            :ok -> {:ok, equation}
+            :error -> :error
+          after
+            :hi
+            resource.close(file)
+            :bye
+          end
         end
       end
-    end
+    ]
   end
 
   test_exercise_analysis "does not contain all of try-rescue-else-after",
@@ -84,9 +125,11 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
         end
       end
     ]
+  end
 
-    test_exercise_analysis "open in try",
-      comments: [Constants.open_before_try()] do
+  test_exercise_analysis "open in try",
+    comments_include: [Constants.open_before_try()] do
+    defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         try do
           {:ok, file} = resource.open(filename)
@@ -100,27 +143,51 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
         end
       end
     end
+  end
 
-    test_exercise_analysis "write before try",
-      comments: [Constants.write_in_try()] do
-      def write(resource, filename, equation) do
-        {:ok, file} = resource.open(filename)
-        IO.write(file, equation)
+  test_exercise_analysis "write before try",
+    comments: [Constants.write_in_try()] do
+    [
+      defmodule RPNCalculator.Output do
+        def write(resource, filename, equation) do
+          {:ok, file} = resource.open(filename)
+          IO.write(file, equation)
 
-        try do
-          :ok
-        rescue
-          _ -> {:error, "Unable to write to resource"}
-        else
-          :ok -> {:ok, equation}
-        after
-          resource.close(file)
+          try do
+            :ok
+          rescue
+            _ -> {:error, "Unable to write to resource"}
+          else
+            :ok -> {:ok, equation}
+          after
+            resource.close(file)
+          end
+        end
+      end,
+      defmodule RPNCalculator.Output do
+        def write(resource, filename, equation) do
+          {:ok, file} = resource.open(filename)
+          IO.write(file, equation)
+          :break
+
+          try do
+            :ok
+            :lol
+          rescue
+            _ -> {:error, "Unable to write to resource"}
+          else
+            :ok -> {:ok, equation}
+          after
+            resource.close(file)
+          end
         end
       end
-    end
+    ]
+  end
 
-    test_exercise_analysis "output not in else",
-      comments: [Constants.output_in_else()] do
+  test_exercise_analysis "output not in else",
+    comments_include: [Constants.output_in_else()] do
+    defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         {:ok, file} = resource.open(filename)
 
@@ -139,9 +206,11 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
           else: {:error, "Unable to write to resource"}
       end
     end
+  end
 
-    test_exercise_analysis "close after after",
-      comments: [Constants.close_in_after()] do
+  test_exercise_analysis "close after after",
+    comments_include: [Constants.close_in_after()] do
+    defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         {:ok, file} = resource.open(filename)
 

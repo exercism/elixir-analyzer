@@ -36,7 +36,7 @@ end
 ## Find usage of list comprehensions
 
 ```elixir
-assert_all "description" do
+assert_call "description" do
   called_fn name: :for
 end
 ```
