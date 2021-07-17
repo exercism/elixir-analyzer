@@ -76,14 +76,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
-    imports = track_imports(node) ++ track_aliases(node)
-
     acc =
-      Enum.reduce(imports, acc, fn {alias, full_path}, acc ->
-        if acc.in_function_def,
-          do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
-          else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
-      end)
+      acc
+      |> track_aliases(node)
+      |> track_imports(node)
 
     function_def? = function_def?(node)
     name = extract_function_name(node)
@@ -231,13 +227,20 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def in_function?(name, {_module_path, name}), do: true
   def in_function?(_, _), do: false
 
-  defp track_imports({:import, _, [module_path | _]}),
-    do: get_import_paths(module_path)
+  # track_imports
+  defp track_imports(acc, {:import, _, [module_path | _]}) do
+    paths = get_import_paths(module_path)
+    track_modules(acc, paths)
+  end
 
-  defp track_imports(_), do: []
+  defp track_imports(acc, _) do
+    acc
+  end
 
-  defp get_import_paths({:__aliases__, _, path}),
-    do: [{path, path}]
+  # get_import_paths
+  defp get_import_paths({:__aliases__, _, path}) do
+    [{path, path}]
+  end
 
   defp get_import_paths({{:., _, [root, :{}]}, _, branches}) do
     [{root_path, _}] = get_import_paths(root)
@@ -248,19 +251,29 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     end
   end
 
-  defp get_import_paths(path) when is_atom(path),
-    do: [{[path], [path]}]
+  defp get_import_paths(path) when is_atom(path) do
+    [{[path], [path]}]
+  end
 
-  defp track_aliases({:alias, _, [module_path]}),
-    do: get_alias_paths(module_path)
+  # track_aliases
+  defp track_aliases(acc, {:alias, _, [module_path]}) do
+    paths = get_alias_paths(module_path)
+    track_modules(acc, paths)
+  end
 
-  defp track_aliases({:alias, _, [module_path, [as: {:__aliases__, _, [alias]}]]}),
-    do: get_alias_paths(module_path) |> Enum.map(fn {_, path} -> {[alias], path} end)
+  defp track_aliases(acc, {:alias, _, [module_path, [as: {:__aliases__, _, [alias]}]]}) do
+    paths = get_alias_paths(module_path) |> Enum.map(fn {_, path} -> {[alias], path} end)
+    track_modules(acc, paths)
+  end
 
-  defp track_aliases(_), do: []
+  defp track_aliases(acc, _) do
+    acc
+  end
 
-  defp get_alias_paths({:__aliases__, _, path}),
-    do: [{[List.last(path)], path}]
+  # get_alias_paths
+  defp get_alias_paths({:__aliases__, _, path}) do
+    [{[List.last(path)], path}]
+  end
 
   defp get_alias_paths({{:., _, [root, :{}]}, _, branches}) do
     [{_, root_path}] = get_alias_paths(root)
@@ -271,6 +284,16 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     end
   end
 
-  defp get_alias_paths(path) when is_atom(path),
-    do: [{[path], [path]}]
+  defp get_alias_paths(path) when is_atom(path) do
+    [{[path], [path]}]
+  end
+
+  # track modules
+  defp track_modules(acc, module_paths) do
+    Enum.reduce(module_paths, acc, fn {alias, full_path}, acc ->
+      if acc.in_function_def,
+        do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
+        else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
+    end)
+  end
 end
