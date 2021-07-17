@@ -138,9 +138,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
 
         x ->
           raise ArgumentError,
-                "calling function signature requires :module to be nil or a module atom, got: #{
-                  inspect(x)
-                }"
+                "calling function signature requires :module to be nil or a module atom, got: #{inspect(x)}"
       end
 
     Keyword.put(signature, :module, module)
