@@ -40,7 +40,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "found a local call to from specific function",
     comments: [
-      "found a call to A.B.C.efg() in solution",
       "found a local call to helper/0",
       "found a local call to private_helper/0 from helper/0"
     ] do
@@ -54,8 +53,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         :helped
       end
 
-      A.B.C.efg()
-
       defp private_helper do
         :privately_helped
       end
@@ -64,7 +61,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "found a call to other module function anywhere",
     comments: [
-      "found a call to A.B.C.efg() in solution",
       "found a call to Enum.map in solution"
     ] do
     defmodule AssertNoCallVerification do
@@ -76,9 +72,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         :helped
       end
 
-      alias A.B.C
-      C.efg()
-
       defp private_helper do
         :privately_helped
       end
@@ -87,48 +80,19 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "calling a function with the same name doesn't trigger the check",
     comments: [] do
-    [
-      defmodule AssertNoCallVerification do
-        def function() do
-          map([], fn x -> x + 1 end)
-        end
-
-        def helper do
-          :helped
-          alias A.B.C
-        end
-
-        C.efg()
-
-        defp private_helper do
-          :privately_helped
-        end
+    defmodule AssertNoCallVerification do
+      def function() do
+        map([], fn x -> x + 1 end)
       end
-    ]
-  end
 
-  test_exercise_analysis "calling a function with an imported name triggers the check",
-    comments: ["found a call to A.B.C.efg() in solution", "found a call to Enum.map in solution"] do
-    [
-      defmodule AssertNoCallVerification do
-        import Enum
-
-        def function() do
-          map([], fn x -> x + 1 end)
-        end
-
-        def helper do
-          :helped
-        end
-
-        import A.B.C
-        efg()
-
-        defp private_helper do
-          :privately_helped
-        end
+      def helper do
+        :helped
       end
-    ]
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
   end
 
   test_exercise_analysis "found a call to other module function in specific function",
@@ -142,10 +106,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
       def helper do
         :helped |> Atom.to_string()
-        import A.B.C
       end
-
-      efg()
 
       defp private_helper do
         :privately_helped
@@ -162,8 +123,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         "something"
         List.last([])
       end
-
-      efg()
 
       def helper do
         :helped
@@ -184,8 +143,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
           AlternativeList.last([])
         end
 
-        A.B.C.D.efg()
-
         def helper do
           :helped
         end
@@ -204,10 +161,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
           List.last([])
         end
 
-        alias A.B.C
-        alias A.X, as: C
-        C.def()
-
         def helper do
           :helped
         end
@@ -215,96 +168,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
         defp private_helper do
           :privately_helped
         end
-      end
-    end
-  end
-
-  test_exercise_analysis "found a call of a :rand function",
-    comments: ["found a call to :rand in module functions"] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        IO.puts("string")
-        private_helper()
-      end
-
-      def helper do
-        :helped
-      end
-
-      import A.B.C.D
-      efg()
-
-      defp private_helper do
-        :privately_helped
-        :rand.uniform_real()
-      end
-    end
-  end
-
-  test_exercise_analysis "found a call of a :rand function in a specific function",
-    comments: [
-      "found a call to :rand in module functions in helper/0 function in solution",
-      "found a call to :rand in module functions"
-    ] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        IO.puts("string")
-        private_helper()
-      end
-
-      def helper do
-        :helped
-        :rand.uniform_real()
-      end
-
-      defp private_helper do
-        :privately_helped
-      end
-    end
-  end
-
-  test_exercise_analysis "found a call of :rand.normal/0",
-    comments: [
-      "found a call to :rand in module functions",
-      "found a call to :rand.normal in solution"
-    ] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        IO.puts("string")
-        private_helper()
-        :rand.normal()
-      end
-
-      def helper do
-        :helped
-      end
-
-      defp private_helper do
-        :privately_helped
-      end
-    end
-  end
-
-  test_exercise_analysis "found a call of :rand.normal/0 in specific function",
-    comments: [
-      "found a call to :rand in module functions",
-      "found a call to :rand in module functions in helper/0 function in solution",
-      "found a call to :rand.normal in helper/0 function in solution",
-      "found a call to :rand.normal in solution"
-    ] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        IO.puts("string")
-        private_helper()
-      end
-
-      def helper do
-        :rand.normal()
-        :helped
-      end
-
-      defp private_helper do
-        :privately_helped
       end
     end
   end
