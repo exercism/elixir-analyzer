@@ -78,38 +78,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
     end
   end
 
-  test_exercise_analysis "calling a function with the same name or imported doesn't trigger the check",
+  test_exercise_analysis "calling a function with the same name doesn't trigger the check",
     comments: [] do
-    [
-      defmodule AssertNoCallVerification do
-        def function() do
-          map([], fn x -> x + 1 end)
-        end
-
-        def helper do
-          :helped
-        end
-
-        defp private_helper do
-          :privately_helped
-        end
-      end,
-      defmodule AssertNoCallVerification do
-        import Enum
-
-        def function() do
-          map([], fn x -> x + 1 end)
-        end
-
-        def helper do
-          :helped
-        end
-
-        defp private_helper do
-          :privately_helped
-        end
+    defmodule AssertNoCallVerification do
+      def function() do
+        map([], fn x -> x + 1 end)
       end
-    ]
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
   end
 
   test_exercise_analysis "found a call to other module function in specific function",

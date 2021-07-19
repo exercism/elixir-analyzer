@@ -52,6 +52,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def assert(ast, called_fn, calling_fn) do
     acc = %{
       in_function_def: nil,
+      in_function_modules: %{},
+      modules_in_scope: %{},
       found_called: false,
       called_fn: called_fn,
       calling_fn: calling_fn
@@ -74,6 +76,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
+    acc =
+      acc
+      |> track_aliases(node)
+      |> track_imports(node)
+
     function_def? = function_def?(node)
     name = extract_function_name(node)
 
@@ -94,7 +101,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     {node, acc} = find(node, acc)
 
     if function_def?(node) do
-      {node, %{acc | in_function_def: nil}}
+      {node, %{acc | in_function_def: nil, in_function_modules: %{}}}
     else
       {node, acc}
     end
@@ -109,13 +116,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def find(
         node,
         %{
+          modules_in_scope: modules_in_scope,
+          in_function_modules: in_function_modules,
           called_fn: called_fn,
           calling_fn: calling_fn,
           in_function_def: name
         } = acc
       ) do
+    modules = Map.merge(modules_in_scope, in_function_modules)
+
     match_called_fn? =
-      matching_function_call?(node, called_fn) and not in_function?(name, called_fn)
+      matching_function_call?(node, called_fn, modules) and not in_function?(name, called_fn)
 
     match_calling_fn? = in_function?(name, calling_fn) or is_nil(calling_fn)
 
@@ -129,31 +140,61 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   compare a node to the function_signature, looking for a match for a called function
   """
-  @spec matching_function_call?(Macro.t(), nil | AssertCall.function_signature()) :: boolean()
-  def matching_function_call?(_node, nil), do: false
+  @spec matching_function_call?(
+          Macro.t(),
+          nil | AssertCall.function_signature(),
+          %{[atom] => [atom]}
+        ) :: boolean()
+  def matching_function_call?(_node, nil, _), do: false
 
+  # For erlang libraries: :math._ or :math.pow
   def matching_function_call?(
-        {{:., _, [{:__aliases__, _, module_path}, _name]}, _, _args},
-        {module_path, :_}
-      ) do
+        {{:., _, [module_path, name]}, _, _args},
+        {module_path, search_name},
+        _modules
+      )
+      when search_name in [:_, name] do
     true
   end
 
-  def matching_function_call?(
-        {{:., _, [{:__aliases__, _, module_path}, name]}, _, _args},
-        {module_path, name}
-      ) do
+  # For function with no path in the ast
+  def matching_function_call?({name, _, _args}, {nil, name}, _modules) do
     true
   end
 
-  def matching_function_call?(
-        {name, _, _args},
-        {nil, name}
-      ) do
-    true
+  def matching_function_call?({name, _, args}, {module_path, name}, modules) do
+    case modules[List.wrap(module_path)] do
+      # import A.B.C
+      [] -> true
+      # import A.B.C, only: [f: 1, g: 2]
+      [only: imports] when is_list(imports) -> {name, length(args)} in imports
+      # import A.B.C, expect: [f: 1, g: 2] 
+      [except: imports] when is_list(imports) -> {name, length(args)} not in imports
+      # import A.B.C, only: :functions/:macros 
+      [only: _] -> true
+      nil -> false
+    end
   end
 
-  def matching_function_call?(_, _), do: false
+  def matching_function_call?(
+        {{:., _, [{:__aliases__, _, [head | tail] = ast_path}, name]}, _, _args},
+        {module_path, search_name},
+        modules
+      )
+      when search_name in [:_, name] do
+    # Searching for A.B.C.function()
+    cond do
+      # Same path: A.B.C.function()
+      ast_path == module_path -> true
+      # aliased: alias A.B ; B.C.function()
+      List.wrap(modules[[head]]) ++ tail == List.wrap(module_path) -> true
+      # imported: import A.B ; C.function()
+      Map.has_key?(modules, List.wrap(module_path) -- ast_path) -> true
+      true -> false
+    end
+  end
+
+  def matching_function_call?(_, _, _), do: false
 
   @doc """
   compare a node to the function_signature, looking for a match for a called function
@@ -195,4 +236,79 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   def in_function?(name, {_module_path, name}), do: true
   def in_function?(_, _), do: false
+
+  # track_imports
+  defp track_imports(acc, {:import, _, [module_paths]}) do
+    paths = get_import_paths(module_paths, [])
+    track_modules(acc, paths)
+  end
+
+  defp track_imports(acc, {:import, _, [module_path, opts]}) do
+    paths = get_import_paths(module_path, opts)
+    track_modules(acc, paths)
+  end
+
+  defp track_imports(acc, _) do
+    acc
+  end
+
+  # get_import_paths
+  defp get_import_paths({:__aliases__, _, path}, opts) do
+    [{path, opts}]
+  end
+
+  defp get_import_paths({{:., _, [root, :{}]}, _, branches}, opts) do
+    [{root_path, _}] = get_import_paths(root, opts)
+
+    for branch <- branches,
+        {path, _} <- get_import_paths(branch, opts) do
+      {root_path ++ path, opts}
+    end
+  end
+
+  defp get_import_paths(path, opts) when is_atom(path) do
+    [{[path], opts}]
+  end
+
+  # track_aliases
+  defp track_aliases(acc, {:alias, _, [module_path]}) do
+    paths = get_alias_paths(module_path)
+    track_modules(acc, paths)
+  end
+
+  defp track_aliases(acc, {:alias, _, [module_path, [as: {:__aliases__, _, [alias]}]]}) do
+    paths = get_alias_paths(module_path) |> Enum.map(fn {_, path} -> {[alias], path} end)
+    track_modules(acc, paths)
+  end
+
+  defp track_aliases(acc, _) do
+    acc
+  end
+
+  # get_alias_paths
+  defp get_alias_paths({:__aliases__, _, path}) do
+    [{[List.last(path)], path}]
+  end
+
+  defp get_alias_paths({{:., _, [root, :{}]}, _, branches}) do
+    [{_, root_path}] = get_alias_paths(root)
+
+    for branch <- branches,
+        {last, full_path} <- get_alias_paths(branch) do
+      {last, root_path ++ full_path}
+    end
+  end
+
+  defp get_alias_paths(path) when is_atom(path) do
+    [{[path], [path]}]
+  end
+
+  # track modules
+  defp track_modules(acc, module_paths) do
+    Enum.reduce(module_paths, acc, fn {alias, full_path}, acc ->
+      if acc.in_function_def,
+        do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
+        else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
+    end)
+  end
 end
