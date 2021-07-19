@@ -158,12 +158,22 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # For function with no path in the ast
-  def matching_function_call?(
-        {name, _, _args},
-        {module_path, name},
-        modules
-      ) do
-    module_path == nil or Map.has_key?(modules, List.wrap(module_path))
+  def matching_function_call?({name, _, _args}, {nil, name}, _modules) do
+    true
+  end
+
+  def matching_function_call?({name, _, args}, {module_path, name}, modules) do
+    case modules[List.wrap(module_path)] do
+      # import A.B.C
+      [] -> true
+      # import A.B.C, only: [f: 1, g: 2]
+      [only: imports] when is_list(imports) -> imports[name] == length(args)
+      # import A.B.C, expect: [f: 1, g: 2] 
+      [except: imports] when is_list(imports) -> imports[name] != length(args)
+      # import A.B.C, only: :functions/:macros 
+      [only: _] -> true
+      nil -> false
+    end
   end
 
   def matching_function_call?(
@@ -228,8 +238,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def in_function?(_, _), do: false
 
   # track_imports
-  defp track_imports(acc, {:import, _, [module_path | _]}) do
-    paths = get_import_paths(module_path)
+  defp track_imports(acc, {:import, _, [module_paths]}) do
+    paths = get_import_paths(module_paths, [])
+    track_modules(acc, paths)
+  end
+
+  defp track_imports(acc, {:import, _, [module_path, opts]}) do
+    paths = get_import_paths(module_path, opts)
     track_modules(acc, paths)
   end
 
@@ -238,21 +253,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # get_import_paths
-  defp get_import_paths({:__aliases__, _, path}) do
-    [{path, path}]
+  defp get_import_paths({:__aliases__, _, path}, opts) do
+    [{path, opts}]
   end
 
-  defp get_import_paths({{:., _, [root, :{}]}, _, branches}) do
-    [{root_path, _}] = get_import_paths(root)
+  defp get_import_paths({{:., _, [root, :{}]}, _, branches}, opts) do
+    [{root_path, _}] = get_import_paths(root, opts)
 
     for branch <- branches,
-        {path, _} <- get_import_paths(branch) do
-      {root_path ++ path, root_path ++ path}
+        {path, _} <- get_import_paths(branch, opts) do
+      {root_path ++ path, opts}
     end
   end
 
-  defp get_import_paths(path) when is_atom(path) do
-    [{[path], [path]}]
+  defp get_import_paths(path, opts) when is_atom(path) do
+    [{[path], opts}]
   end
 
   # track_aliases
