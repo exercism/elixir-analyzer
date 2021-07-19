@@ -167,9 +167,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       # import A.B.C
       [] -> true
       # import A.B.C, only: [f: 1, g: 2]
-      [only: imports] when is_list(imports) -> imports[name] == length(args)
+      [only: imports] when is_list(imports) -> {name, length(args)} in imports
       # import A.B.C, expect: [f: 1, g: 2] 
-      [except: imports] when is_list(imports) -> imports[name] != length(args)
+      [except: imports] when is_list(imports) -> {name, length(args)} not in imports
       # import A.B.C, only: :functions/:macros 
       [only: _] -> true
       nil -> false
