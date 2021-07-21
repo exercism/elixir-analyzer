@@ -12,12 +12,6 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.ModuleTracking 
     comment "didn't find any call to Elixir.Mix.Utils.read_path/1"
   end
 
-  #  assert_call "find a call to Elixir.Mix.Utils.read_path/1 in function/0" do
-  #    type :informational
-  #    called_fn module: Elixir.Mix.Utils, name: :read_path
-  #    calling_fn module: AssertCallVerification, name: :function
-  #    comment "didn't find a call to Elixir.Mix.Utils.read_path/1 in function/0"
-  #  end
 
   assert_no_call "didn't call to Elixir.Mix.Utils.read_path/1 from anywhere" do
     type :informational
@@ -25,10 +19,4 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.ModuleTracking 
     comment "found a call to Elixir.Mix.Utils.read_path/1"
   end
 
-  #  assert_no_call "didn't call to Elixir.Mix.Utils.read_path/1 in function/0" do
-  #    type :informational
-  #    called_fn module: Elixir.Mix.Utils, name: :read_path
-  #    calling_fn module: AssertCallVerification, name: :function
-  #    comment "found a call to Elixir.Mix.Utils.read_path/1 in function/0"
-  #  end
 end
