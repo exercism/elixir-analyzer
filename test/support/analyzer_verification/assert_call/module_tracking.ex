@@ -12,11 +12,9 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.ModuleTracking 
     comment "didn't find any call to Elixir.Mix.Utils.read_path/1"
   end
 
-
   assert_no_call "didn't call to Elixir.Mix.Utils.read_path/1 from anywhere" do
     type :informational
     called_fn module: Elixir.Mix.Utils, name: :read_path
     comment "found a call to Elixir.Mix.Utils.read_path/1"
   end
-
 end
