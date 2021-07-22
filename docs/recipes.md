@@ -43,33 +43,15 @@ end
 
 ## Assert no usage of a specific module
 
-Note: simplified version for a module with a single-segment name like `List` or `Enum`.
+This is trivial with `assert_(no_)call` because it tracks imports and aliases.
 
 ```elixir
 assert_no_call "does not call any ModuleName functions" do
   called_fn module: ModuleName, name: :_
 end
-
-feature "does not alias or import ModuleName" do
-  find :none
-   
-  form do
-    import ModuleName
-  end
-
-  form do
-    use ModuleName
-  end
-   
-  form do
-    import ModuleName, _ignore
-  end
-    
-  form do
-    alias ModuleName, as: _ignore
-  end
-end
 ```
+
+Note that tracking imports only works for standard library modules, not user-defined modules.
 
 ## Find module attribute with given value and any name
 
