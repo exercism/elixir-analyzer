@@ -37,10 +37,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
     ]
   end
 
-  test_exercise_analysis "Searching for use of module with imported module will fail",
+  test_exercise_analysis "Searching for use of module with imported module will suceed",
     comments: [
-      "didn't find a call to a :rand function in function/0",
-      "didn't find any call to a :rand function",
+      "found a call to :rand in function/0",
+      "found a call to :rand in module",
       "found a call to :rand.normal in function/0",
       "found a call to :rand.normal in module"
     ] do

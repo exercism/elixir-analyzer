@@ -143,7 +143,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @spec matching_function_call?(
           Macro.t(),
           nil | AssertCall.function_signature(),
-          %{[atom] => [atom]}
+          %{[atom] => [atom] | keyword()}
         ) :: boolean()
   def matching_function_call?(_node, nil, _), do: false
 
@@ -157,25 +157,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     true
   end
 
-  # For function with no path in the ast
+  # No module path in search
   def matching_function_call?({name, _, _args}, {nil, name}, _modules) do
     true
   end
 
-  def matching_function_call?({name, _, args}, {module_path, name}, modules) do
-    case modules[List.wrap(module_path)] do
-      # import A.B.C
-      [] -> true
-      # import A.B.C, only: [f: 1, g: 2]
-      [only: imports] when is_list(imports) -> {name, length(args)} in imports
-      # import A.B.C, expect: [f: 1, g: 2] 
-      [except: imports] when is_list(imports) -> {name, length(args)} not in imports
-      # import A.B.C, only: :functions/:macros 
-      [only: _] -> true
-      nil -> false
-    end
-  end
-
+  # Module path in AST
   def matching_function_call?(
         {{:., _, [{:__aliases__, _, [head | tail] = ast_path}, name]}, _, _args},
         {module_path, search_name},
@@ -191,6 +178,15 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       # imported: import A.B ; C.function()
       Map.has_key?(modules, List.wrap(module_path) -- ast_path) -> true
       true -> false
+    end
+  end
+
+  # No module path in AST
+  def matching_function_call?({name, _, args}, {module_path, search_name}, modules)
+      when is_list(args) and search_name in [:_, name] do
+    case modules[List.wrap(module_path)] do
+      nil -> false
+      imported -> {name, length(args)} in imported
     end
   end
 
@@ -232,19 +228,89 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_function_name(_), do: nil
 
   @doc """
+  Construct a callable module name from a list of atoms or a single atom for Erlang modules
+  """
+  def reconstruct_module_path([Elixir | _] = atoms) do
+    atoms
+    |> Enum.map_join(".", &to_string/1)
+    |> String.to_atom()
+  end
+
+  def reconstruct_module_path(atoms) when is_list(atoms) do
+    reconstruct_module_path([Elixir | atoms])
+  end
+
+  def reconstruct_module_path(atom) when is_atom(atom) do
+    atom
+  end
+
+  @doc """
   compare the name of the function to the function signature, if they match return true
   """
   def in_function?(name, {_module_path, name}), do: true
   def in_function?(_, _), do: false
 
   # track_imports
-  defp track_imports(acc, {:import, _, [module_paths]}) do
-    paths = get_import_paths(module_paths, [])
+
+  # import an Erlang module without options
+  defp track_imports(acc, {:import, _, [module]}) when is_atom(module) do
+    paths = [{[module], module.module_info(:exports)}]
     track_modules(acc, paths)
   end
 
-  defp track_imports(acc, {:import, _, [module_path, opts]}) do
-    paths = get_import_paths(module_path, opts)
+  # import an Erlang module with only: :functions
+  defp track_imports(acc, {:import, _, [module, [only: :functions]]}) when is_atom(module) do
+    paths = [{[module], module.module_info(:exports)}]
+    track_modules(acc, paths)
+  end
+
+  # import Elixir module without options
+  defp track_imports(acc, {:import, _, [module_paths]}) do
+    paths =
+      get_import_paths(module_paths)
+      |> Enum.map(fn path ->
+        module = reconstruct_module_path(path)
+
+        case Code.ensure_loaded(module) do
+          {:module, _} -> {path, module.__info__(:functions) ++ module.__info__(:macros)}
+          {:error, _} -> {path, []}
+        end
+      end)
+
+    track_modules(acc, paths)
+  end
+
+  # import module with :only and a list of functions
+  defp track_imports(acc, {:import, _, [module_path, [only: only]]}) when is_list(only) do
+    paths =
+      get_import_paths(module_path)
+      |> Enum.map(fn path -> {path, only} end)
+
+    track_modules(acc, paths)
+  end
+
+  # import with :except
+  defp track_imports(acc, {:import, _, [module_path, [except: except]]}) do
+    %{modules_in_scope: modules} = track_imports(acc, {:import, [], [module_path]})
+
+    paths = Enum.map(modules, fn {path, functions} -> {path, functions -- except} end)
+
+    track_modules(acc, paths)
+  end
+
+  # import Elixir module with only: :functions or only: :macros
+  defp track_imports(acc, {:import, _, [module_path, [only: functions_or_macros]]}) do
+    paths =
+      get_import_paths(module_path)
+      |> Enum.map(fn path ->
+        module = reconstruct_module_path(path)
+
+        case Code.ensure_loaded(module) do
+          {:module, _} -> {path, module.__info__(functions_or_macros)}
+          {:error, _} -> {path, []}
+        end
+      end)
+
     track_modules(acc, paths)
   end
 
@@ -253,21 +319,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # get_import_paths
-  defp get_import_paths({:__aliases__, _, path}, opts) do
-    [{path, opts}]
+  defp get_import_paths({:__aliases__, _, path}) do
+    [path]
   end
 
-  defp get_import_paths({{:., _, [root, :{}]}, _, branches}, opts) do
-    [{root_path, _}] = get_import_paths(root, opts)
+  defp get_import_paths({{:., _, [root, :{}]}, _, branches}) do
+    [root_path] = get_import_paths(root)
 
     for branch <- branches,
-        {path, _} <- get_import_paths(branch, opts) do
-      {root_path ++ path, opts}
+        path <- get_import_paths(branch) do
+      root_path ++ path
     end
   end
 
-  defp get_import_paths(path, opts) when is_atom(path) do
-    [{[path], opts}]
+  defp get_import_paths(path) when is_atom(path) do
+    [[path]]
   end
 
   # track_aliases
