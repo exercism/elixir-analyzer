@@ -228,23 +228,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_function_name(_), do: nil
 
   @doc """
-  Construct a callable module name from a list of atoms or a single atom for Erlang modules
-  """
-  def reconstruct_module_path([Elixir | _] = atoms) do
-    atoms
-    |> Enum.map_join(".", &to_string/1)
-    |> String.to_atom()
-  end
-
-  def reconstruct_module_path(atoms) when is_list(atoms) do
-    reconstruct_module_path([Elixir | atoms])
-  end
-
-  def reconstruct_module_path(atom) when is_atom(atom) do
-    atom
-  end
-
-  @doc """
   compare the name of the function to the function signature, if they match return true
   """
   def in_function?(name, {_module_path, name}), do: true
@@ -269,7 +252,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     paths =
       get_import_paths(module_paths)
       |> Enum.map(fn path ->
-        module = reconstruct_module_path(path)
+        module = Module.safe_concat(path)
 
         case Code.ensure_loaded(module) do
           {:module, _} -> {path, module.__info__(:functions) ++ module.__info__(:macros)}
@@ -303,7 +286,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     paths =
       get_import_paths(module_path)
       |> Enum.map(fn path ->
-        module = reconstruct_module_path(path)
+        module = Module.safe_concat(path)
 
         case Code.ensure_loaded(module) do
           {:module, _} -> {path, module.__info__(functions_or_macros)}
