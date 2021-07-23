@@ -252,7 +252,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     paths =
       get_import_paths(module_paths)
       |> Enum.map(fn path ->
-        module = Module.safe_concat(path)
+        module = Module.concat(path)
 
         case Code.ensure_loaded(module) do
           {:module, _} -> {path, module.__info__(:functions) ++ module.__info__(:macros)}
@@ -286,7 +286,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     paths =
       get_import_paths(module_path)
       |> Enum.map(fn path ->
-        module = Module.safe_concat(path)
+        module = Module.concat(path)
 
         case Code.ensure_loaded(module) do
           {:module, _} -> {path, module.__info__(functions_or_macros)}
