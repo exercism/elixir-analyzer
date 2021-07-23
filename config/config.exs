@@ -56,6 +56,9 @@ config :elixir_analyzer,
     "accumulate" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
     },
+    "square-root" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot
+    },
     "two-fer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer
     }
