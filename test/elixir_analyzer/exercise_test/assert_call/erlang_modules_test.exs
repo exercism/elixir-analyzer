@@ -28,11 +28,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
         def function() do
           r = :rand.normal()
         end
-      end,
-      defmodule AssertCallVerification do
-        def function() do
-          r = :rand.normal()
-        end
       end
     ]
   end
