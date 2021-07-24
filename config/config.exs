@@ -51,6 +51,9 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "name-badge" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
+    },
 
     # practice exercises
     "accumulate" => %{
