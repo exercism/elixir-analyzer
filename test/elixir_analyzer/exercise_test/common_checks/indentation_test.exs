@@ -92,10 +92,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
 
       assert Indentation.run(ast, string) == [
                {:fail,
-                 %Comment{
-                   type: :informative,
-                   comment: Constants.solution_indentation()
-                 }}
+                %Comment{
+                  type: :informative,
+                  comment: Constants.solution_indentation()
+                }}
              ]
     end
   end
