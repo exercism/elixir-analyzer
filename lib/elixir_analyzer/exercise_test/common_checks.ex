@@ -7,6 +7,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase
+  alias ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation
   alias ElixirAnalyzer.Comment
 
   @spec run(Macro.t(), String.t()) :: [{:pass | :fail | :skip, %Comment{}}]
@@ -15,7 +16,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       FunctionNames.run(code_ast),
       VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast),
-      ModulePascalCase.run(code_ast)
+      ModulePascalCase.run(code_ast),
+      Indentation.run(code_ast, code_as_string)
     ]
     |> List.flatten()
   end

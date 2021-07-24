@@ -22,6 +22,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_module_pascal_case: "elixir.solution.module_pascal_case",
     solution_function_name_snake_case: "elixir.solution.function_name_snake_case",
     solution_variable_name_snake_case: "elixir.solution.variable_name_snake_case",
+    solution_indentation: "elixir.solution.indentation",
 
     # Concept exercises
 
