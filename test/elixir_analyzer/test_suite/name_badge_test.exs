@@ -41,6 +41,14 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
 
           prefix <> "#{name} - #{String.upcase(department)}"
         end
+      end,
+      defmodule NameBadge do
+        def print(id, name, department) do
+          department = department || if department == nil, do: "owner"
+          prefix = if(id, do: "[#{id}] - ") || ""
+
+          prefix <> "#{name} - #{String.upcase(department)}"
+        end
       end
     ]
   end
