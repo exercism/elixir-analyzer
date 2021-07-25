@@ -7,7 +7,7 @@ defmodule ElixirAnalyzer.TestSuite.NameBadge do
   alias ElixirAnalyzer.Constants
 
   feature "Use an if macro" do
-    find :one
+    find :any
     type :essential
     comment Constants.name_badge_use_if()
 
