@@ -61,6 +61,11 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Need For Speed Comments
+    need_for_speed_import_IO_with_only: "elixir.need-for-speed.import_IO_with_only",
+    need_for_speed_import_ANSI_with_except: "elixir.need-for-speed.import_ANSI_with_except",
+    need_for_speed_do_not_modify_code: "elixir.need-for-speed.do_not_modify_code",
+
     # Practice exercises
 
     # Accumulate Comments

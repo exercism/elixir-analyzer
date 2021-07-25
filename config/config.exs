@@ -51,6 +51,9 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "need-for-speed" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NeedForSpeed
+    },
 
     # practice exercises
     "accumulate" => %{
