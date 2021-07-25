@@ -79,6 +79,26 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
              ]
     end
 
+    test "tabs used for indentation and in string" do
+      string = """
+      defmodule User do
+      \tdef first_name(user \\\\ "Tabby\\tMc\\tTab") do
+      \t\tuser.first_name
+      \tend
+      end
+      """
+
+      ast = Code.string_to_quoted!(string)
+
+      assert Indentation.run(ast, string) == [
+               {:fail,
+                %Comment{
+                  type: :informative,
+                  comment: Constants.solution_indentation()
+                }}
+             ]
+    end
+
     test "trailing tabs trigger the check too" do
       string = """
       defmodule User do
