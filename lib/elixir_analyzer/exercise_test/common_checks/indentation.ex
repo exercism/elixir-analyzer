@@ -22,6 +22,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation do
   end
 
   defp uses_tabs_for_indentation?(ast, string) do
-    String.contains?(string, "\t") && !String.contains?(Macro.to_string(ast), "\\t")
+    count_tabs(string) > count_tabs(Macro.to_string(ast))
+  end
+
+  defp count_tabs(string) do
+    string
+    |> String.replace("\\t", "\t")
+    |> String.graphemes()
+    |> Enum.count(&(&1 == "\t"))
   end
 end
