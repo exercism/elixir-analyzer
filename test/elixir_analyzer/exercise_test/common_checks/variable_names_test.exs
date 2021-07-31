@@ -1,4 +1,6 @@
 # credo:disable-for-this-file Credo.Check.Readability.VariableNames
+# credo:disable-for-this-file Credo.Check.Readability.FunctionNames
+# credo:disable-for-this-file Credo.Check.Readability.ModuleAttributeNames
 
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
   use ExUnit.Case
