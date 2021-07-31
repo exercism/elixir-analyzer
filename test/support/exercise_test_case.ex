@@ -58,9 +58,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     assertions_key_diff = assertions_keys -- supported_assertions_keys
 
     if assertions_keys == [] do
-      raise "Expected to receive at least one of the supported assertions: #{
-              Enum.join(supported_assertions_keys)
-            }"
+      raise "Expected to receive at least one of the supported assertions: #{Enum.join(supported_assertions_keys)}"
     end
 
     if assertions_key_diff != [] do

@@ -51,10 +51,16 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "name-badge" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
+    },
 
     # practice exercises
     "accumulate" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
+    },
+    "square-root" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot
     },
     "two-fer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TwoFer

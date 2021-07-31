@@ -60,11 +60,16 @@ defmodule ElixirAnalyzer.Constants do
 
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
+    # Name Badge Comments
+    name_badge_use_if: "elixir.name-badge.use_if",
 
     # Practice exercises
 
     # Accumulate Comments
     accumulate_use_recursion: "elixir.accumulate.use_recursion",
+
+    # Square Root Comments
+    square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",
 
     # Two-fer Error Comments
     two_fer_use_default_parameter: "elixir.two-fer.use_default_param",
