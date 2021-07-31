@@ -13,7 +13,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
 
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
-    {_, names} = Macro.prewalk(ast, [], &traverse/2)
+    {_, %{variable_names: variable_names, false_positives: false_positives}} =
+      Macro.prewalk(ast, %{variable_names: [], false_positives: []}, &traverse/2)
+
+    names = variable_names -- false_positives
     wrong_name = List.last(names)
 
     if wrong_name do
@@ -40,16 +43,28 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
 
   # "The third element is either a list of arguments for the function call or an atom. When this element is an atom, it means the tuple represents a variable."
   #   https://elixir-lang.org/getting-started/meta/quote-and-unquote.html
-  defp traverse({name, _meta, module} = ast, names) when is_atom(module) do
+  # However, if a function/macro is defined without parenthesis,
+  # the third element is also an atom, causing a false-positive
+  defp traverse({name, _meta, module} = ast, acc) when is_atom(module) do
     if snake_case?(name) or name in @special_var_names do
-      {ast, names}
+      {ast, acc}
     else
-      {ast, [name | names]}
+      {ast, Map.update!(acc, :variable_names, &[name | &1])}
     end
   end
 
-  defp traverse(ast, names) do
-    {ast, names}
+  @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
+  defp traverse({op, _meta, [{name, _meta2, module} | _]} = ast, acc)
+       when op in @def_ops and is_atom(module) do
+    if snake_case?(name) do
+      {ast, acc}
+    else
+      {ast, Map.update!(acc, :false_positives, &[name | &1])}
+    end
+  end
+
+  defp traverse(ast, acc) do
+    {ast, acc}
   end
 
   defp snake_case?(name) do
