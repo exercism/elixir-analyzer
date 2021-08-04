@@ -174,4 +174,25 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
               }}
            ]
   end
+
+  test "can handle guards" do
+    code =
+      quote do
+        defmodule User do
+          def getName(user, fallback) when is_bitstring(fallback)
+        end
+      end
+
+    assert FunctionNames.run(code) == [
+             {:fail,
+              %Comment{
+                type: :actionable,
+                comment: Constants.solution_function_name_snake_case(),
+                params: %{
+                  expected: "get_name",
+                  actual: "getName"
+                }
+              }}
+           ]
+  end
 end
