@@ -40,22 +40,26 @@ defmodule ElixirAnalyzer.ExerciseTest do
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
     quote do
-      @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(%Submission{} = submission, code_as_string) do
+      @spec analyze(Submission.t(), String.t() | any()) :: Submission.t()
+      def analyze(%Submission{} = submission, code_as_string) when is_binary(code_as_string) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
-            feature_results = unquote(feature_tests) |> filter_suppressed_results()
-            assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
-            common_checks_results = CommonChecks.run(code_ast, code_as_string)
-
-            submission
-            |> append_test_comments(feature_results)
-            |> append_test_comments(assert_call_results)
-            |> append_test_comments(common_checks_results)
+            analyze(submission, code_ast)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
         end
+      end
+
+      def analyze(%Submission{} = submission, code_ast) do
+        feature_results = unquote(feature_tests) |> filter_suppressed_results()
+        assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
+        common_checks_results = CommonChecks.run(code_ast, Macro.to_string(code_ast))
+
+        submission
+        |> append_test_comments(feature_results)
+        |> append_test_comments(assert_call_results)
+        |> append_test_comments(common_checks_results)
       end
 
       defp filter_suppressed_results(feature_results) do

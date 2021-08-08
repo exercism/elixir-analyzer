@@ -3,6 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
 
   alias ElixirAnalyzer.QuoteUtil
   alias ElixirAnalyzer.Comment
+  alias ElixirAnalyzer.ExerciseTest.Feature.Compiler
 
   def compile({feature_data, feature_forms}, code_ast) do
     name = Keyword.fetch!(feature_data, :name)
@@ -46,10 +47,10 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
   end
 
   def compile_form(form, find_at_depth, code_ast) do
-    find_ast_string = Keyword.fetch!(form, :find_ast_string)
+    find_ast = Keyword.fetch!(form, :find_ast)
     block_params = Keyword.fetch!(form, :block_params)
 
-    find_ast = Code.string_to_quoted!(find_ast_string)
+    find_ast = Macro.escape(find_ast)
 
     # create the walk function, determined if the form to find
     # is multiple first level entries in a code block
@@ -80,7 +81,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
               |> Enum.chunk_every(unquote(block_params), 1, :discard)
               |> Enum.reduce(false, fn
                 chunk, false ->
-                  match?(unquote(find_ast), chunk)
+                  Compiler.form_match?(unquote(find_ast), chunk)
 
                 _chunk, true ->
                   true
@@ -106,7 +107,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
           finding_depth = unquote(find_at_depth) in [nil, depth]
 
           if finding_depth do
-            {node, match?(unquote(find_ast), node)}
+            {node, Compiler.form_match?(unquote(find_ast), node)}
           else
             {node, false}
           end
@@ -160,5 +161,41 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
       type when type in [:none] -> quote do: unquote(combined_expr) == 0
       type when type in [:one] -> quote do: unquote(combined_expr) == 1
     end
+  end
+
+  def form_match?(item, item) do
+    true
+  end
+
+  def form_match?({:_ignore, _, _}, _) do
+    true
+  end
+
+  def form_match?({:_shallow_ignore, _, form_params}, {_, _, params}) do
+    form_match?(form_params, params)
+  end
+
+  def form_match?([:_ignore], meta) when is_list(meta) do
+    true
+  end
+
+  def form_match?(form_params, params) when is_list(form_params) and is_list(params) do
+    length(form_params) == length(params) and
+      Enum.zip_with(form_params, params, &form_match?/2)
+      |> Enum.all?()
+  end
+
+  def form_match?({form_name, form_meta, form_params}, {name, meta, params}) do
+    form_match?(form_name, name) and
+      form_match?(form_meta, meta) and
+      form_match?(form_params, params)
+  end
+
+  def form_match?({form_a, form_b}, {a, b}) do
+    form_match?(form_a, a) and form_match?(form_b, b)
+  end
+
+  def form_match?(_, _) do
+    false
   end
 end

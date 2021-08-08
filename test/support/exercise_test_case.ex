@@ -87,11 +87,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             analysis_module: ""
           }
 
-          result =
-            @exercise_test_module.analyze(
-              empty_submission,
-              unquote(Macro.to_string(code))
-            )
+          result = @exercise_test_module.analyze(empty_submission, unquote(Macro.escape(code)))
 
           comments =
             result.comments
