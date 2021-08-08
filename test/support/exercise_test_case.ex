@@ -76,7 +76,11 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
           _ -> name
         end
 
-      {_, [line: line], _} = code
+      {line, code} =
+        case code do
+          {_, [line: line], _} -> {line, Macro.to_string(code)}
+          _ -> {__CALLER__.line, code}
+        end
 
       quote line: line do
         test "#{unquote(test_name)}" do
@@ -87,7 +91,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             analysis_module: ""
           }
 
-          result = @exercise_test_module.analyze(empty_submission, unquote(Macro.escape(code)))
+          result = @exercise_test_module.analyze(empty_submission, unquote(code))
 
           comments =
             result.comments

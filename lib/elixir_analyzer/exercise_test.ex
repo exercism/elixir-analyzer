@@ -44,17 +44,18 @@ defmodule ElixirAnalyzer.ExerciseTest do
       def analyze(%Submission{} = submission, code_as_string) when is_binary(code_as_string) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
-            analyze(submission, code_ast)
+            do_analyze(submission, code_ast, code_as_string)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
         end
       end
 
-      def analyze(%Submission{} = submission, code_ast) do
+      defp do_analyze(%Submission{} = submission, code_ast, code_as_string)
+           when is_binary(code_as_string) do
         feature_results = unquote(feature_tests) |> filter_suppressed_results()
         assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
-        common_checks_results = CommonChecks.run(code_ast, Macro.to_string(code_ast))
+        common_checks_results = CommonChecks.run(code_ast, code_as_string)
 
         submission
         |> append_test_comments(feature_results)

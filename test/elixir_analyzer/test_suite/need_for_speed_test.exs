@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.TestSuite.NeedForSpeedTest do
 
   test_exercise_analysis "perfect solution",
     comments: [] do
+    ~S'''
     defmodule NeedForSpeed do
       alias NeedForSpeed.Race
       alias NeedForSpeed.RemoteControlCar, as: Car
@@ -43,6 +44,7 @@ defmodule ElixirAnalyzer.TestSuite.NeedForSpeedTest do
         end
       end
     end
+    '''
   end
 
   test_exercise_analysis "does not import IO with :only",
