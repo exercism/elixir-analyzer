@@ -1,4 +1,6 @@
 # credo:disable-for-this-file Credo.Check.Readability.VariableNames
+# credo:disable-for-this-file Credo.Check.Readability.FunctionNames
+# credo:disable-for-this-file Credo.Check.Readability.ModuleAttributeNames
 
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
   use ExUnit.Case
@@ -421,6 +423,47 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
              ]
+    end
+  end
+
+  describe "unrelated code" do
+    test "it should NOT report function names" do
+      code =
+        quote do
+          defmodule User do
+            def firstName(user), do: user.first_name
+            defp registeredInLastQuarter?(user), do: true
+            defmacro validateUser!(user), do: true
+            defmacrop doValidateUser(user), do: true
+          end
+        end
+
+      assert VariableNames.run(code) == []
+    end
+
+    test "it should NOT report function names when no arg and missing parenthesis" do
+      code =
+        quote do
+          defmodule User do
+            def firstName, do: nil
+            defp registeredInLastQuarter?, do: true
+            defmacro validateUser!, do: true
+            defmacrop doValidateUser, do: true
+          end
+        end
+
+      assert VariableNames.run(code) == []
+    end
+
+    test "it should NOT report module attribute names" do
+      code =
+        quote do
+          defmodule CredoSampleModule do
+            @someModuleAttribute 7
+          end
+        end
+
+      assert VariableNames.run(code) == []
     end
   end
 end
