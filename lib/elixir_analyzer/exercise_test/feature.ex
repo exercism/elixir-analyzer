@@ -78,7 +78,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
         form
       else
         Macro.prewalk(form, fn
-          {name, _, param} -> {name, :_ignore, param}
+          {name, _, param} -> {name, [:_ignore], param}
           node -> node
         end)
       end
@@ -95,28 +95,9 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
           {ast, false}
       end
 
-    find_ast_string =
-      ast
-      |> Macro.prewalk(fn
-        {atom, meta, param} = node ->
-          cond do
-            atom == :_ignore -> "_"
-            atom == :_shallow_ignore -> {"_", "_", param}
-            meta == :_ignore -> {atom, "_", param}
-            true -> node
-          end
-
-        node ->
-          node
-      end)
-      # Turn the AST into a string
-      |> inspect()
-      # Replace double-quoted ""_"" with "_"
-      |> String.replace("\"_\"", "_")
-
     {node,
      update_in(acc, [:forms], fn fs ->
-       [[{:find_ast_string, find_ast_string}, {:block_params, block_params}] | fs]
+       [[{:find_ast, ast}, {:block_params, block_params}] | fs]
      end)}
   end
 
