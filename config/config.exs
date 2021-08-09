@@ -54,6 +54,9 @@ config :elixir_analyzer,
     "need-for-speed" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NeedForSpeed
     },
+    "name-badge" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
+    },
 
     # practice exercises
     "accumulate" => %{

@@ -60,6 +60,8 @@ defmodule ElixirAnalyzer.Constants do
 
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
+    # Name Badge Comments
+    name_badge_use_if: "elixir.name-badge.use_if",
 
     # Need For Speed Comments
     need_for_speed_import_IO_with_only: "elixir.need-for-speed.import_IO_with_only",
