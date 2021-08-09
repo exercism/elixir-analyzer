@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @dialyzer no_match: {:analyze, 2}
+      @dialyzer no_match: {:do_analyze, 3}
     end
   end
 
