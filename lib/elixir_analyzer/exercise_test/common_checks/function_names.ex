@@ -38,6 +38,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames do
     end
   end
 
+  defp traverse({op, _meta, [{:when, _, [{name, _, _} | _]} | _]} = ast, names)
+       when op in @def_ops do
+    if snake_case?(name) do
+      {ast, names}
+    else
+      {ast, [name | names]}
+    end
+  end
+
   defp traverse({op, _meta, [{name, _meta2, _arguments} | _]} = ast, names) when op in @def_ops do
     if snake_case?(name) do
       {ast, names}
