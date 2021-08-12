@@ -23,7 +23,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
       end,
       defmodule MyModule do
         def foo() do
-          cond do
+          case {} do
             _ -> :ok
           end
         end
@@ -63,6 +63,9 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
 
             true ->
               name = "Eve"
+
+            nil ->
+              name = "Alice"
           end
         end
       end,
