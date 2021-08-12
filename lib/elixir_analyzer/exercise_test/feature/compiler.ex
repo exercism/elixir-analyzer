@@ -179,6 +179,28 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
     true
   end
 
+  def form_match?(
+        {:_block_includes, _, [[do: {:__block__, _, form_params}]]},
+        {:__block__, _, params}
+      ) do
+    all_forms_are_found?(form_params, params)
+  end
+
+  def form_match?({:_block_includes, _, [[do: form_params]]}, params)
+      when is_list(form_params) do
+    all_forms_are_found?(form_params, params)
+  end
+
+  def form_match?({:_block_includes, _, [[do: form_params]]}, params) do
+    case params do
+      {:__block__, _, params} ->
+        Enum.any?(params, fn param -> form_match?(form_params, param) end)
+
+      _ ->
+        form_match?(form_params, params)
+    end
+  end
+
   def form_match?(form_params, params) when is_list(form_params) and is_list(params) do
     length(form_params) == length(params) and
       Enum.zip_with(form_params, params, &form_match?/2)
@@ -196,6 +218,21 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
   end
 
   def form_match?(_, _) do
+    false
+  end
+
+  defp all_forms_are_found?(form_params, params) when is_list(form_params) and is_list(params) do
+    Enum.reduce_while(params, form_params, fn
+      _, [] ->
+        {:halt, []}
+
+      line, [form_head | form_tail] = form ->
+        {:cont, if(form_match?(form_head, line), do: form_tail, else: form)}
+    end)
+    |> Enum.empty?()
+  end
+
+  defp all_forms_are_found?(form_params, _params) when is_list(form_params) do
     false
   end
 end
