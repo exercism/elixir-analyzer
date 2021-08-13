@@ -2,38 +2,73 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.Support.AnalyzerVerification.Feature.BlockIncludes
 
-  test_exercise_analysis "code with an :ok in it",
-    comments_exclude: ["cannot detect :ok"] do
-    [
-      defmodule MyModule do
-        def foo() do
-          :ok
-        end
-      end,
-      defmodule MyModule do
-        def foo() do
-          x = "hi"
-          :ok
-        end
-      end,
-      defmodule MyModule do
-        def foo(:ok) do
-          IO.puts("hello")
-        end
-      end,
-      defmodule MyModule do
-        def foo() do
-          case {} do
-            _ -> :ok
+  describe "finding a single expression" do
+    test_exercise_analysis "code with an :ok in it",
+      comments_exclude: ["cannot detect :ok"] do
+      [
+        defmodule MyModule do
+          def foo() do
+            :ok
+          end
+        end,
+        defmodule MyModule do
+          def foo() do
+            x = "hi"
+            :ok
+          end
+        end,
+        defmodule MyModule do
+          def foo(:ok) do
+            IO.puts("hello")
+          end
+        end,
+        defmodule MyModule do
+          def foo() do
+            case {} do
+              _ -> :ok
+            end
+          end
+        end,
+        defmodule MyModule do
+          def foo() when :ok do
+            true
+          end
+        end,
+        defmodule MyModule do
+          def foo() do
+            :ok.lets_pretend_this_is_an_erlang_module()
+            # Erlang function call counts as atom literal
           end
         end
-      end,
-      defmodule MyModule do
-        def foo() when :ok do
-          true
+      ]
+    end
+
+    test_exercise_analysis "code without an :ok in it",
+      comments_include: ["cannot detect :ok"] do
+      [
+        defmodule MyModule do
+          def foo() do
+            :error
+          end
+        end,
+        defmodule MyModule do
+          def foo() do
+            :ok_nope
+          end
+        end,
+        defmodule MyModule do
+          def ok() do
+            # function name does not count as atom literal
+          end
+        end,
+        defmodule MyModule do
+          def foo() do
+            ok()
+            # function call doesn't count as atom literal
+          end
         end
-      end
-    ]
+      ]
+    end
   end
 
   test_exercise_analysis "code with two lines",
