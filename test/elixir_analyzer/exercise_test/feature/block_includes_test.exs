@@ -150,6 +150,9 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
 
             true ->
               greeting = "hi #{name}"
+
+            :truthy ->
+              :ok
           end
         end
       end,
@@ -244,6 +247,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
 
           cond do
             is_list(thing) -> "Not applicable"
+            is_nil(thin) -> "Even worse"
             _ -> "Whoops"
           end
         end
