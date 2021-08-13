@@ -72,4 +72,32 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.Feature.BlockIncludes do
       end
     end
   end
+
+  feature "cannot match a line and a block on the same level" do
+    type :essential
+    comment "could match a line and a block in a row"
+
+    form do
+      :hello
+
+      _block_includes do
+        :goodbye
+      end
+    end
+  end
+
+  feature "cannot match two blocks in a row on the same level" do
+    type :essential
+    comment "could use two in a row"
+
+    form do
+      _block_includes do
+        :hello
+      end
+
+      _block_includes do
+        :goodbye
+      end
+    end
+  end
 end

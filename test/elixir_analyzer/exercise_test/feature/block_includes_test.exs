@@ -127,6 +127,54 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
     ]
   end
 
+  test_exercise_analysis "code without the two lines",
+    comments_include: ["cannot detect two lines"] do
+    [
+      defmodule MyModule do
+        def foo() do
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          # Wrong order 
+          greeting = "hi #{name}"
+          name = "Bob"
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          cond do
+            # In different blocks
+            false ->
+              name = "Bob"
+
+            true ->
+              greeting = "hi #{name}"
+          end
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          if nil do
+            name = "Bob"
+          else
+            greeting = "hi #{name}"
+          end
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          name = "Bob"
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          greeting = "hi #{name}"
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "code with pattern matches",
     comments_exclude: ["cannot detect pattern matches"] do
     [
@@ -152,6 +200,49 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
           cond do
             :ok -> "All good"
             is_nil(thing) -> "No good"
+            is_list(thing) -> "Not applicable"
+            _ -> "Whoops"
+          end
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "code without pattern matches",
+    comments_include: ["cannot detect pattern matches"] do
+    [
+      defmodule MyModule do
+        def foo(thing) do
+          case thing do
+            :ok -> "All good"
+          end
+        end
+      end,
+      defmodule MyModule do
+        def foo(thing) do
+          case thing do
+            _ -> "Whoops"
+          end
+        end
+      end,
+      defmodule MyModule do
+        def foo(thing) do
+          case thing do
+            # Wrong order
+            _ -> "Whoops"
+            :ok -> "All good"
+            :err -> "Error"
+          end
+        end
+      end,
+      defmodule MyModule do
+        def foo(thing) do
+          cond do
+            :ok -> "All good"
+            is_nil(thing) -> "No good"
+          end
+
+          cond do
             is_list(thing) -> "Not applicable"
             _ -> "Whoops"
           end
@@ -204,6 +295,48 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
     ]
   end
 
+  test_exercise_analysis "code without functions",
+    comments_include: ["cannot detect functions"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          :ok
+        end
+      end,
+      defmodule MyModule do
+        def bar(baz) do
+          {:err, baz}
+        end
+      end,
+      defmodule MyModule do
+        # wrong order
+        def bar(baz) do
+        end
+
+        def foo() do
+        end
+      end,
+      defmodule MyModule do
+        # one argument in foo
+        def foo(?!) do
+          IO.puts("!")
+        end
+
+        def bar(_) do
+          :a
+          :b
+          :c
+        end
+      end,
+      defmodule MyModule do
+        def foo(), do: :hello
+
+        # Missing argument
+        def bar(), do: :bye
+      end
+    ]
+  end
+
   test_exercise_analysis "code with nested blocks",
     comments_exclude: ["cannot detect nested blocks"] do
     [
@@ -227,6 +360,40 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockIncludesTest do
 
         def baz(_) do
           :ok
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "code without nested blocks",
+    comments_include: ["cannot detect nested blocks"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          name = "Bob"
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+        end
+
+        def bar() do
+          age = 12
+          name = "Bob"
+          eyes = "Blue"
+          greeting = "hi #{name}"
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "a block matches a full block",
+    comments_exclude: ["could use two in a row", "could match a line and a block in a row"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          :hello
+          :goodbye
         end
       end
     ]
