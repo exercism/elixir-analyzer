@@ -63,7 +63,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
   end
 
   test_exercise_analysis "does not contain all of try-rescue-else-after",
-    comments_include: [Constants.try_rescue_else_after()] do
+    comments_include: [Constants.rpn_calculator_output_try_rescue_else_after()] do
     [
       defmodule RPNCalculator.Output do
         def write(resource, filename, equation) do
@@ -128,7 +128,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
   end
 
   test_exercise_analysis "open in try",
-    comments_include: [Constants.open_before_try()] do
+    comments_include: [Constants.rpn_calculator_output_open_before_try()] do
     defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         try do
@@ -146,7 +146,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
   end
 
   test_exercise_analysis "write before try",
-    comments: [Constants.write_in_try()] do
+    comments: [Constants.rpn_calculator_output_write_in_try()] do
     [
       defmodule RPNCalculator.Output do
         def write(resource, filename, equation) do
@@ -186,7 +186,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
   end
 
   test_exercise_analysis "output not in else",
-    comments_include: [Constants.output_in_else()] do
+    comments_include: [Constants.rpn_calculator_output_output_in_else()] do
     defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         {:ok, file} = resource.open(filename)
@@ -209,7 +209,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
   end
 
   test_exercise_analysis "close after after",
-    comments_include: [Constants.close_in_after()] do
+    comments_include: [Constants.rpn_calculator_output_close_in_after()] do
     defmodule RPNCalculator.Output do
       def write(resource, filename, equation) do
         {:ok, file} = resource.open(filename)

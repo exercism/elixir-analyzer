@@ -68,11 +68,11 @@ defmodule ElixirAnalyzer.Constants do
     need_for_speed_import_ANSI_with_except: "elixir.need-for-speed.import_ANSI_with_except",
     need_for_speed_do_not_modify_code: "elixir.need-for-speed.do_not_modify_code",
     # RPN Calculator Output
-    try_rescue_else_after: "elixir.rpn-calculator-output.try_rescue_else_after",
-    open_before_try: "elixir.rpn-calculator-output.open_before_try",
-    write_in_try: "elixir.rpn-calculator-output.write_in_try",
-    output_in_else: "elixir.rpn-calculator-output.output_in_else",
-    close_in_after: "elixir.rpn-calculator-output.close_in_after",
+    rpn_calculator_output_try_rescue_else_after: "elixir.rpn-calculator-output.try_rescue_else_after",
+    rpn_calculator_output_open_before_try: "elixir.rpn-calculator-output.open_before_try",
+    rpn_calculator_output_write_in_try: "elixir.rpn-calculator-output.write_in_try",
+    rpn_calculator_output_output_in_else: "elixir.rpn-calculator-output.output_in_else",
+    rpn_calculator_output_close_in_after: "elixir.rpn-calculator-output.close_in_after",
 
     # Practice exercises
 

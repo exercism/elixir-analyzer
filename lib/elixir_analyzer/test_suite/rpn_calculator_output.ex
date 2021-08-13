@@ -4,12 +4,13 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
   """
 
   use ElixirAnalyzer.ExerciseTest
+  alias ElixirAnalyzer.Constants
 
   feature "uses all of try-rescue-else-after" do
     type :essential
     find :all
     depth 2
-    comment ElixirAnalyzer.Constants.try_rescue_else_after()
+    comment Constants.rpn_calculator_output_try_rescue_else_after()
 
     form do
       try do
@@ -28,7 +29,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
     type :essential
     find :all
     depth 2
-    comment ElixirAnalyzer.Constants.open_before_try()
+    comment Constants.rpn_calculator_output_open_before_try()
 
     form do
       _block_includes do
@@ -42,7 +43,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
     type :essential
     find :all
     depth 2
-    comment ElixirAnalyzer.Constants.write_in_try()
+    comment Constants.rpn_calculator_output_write_in_try()
 
     form do
       try do
@@ -63,7 +64,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
     type :essential
     find :all
     depth 2
-    comment ElixirAnalyzer.Constants.output_in_else()
+    comment Constants.rpn_calculator_output_output_in_else()
 
     form do
       try do
@@ -84,7 +85,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
     type :essential
     find :all
     depth 2
-    comment ElixirAnalyzer.Constants.close_in_after()
+    comment Constants.rpn_calculator_output_close_in_after()
 
     form do
       try do
