@@ -76,3 +76,22 @@ feature "description" do
   end
 end
 ```
+
+## Asserting two function calls in a block appear in order
+
+This check will also pass if there are other function calls in between, before, or after.
+
+```elixir
+feature "description" do
+  find :any
+
+  form do
+    def read_file(_ignore) do
+      _block_includes do
+        _ignore = File.open(_ignore)
+        File.close(_ignore)
+      end
+    end
+  end
+end
+```
