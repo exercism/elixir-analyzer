@@ -191,19 +191,19 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
       def write(resource, filename, equation) do
         {:ok, file} = resource.open(filename)
 
-        try do
-          IO.write(file, equation)
-        rescue
-          _ -> ok = false
-        else
-          :ok -> ok = true
-        after
-          resource.close(file)
-        end
+        result =
+          try do
+            IO.write(file, equation)
+          rescue
+            error -> error
+          after
+            resource.close(file)
+          end
 
-        if ok,
-          do: {:ok, equation},
-          else: {:error, "Unable to write to resource"}
+        case result do
+          :ok -> {:ok, equation}
+          _ -> {:error, "Unable to write to resource"}
+        end
       end
     end
   end
