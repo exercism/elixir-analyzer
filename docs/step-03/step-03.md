@@ -154,7 +154,7 @@ end
 will match the following function
 
 ```elixir
-def write(resource, content)
+def write(resource, content) do
   pipe = open(resource)
   dump_content(pipe, content)
   |> flush()
