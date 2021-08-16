@@ -60,6 +60,9 @@ config :elixir_analyzer,
     "rpn-calculator-output" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorOutput
     },
+    "rpn-calculator-inspection" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorInspection
+    },
 
     # practice exercises
     "accumulate" => %{

@@ -76,6 +76,9 @@ defmodule ElixirAnalyzer.Constants do
     rpn_calculator_output_output_in_else: "elixir.rpn-calculator-output.output_in_else",
     rpn_calculator_output_close_in_after: "elixir.rpn-calculator-output.close_in_after",
 
+    # RPN Calculator Inspection
+    rpn_calculator_inspection_use_start_link: "elixir.rpn-calculator-inspection.use_start_link",
+
     # Practice exercises
 
     # Accumulate Comments
