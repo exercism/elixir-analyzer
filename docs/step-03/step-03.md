@@ -133,7 +133,52 @@ end
 
 `_ignore` will match any node in the AST. In some special cases, that might be too permissive. You can use `_shallow_ignore` to match any node (name and metadata), but continue matching its children.
 
-##### 2.1 Limitations
+##### 2.1 The `_block_includes` feature
+
+The `_block_includes` feature can be used inside of `form` to match a number of lines inside of a block of code. The block of code may contain other lines before, after or between the lines you are trying to match. The order of the lines needs to be the same.
+
+For example, the following feature
+
+```elixir
+feature "opens and closes the resource" do
+  form do
+    _block_includes do
+      _ignore = open(resource)
+      close(resource)
+    end
+  end
+end
+
+```
+
+will match the following function
+
+```elixir
+def write(resource, content) do
+  pipe = open(resource)
+  dump_content(pipe, content)
+  |> flush()
+  close(resource)
+  :ok
+end
+```
+
+Note that `_block_includes` consumes all the lines of a block of code, so it cannot be used right before or after another match.
+
+```elixir
+# do not use _block_includes in this way
+form do
+  _block_includes do
+    _ignore = open(resource)
+    close(resource)
+  end
+  # the following line can never match because _block_includes has consumed the full block
+  :ok
+end
+```
+
+
+##### 2.2 Limitations
 
 Slightly different syntax can produce exactly the same AST. That means that certain details cannot be distinguished by this analyzer. If they cannot be distinguished, they cannot be verified by the analyzer, but they also don't need to be both listed when specifying all of the forms for a feature.
 

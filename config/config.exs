@@ -57,6 +57,9 @@ config :elixir_analyzer,
     "name-badge" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
     },
+    "rpn-calculator-output" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorOutput
+    },
 
     # practice exercises
     "accumulate" => %{
