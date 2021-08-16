@@ -1,2 +1,2 @@
 ExUnit.start()
-ExUnit.configure(exclude: [:pending, :external], trace: true)
+ExUnit.configure(exclude: [:pending, :external])
