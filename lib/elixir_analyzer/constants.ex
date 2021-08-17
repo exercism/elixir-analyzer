@@ -68,6 +68,16 @@ defmodule ElixirAnalyzer.Constants do
     need_for_speed_import_IO_with_only: "elixir.need-for-speed.import_IO_with_only",
     need_for_speed_import_ANSI_with_except: "elixir.need-for-speed.import_ANSI_with_except",
     need_for_speed_do_not_modify_code: "elixir.need-for-speed.do_not_modify_code",
+
+    # RPG Character Sheet
+    rpg_character_sheet_welcome_ends_with_IO_puts:
+      "elixir.rpg-character-sheet.welcome_ends_with_IO_puts",
+    rpg_character_sheet_run_uses_other_functions:
+      "elixir.rpg-character-sheet.run_uses_other_functions",
+    rpg_character_sheet_run_ends_with_IO_inspect:
+      "elixir.rpg-character-sheet.ends_with_IO_inspect",
+    rpg_character_sheet_IO_inspect_uses_label: "elixir.rpg-character-sheet.IO_inspect_uses_label",
+
     # RPN Calculator Output
     rpn_calculator_output_try_rescue_else_after:
       "elixir.rpn-calculator-output.try_rescue_else_after",
