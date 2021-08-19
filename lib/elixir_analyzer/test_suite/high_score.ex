@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
 
   use ElixirAnalyzer.ExerciseTest
 
-  feature "uses a default argument" do
+  feature "uses the module attribute in add_player function head" do
     find :any
     type :actionable
     comment ElixirAnalyzer.Constants.high_score_use_default_argument_with_module_attribute()
@@ -24,19 +24,6 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
 
     form do
       @_shallow_ignore 0
-    end
-  end
-
-  feature "uses the module attribute in add_player function head" do
-    find :any
-    type :essential
-    suppress_if "uses a default argument", :fail
-    comment ElixirAnalyzer.Constants.high_score_use_module_attribute()
-
-    form do
-      def add_player(_ignore, _ignore, _ignore \\ @_ignore) do
-        _ignore
-      end
     end
   end
 

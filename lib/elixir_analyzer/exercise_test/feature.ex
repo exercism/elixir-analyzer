@@ -4,6 +4,9 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   whose AST matches part of the AST of the solution.
   """
 
+  alias ElixirAnalyzer.ExerciseTest.Feature
+  defexception message: "A duplicate feature has been found"
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -28,16 +31,43 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     :ok = validate_feature_block(block)
     {_, feature_data} = Macro.prewalk(block, feature_data, &gather_feature_data/2)
 
+    # Check if feature forms are unique
+    feature_data.forms
+    |> Enum.reverse()
+    |> Enum.with_index(1)
+    |> Enum.sort()
+    |> then(fn forms -> [forms, tl(forms)] end)
+    |> Enum.zip_with(fn
+      [{form, i}, {form, j}] ->
+        raise Feature,
+          message:
+            "Forms number #{min(i, j)} and #{max(i, j)} of \"#{description}\" compile to the same value."
+
+      _ ->
+        :ok
+    end)
+
     # made into a key-val list for better quoting
-    feature_forms = feature_data.forms
+    feature_forms = Enum.sort(feature_data.forms)
     feature_data = Map.delete(feature_data, :forms)
     feature_data = %{feature_data | meta: Map.to_list(feature_data.meta)}
     feature_data = Map.to_list(feature_data)
 
     quote do
-      @feature_tests [
-        {unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests
-      ]
+      # Check if the feature is unique
+      case Enum.filter(@feature_tests, fn {_data, forms} ->
+             forms == unquote(Macro.escape(feature_forms))
+           end) do
+        [{data, _forms} | _] ->
+          raise Feature,
+            message:
+              "Features \"#{data[:name]}\" and \"#{unquote(description)}\" compile to the same value."
+
+        _ ->
+          @feature_tests [
+            {unquote(feature_data), unquote(Macro.escape(feature_forms))} | @feature_tests
+          ]
+      end
     end
   end
 
