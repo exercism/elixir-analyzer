@@ -1,10 +1,10 @@
 defmodule Feature.DuplicateFeaturesTest do
   use ExUnit.Case
-  alias ElixirAnalyzer.ExerciseTest.Feature
+  alias ElixirAnalyzer.ExerciseTest.Feature.FeatureError
 
   describe "Catches duplicate forms" do
     test "Same forms" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Forms number 1 and 2 of \"feature 1\" compile to the same value.",
                    fn ->
                      defmodule FormFail do
@@ -32,7 +32,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Same forms spread apart" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Forms number 2 and 4 of \"feature 1\" compile to the same value.",
                    fn ->
                      defmodule FormFail do
@@ -72,7 +72,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Catches multiline strings" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Forms number 1 and 2 of \"feature 1\" compile to the same value.",
                    fn ->
                      defmodule FormFail do
@@ -103,7 +103,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Catches single line do blocks" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Forms number 1 and 2 of \"feature 1\" compile to the same value.",
                    fn ->
                      defmodule FormFail do
@@ -131,7 +131,7 @@ defmodule Feature.DuplicateFeaturesTest do
 
   describe "Catches duplicate features" do
     test "Same features" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Features \"feature 1\" and \"feature 1\" compile to the same value.",
                    fn ->
                      defmodule FeatureFail do
@@ -165,7 +165,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Same feature with different metadata" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Features \"feature 1\" and \"feature 2\" compile to the same value.",
                    fn ->
                      defmodule FeatureFail do
@@ -199,7 +199,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Features with more than one form" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Features \"feature 1\" and \"feature 2\" compile to the same value.",
                    fn ->
                      defmodule FeatureFail do
@@ -241,7 +241,7 @@ defmodule Feature.DuplicateFeaturesTest do
     end
 
     test "Features with more than one form in different order" do
-      assert_raise Feature,
+      assert_raise FeatureError,
                    "Features \"feature 1\" and \"feature 2\" compile to the same value.",
                    fn ->
                      defmodule FeatureFail do

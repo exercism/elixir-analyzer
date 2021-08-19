@@ -4,8 +4,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   whose AST matches part of the AST of the solution.
   """
 
-  alias ElixirAnalyzer.ExerciseTest.Feature
-  defexception message: "A duplicate feature has been found"
+  alias ElixirAnalyzer.ExerciseTest.Feature.FeatureError
 
   @doc false
   defmacro __using__(_opts) do
@@ -39,7 +38,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     |> then(fn forms -> [forms, tl(forms)] end)
     |> Enum.zip_with(fn
       [{form, i}, {form, j}] ->
-        raise Feature,
+        raise FeatureError,
           message:
             "Forms number #{min(i, j)} and #{max(i, j)} of \"#{description}\" compile to the same value."
 
@@ -59,7 +58,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
              forms == unquote(Macro.escape(feature_forms))
            end) do
         [{data, _forms} | _] ->
-          raise Feature,
+          raise FeatureError,
             message:
               "Features \"#{data[:name]}\" and \"#{unquote(description)}\" compile to the same value."
 
