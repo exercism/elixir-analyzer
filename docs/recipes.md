@@ -98,7 +98,7 @@ end
 
 ## Asserting that a block finished with a specific function 
 
-This check will also pass if there are other function calls in between or before (bot not after). When used to match a single line, make sure to place `_block_ends_with` inside a context (like a module or function definition) as in the example below.
+This check will also pass if there are other function calls in between or before (but not after). When used to match a single line, make sure to place `_block_ends_with` inside a context (like a module or function definition) as in the example below.
 
 ```elixir
 feature "description" do

@@ -341,7 +341,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockEndsWithTest do
     ]
   end
 
-  test_exercise_analysis "code not endinf with functions",
+  test_exercise_analysis "code not ending with functions",
     comments_include: ["cannot detect functions"] do
     [
       defmodule MyModule do
