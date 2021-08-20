@@ -44,23 +44,43 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheetTest do
     end
   end
 
-  test_exercise_analysis "welcome doesn't end with IO.puts",
-    comments_include: [Constants.rpg_character_sheet_welcome_ends_with_IO_puts()] do
-    [
-      defmodule RPG.CharacterSheet do
-        def welcome() do
-          IO.puts("Welcome! Let's fill out your character sheet together.")
-          :ok
+  describe "implicit :ok return" do
+    test_exercise_analysis "ending with IO.write is not ideal, but allowed",
+      comments_exclude: [Constants.rpg_character_sheet_welcome_ends_with_IO_puts()] do
+      [
+        defmodule RPG.CharacterSheet do
+          def welcome() do
+            IO.write("Welcome! Let's fill out your character sheet together.\n")
+          end
         end
-      end,
-      defmodule RPG.CharacterSheet do
-        def welcome() do
-          text = "Welcome! Let's fill out your character sheet together."
-          IO.puts(text)
-          :ok
+      ]
+    end
+
+    test_exercise_analysis "welcome doesn't end with IO.puts or IO write",
+      comments_include: [Constants.rpg_character_sheet_welcome_ends_with_IO_puts()] do
+      [
+        defmodule RPG.CharacterSheet do
+          def welcome() do
+            IO.puts("Welcome! Let's fill out your character sheet together.")
+            :ok
+          end
+        end,
+        defmodule RPG.CharacterSheet do
+          def welcome() do
+            text = "Welcome! Let's fill out your character sheet together."
+            IO.puts(text)
+            :ok
+          end
+        end,
+        defmodule RPG.CharacterSheet do
+          def welcome() do
+            text = "Welcome! Let's fill out your character sheet together."
+            IO.write(text <> "\n")
+            :ok
+          end
         end
-      end
-    ]
+      ]
+    end
   end
 
   test_exercise_analysis "run doesn't reuse functions",
