@@ -61,6 +61,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         |> append_test_comments(feature_results)
         |> append_test_comments(assert_call_results)
         |> append_test_comments(common_checks_results)
+        |> Submission.sort_comments()
       end
 
       defp filter_suppressed_results(feature_results) do

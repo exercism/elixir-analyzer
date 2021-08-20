@@ -84,6 +84,20 @@ defmodule ElixirAnalyzer.Submission do
     %{submission | comments: comments}
   end
 
+  @comment_importance ~w(essential actionable informative celebratory)a
+
+  @doc """
+  Sort submission comments by importance (`:essential` to `:celebratory`)
+  """
+  def sort_comments(%__MODULE__{comments: comments} = submission) do
+    comments =
+      Enum.sort_by(comments, fn %{type: type} ->
+        Enum.find_index(@comment_importance, &(&1 == type))
+      end)
+
+    %{submission | comments: comments}
+  end
+
   defp get_summary(%__MODULE__{halted: true, comments: comments} = submission)
        when comments == [] do
     case submission.halt_reason do
