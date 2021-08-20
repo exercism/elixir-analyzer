@@ -462,14 +462,44 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockEndsWithTest do
     ]
   end
 
-  test_exercise_analysis "without context, a single line always matches",
-    comments_exclude: ["could not match a line"] do
+  test_exercise_analysis "without context, :ok will match anywhere",
+    comments_exclude: ["without context: could not match a line"] do
     [
       defmodule MyModule do
-        def bar() do
-          # Not the last, but matches
-          foo(:ok)
+        def foo() do
+          # Not the last, but matches because foo() context was not provided
+          :ok
           x = 42
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "with context, :ok will be as expected",
+    comments_include: ["with context: could not match :ok"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          # Not the last, so doesn't match if foo() context is provided
+          :ok
+          x = 42
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "with context, :ok will be matched if last",
+    comments_exclude: ["with context: could not match :ok"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          x = 42
+          :ok
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          :ok
         end
       end
     ]
