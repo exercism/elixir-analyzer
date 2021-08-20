@@ -7,7 +7,7 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheet do
   alias ElixirAnalyzer.Constants
 
   feature "welcome ends with IO.puts" do
-    type :essential
+    type :actionable
     find :all
     depth 1
     comment Constants.rpg_character_sheet_welcome_ends_with_IO_puts()
@@ -22,28 +22,28 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheet do
   end
 
   assert_call "run uses welcome" do
-    type :essential
+    type :actionable
     called_fn name: :welcome
     calling_fn module: RPG.CharacterSheet, name: :run
     comment ElixirAnalyzer.Constants.rpg_character_sheet_run_uses_other_functions()
   end
 
   assert_call "run uses ask_name" do
-    type :essential
+    type :actionable
     called_fn name: :ask_name
     calling_fn module: RPG.CharacterSheet, name: :run
     comment ElixirAnalyzer.Constants.rpg_character_sheet_run_uses_other_functions()
   end
 
   assert_call "run uses ask_class" do
-    type :essential
+    type :actionable
     called_fn name: :ask_class
     calling_fn module: RPG.CharacterSheet, name: :run
     comment ElixirAnalyzer.Constants.rpg_character_sheet_run_uses_other_functions()
   end
 
   assert_call "run uses ask_level" do
-    type :essential
+    type :actionable
     called_fn name: :ask_level
     calling_fn module: RPG.CharacterSheet, name: :run
     comment ElixirAnalyzer.Constants.rpg_character_sheet_run_uses_other_functions()
