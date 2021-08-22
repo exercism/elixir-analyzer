@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommentOrderTest do
 
   test_exercise_analysis "triggering module",
     # Comments in order of importance
-    comments: ["essential", "actionable", "informative", "celebratory"] do
+    comments: ["celebratory", "essential", "actionable", "informative"] do
     defmodule TriggeringtModule do
       def foo() do
         :celebratory
