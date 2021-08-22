@@ -84,6 +84,9 @@ defmodule ElixirAnalyzer.Constants do
     # Accumulate Comments
     accumulate_use_recursion: "elixir.accumulate.use_recursion",
 
+    # List Ops Comments
+    list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
+
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",
 

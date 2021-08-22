@@ -63,19 +63,27 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
     comments: [
       "found a call to Enum.map in solution"
     ] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        Enum.map([], fn x -> x + 1 end)
-      end
+    [
+      defmodule AssertNoCallVerification do
+        def function() do
+          Enum.map([], fn x -> x + 1 end)
+        end
 
-      def helper do
-        :helped
-      end
+        def helper do
+          :helped
+        end
 
-      defp private_helper do
-        :privately_helped
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      defmodule AssertNoCallVerification do
+        # corner case: local function named the same as the forbidden called function
+        def map() do
+          Enum.map([], fn x -> x + 1 end)
+        end
       end
-    end
+    ]
   end
 
   test_exercise_analysis "calling a function with the same name doesn't trigger the check",

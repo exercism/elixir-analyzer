@@ -68,6 +68,9 @@ config :elixir_analyzer,
     "accumulate" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
     },
+    "list-ops" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.ListOps
+    },
     "square-root" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot
     },
