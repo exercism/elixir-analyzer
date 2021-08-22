@@ -51,6 +51,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   def assert(ast, called_fn, calling_fn) do
     acc = %{
+      in_module: nil,
       in_function_def: nil,
       in_function_modules: %{},
       modules_in_scope: %{},
@@ -81,15 +82,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       |> track_aliases(node)
       |> track_imports(node)
 
-    function_def? = function_def?(node)
-    name = extract_function_name(node)
-
-    case {function_def?, name} do
-      {true, name} ->
-        {node, %{acc | in_function_def: name}}
-
-      _ ->
-        {node, acc}
+    cond do
+      module_def?(node) -> {node, %{acc | in_module: extract_module_name(node)}}
+      function_def?(node) -> {node, %{acc | in_function_def: extract_function_name(node)}}
+      true -> {node, acc}
     end
   end
 
@@ -100,10 +96,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def annotate_and_find(node, acc) do
     {node, acc} = find(node, acc)
 
-    if function_def?(node) do
-      {node, %{acc | in_function_def: nil, in_function_modules: %{}}}
-    else
-      {node, acc}
+    cond do
+      module_def?(node) -> {node, %{acc | in_module: nil}}
+      function_def?(node) -> {node, %{acc | in_function_def: nil, in_function_modules: %{}}}
+      true -> {node, acc}
     end
   end
 
@@ -116,6 +112,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def find(
         node,
         %{
+          in_module: module,
           modules_in_scope: modules_in_scope,
           in_function_modules: in_function_modules,
           called_fn: called_fn,
@@ -126,9 +123,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     modules = Map.merge(modules_in_scope, in_function_modules)
 
     match_called_fn? =
-      matching_function_call?(node, called_fn, modules) and not in_function?(name, called_fn)
+      matching_function_call?(node, called_fn, modules) and
+        not in_function?({module, name}, called_fn)
 
-    match_calling_fn? = in_function?(name, calling_fn) or is_nil(calling_fn)
+    match_calling_fn? = in_function?({module, name}, calling_fn) or is_nil(calling_fn)
 
     if match_called_fn? and match_calling_fn? do
       {node, %{acc | found_called: true}}
@@ -209,6 +207,20 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_def?(_, _), do: false
 
   @doc """
+  node is a module definition
+  """
+  def module_def?({:defmodule, _, [{:__aliases__, _, _}, [do: _]]}), do: true
+  def module_def?(_node), do: false
+
+  @doc """
+  get the name of a module from a module definition node
+  """
+  def extract_module_name({:defmodule, _, [{:__aliases__, _, name}, [do: _]]}),
+    do: name
+
+  def extract_module_name(_), do: nil
+
+  @doc """
   node is a function definition
   """
   def function_def?({def_type, _, [{name, _, _}, [do: _]]})
@@ -230,7 +242,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   compare the name of the function to the function signature, if they match return true
   """
-  def in_function?(name, {_module_path, name}), do: true
+  def in_function?({module, name}, {module, name}), do: true
+  def in_function?({_, name}, {nil, name}), do: true
   def in_function?(_, _), do: false
 
   # track_imports
