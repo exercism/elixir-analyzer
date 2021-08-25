@@ -84,6 +84,20 @@ defmodule ElixirAnalyzer.Submission do
     %{submission | comments: comments}
   end
 
+  @comment_types ~w{celebratory essential actionable informative}a
+
+  @doc """
+  Sort submission comments by importance (`:essential` to `:celebratory`)
+  """
+  def sort_comments(%__MODULE__{comments: comments} = submission) do
+    comments =
+      Enum.sort_by(comments, fn %{type: type} ->
+        Enum.find_index(@comment_types, &(&1 == type))
+      end)
+
+    %{submission | comments: comments}
+  end
+
   defp get_summary(%__MODULE__{halted: true, comments: comments} = submission)
        when comments == [] do
     case submission.halt_reason do
@@ -92,7 +106,6 @@ defmodule ElixirAnalyzer.Submission do
     end
   end
 
-  @comment_types ~w{essential actionable informative celebratory}a
   @default_type_frequencies @comment_types |> Enum.map(&{&1, 0}) |> Enum.into(%{})
 
   defp get_summary(%__MODULE__{comments: comments}) do

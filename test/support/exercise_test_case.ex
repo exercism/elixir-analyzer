@@ -16,6 +16,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   using opts do
     quote do
       @exercise_test_module unquote(opts)[:exercise_test_module]
+      @unsorted_comments unquote(opts)[:unsorted_comments]
       require ElixirAnalyzer.ExerciseTestCase
       import ElixirAnalyzer.ExerciseTestCase
       alias ElixirAnalyzer.Constants
@@ -97,19 +98,29 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             result.comments
             |> Enum.map(fn comment_details -> comment_details.comment end)
 
-          Enum.map(Keyword.keys(unquote(assertions)), fn key ->
-            assert_comments(comments, key, unquote(assertions))
+          Enum.map(Keyword.keys(unquote(assertions)), fn
+            :comments ->
+              assert_comments(comments, :comments, unquote(assertions),
+                unsorted: @unsorted_comments
+              )
+
+            key ->
+              assert_comments(comments, key, unquote(assertions))
           end)
         end
       end
     end)
   end
 
-  def assert_comments(comments, :comments, assertions) do
+  def assert_comments(comments, :comments, assertions, unsorted: unsorted) do
     expected_comments = assertions[:comments]
 
-    if expected_comments do
-      assert Enum.sort(comments) == Enum.sort(expected_comments)
+    cond do
+      expected_comments && unsorted ->
+        assert comments == expected_comments
+
+      expected_comments ->
+        assert Enum.sort(comments) == Enum.sort(expected_comments)
     end
   end
 
