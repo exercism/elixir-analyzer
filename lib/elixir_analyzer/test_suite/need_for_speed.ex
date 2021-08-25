@@ -34,6 +34,7 @@ defmodule ElixirAnalyzer.TestSuite.NeedForSpeed do
         🏁 #{race.title} 🏁
         Status: #{Race.display_status(race)}
         Distance: #{Race.display_distance(race)}
+
         Contestants:
         """)
 
