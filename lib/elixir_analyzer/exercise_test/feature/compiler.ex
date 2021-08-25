@@ -201,6 +201,30 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
     end
   end
 
+  def form_match?(
+        {:_block_ends_with, _, [[do: {:__block__, _, form_params}]]},
+        {:__block__, _, params}
+      ) do
+    form_match?(List.last(form_params), List.last(params)) and
+      all_forms_are_found?(form_params, params)
+  end
+
+  def form_match?({:_block_ends_with, _, [[do: form_params]]}, params)
+      when is_list(form_params) do
+    form_match?(List.last(form_params), List.last(List.wrap(params))) and
+      all_forms_are_found?(form_params, params)
+  end
+
+  def form_match?({:_block_ends_with, _, [[do: form_params]]}, params) do
+    case params do
+      {:__block__, _, block_params} ->
+        form_match?(form_params, List.last(block_params))
+
+      _ ->
+        form_match?(form_params, List.last(List.wrap(params)))
+    end
+  end
+
   def form_match?(form_params, params) when is_list(form_params) and is_list(params) do
     length(form_params) == length(params) and
       Enum.zip_with(form_params, params, &form_match?/2)

@@ -57,6 +57,9 @@ config :elixir_analyzer,
     "name-badge" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
     },
+    "rpg-character-sheet" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RpgCharacterSheet
+    },
     "rpn-calculator-output" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorOutput
     },
