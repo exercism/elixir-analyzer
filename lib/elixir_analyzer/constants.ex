@@ -34,8 +34,7 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.boutique-suggestions.use_list_comprehensions",
 
     # File Sniffer Comments
-    file_sniffer_use_pattern_matching:
-      "elixir.file-sniffer.use_pattern_matching",
+    file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
 
     # Freelancer Rates Comments
     freelancer_rates_apply_discount_function_reuse:
@@ -82,7 +81,6 @@ defmodule ElixirAnalyzer.Constants do
 
     # RPN Calculator Inspection
     rpn_calculator_inspection_use_start_link: "elixir.rpn-calculator-inspection.use_start_link",
-
 
     # RPN Calculator Output
     rpn_calculator_output_try_rescue_else_after:
