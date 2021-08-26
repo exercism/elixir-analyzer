@@ -30,6 +30,9 @@ config :elixir_analyzer,
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
+    "file-sniffer" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.FileSniffer
+    },
     "freelancer-rates" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FreelancerRates
     },
@@ -45,26 +48,26 @@ config :elixir_analyzer,
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
-    "pacman-rules" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
-    },
-    "take-a-number" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
+    "name-badge" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
     },
     "need-for-speed" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NeedForSpeed
     },
-    "name-badge" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
+    "pacman-rules" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
     "rpg-character-sheet" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpgCharacterSheet
     },
+    "rpn-calculator-inspection" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorInspection
+    },
     "rpn-calculator-output" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorOutput
     },
-    "rpn-calculator-inspection" => %{
-      analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorInspection
+    "take-a-number" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
 
     # practice exercises

@@ -33,6 +33,10 @@ defmodule ElixirAnalyzer.Constants do
     boutique_suggestions_use_list_comprehensions:
       "elixir.boutique-suggestions.use_list_comprehensions",
 
+    # File Sniffer Comments
+    file_sniffer_use_pattern_matching:
+      "elixir.file-sniffer.use_pattern_matching",
+
     # Freelancer Rates Comments
     freelancer_rates_apply_discount_function_reuse:
       "elixir.freelancer-rates.apply_discount_function_reuse",
@@ -55,12 +59,6 @@ defmodule ElixirAnalyzer.Constants do
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",
 
-    # Pacman Rules Comments
-    pacman_rules_use_strictly_boolean_operators:
-      "elixir.pacman-rules.use_strictly_boolean_operators",
-
-    # Take A Number Comments
-    take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
     # Name Badge Comments
     name_badge_use_if: "elixir.name-badge.use_if",
 
@@ -68,6 +66,10 @@ defmodule ElixirAnalyzer.Constants do
     need_for_speed_import_IO_with_only: "elixir.need-for-speed.import_IO_with_only",
     need_for_speed_import_ANSI_with_except: "elixir.need-for-speed.import_ANSI_with_except",
     need_for_speed_do_not_modify_code: "elixir.need-for-speed.do_not_modify_code",
+
+    # Pacman Rules Comments
+    pacman_rules_use_strictly_boolean_operators:
+      "elixir.pacman-rules.use_strictly_boolean_operators",
 
     # RPG Character Sheet
     rpg_character_sheet_welcome_ends_with_IO_puts:
@@ -78,6 +80,10 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.rpg-character-sheet.ends_with_IO_inspect",
     rpg_character_sheet_IO_inspect_uses_label: "elixir.rpg-character-sheet.IO_inspect_uses_label",
 
+    # RPN Calculator Inspection
+    rpn_calculator_inspection_use_start_link: "elixir.rpn-calculator-inspection.use_start_link",
+
+
     # RPN Calculator Output
     rpn_calculator_output_try_rescue_else_after:
       "elixir.rpn-calculator-output.try_rescue_else_after",
@@ -85,9 +91,8 @@ defmodule ElixirAnalyzer.Constants do
     rpn_calculator_output_write_in_try: "elixir.rpn-calculator-output.write_in_try",
     rpn_calculator_output_output_in_else: "elixir.rpn-calculator-output.output_in_else",
     rpn_calculator_output_close_in_after: "elixir.rpn-calculator-output.close_in_after",
-
-    # RPN Calculator Inspection
-    rpn_calculator_inspection_use_start_link: "elixir.rpn-calculator-inspection.use_start_link",
+    # Take A Number Comments
+    take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
     # Practice exercises
 
