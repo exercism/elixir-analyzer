@@ -105,23 +105,23 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.Feature.BlockEndsWith do
 
   feature "should not use _block_ends_with with a single line without context" do
     type :essential
-    comment "without context: could not match :ok"
+    comment "without context: could not match :done"
 
     form do
       _block_ends_with do
-        :ok
+        :done
       end
     end
   end
 
   feature "should use _block_ends_with with a single line with a context" do
     type :essential
-    comment "with context: could not match :ok"
+    comment "with context: could not match :done"
 
     form do
       def foo() do
         _block_ends_with do
-          :ok
+          :done
         end
       end
     end
