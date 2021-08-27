@@ -37,7 +37,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
       defmodule FileSniffer do
         def type_from_binary(<<?B, ?M, _::binary>>), do: "image/bmp"
 
-        def type_from_binary(<<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, _::binary>>),
+        def type_from_binary(<<0x89, ?P, ?N, ?G, 0x0D, 0x0A, 0x1A, 0x0A, _::binary>>),
           do: "image/png"
 
         def type_from_binary(<<0xFF, 0xD8, 0xFF, _::binary>>), do: "image/jpg"
@@ -45,6 +45,15 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
 
         def type_from_binary(<<?\d, ?E, ?L, ?F, _::binary>>),
           do: "application/octet-stream"
+      end,
+      def type_from_binary(file_binary) do
+        case file_binary do
+          <<0x7F, 0x45, 0x4C, 0x46, rest::binary>> -> "application/octet-stream"
+          <<0x42, 0x4D, rest::binary>> -> "image/bmp"
+          <<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, rest::binary>> -> "image/png"
+          <<0xFF, 0xD8, 0xFF, rest::binary>> -> "image/jpg"
+          <<0x47, 0x49, 0x46, rest::binary>> -> "image/gif"
+        end
       end
     ]
   end
@@ -55,7 +64,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
       defmodule FileSniffer do
         def type_from_binary(file) do
           cond do
-            String.starts_with?(file, <<0x42, 0x4D>>) ->
+            String.starts_with?(file, "BM") ->
               "image/bmp"
 
             String.starts_with?(file, <<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A>>) ->
@@ -64,7 +73,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
             String.starts_with?(file, <<0xFF, 0xD8, 0xFF>>) ->
               "image/jpg"
 
-            String.starts_with?(file, <<0x47, 0x49, 0x46>>) ->
+            String.starts_with?(file, "GIF") ->
               "image/gif"
 
             String.starts_with?(file, <<0x7F, 0x45, 0x4C, 0x46>>) ->
@@ -74,6 +83,11 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
       end,
       defmodule FileSniffer do
         def type_from_binary("BM" <> _rest), do: "image/bmp"
+
+        def type_from_binary(<<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, _::binary>>),
+          do: "image/png"
+
+        def type_from_binary(<<0xFF, 0xD8, 0xFF, _::binary>>), do: "image/jpg"
         def type_from_binary("GIF" <> _rest), do: "image/gif"
         def type_from_binary("\dELF" <> _rest), do: "application/octet-stream"
       end
