@@ -73,6 +73,8 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_send_newsletter_returns_implicitly:
       "elixir.newsletter.send_newsletter_returns_implicitly",
     newsletter_open_log_uses_option_write: "elixir.newsletter.open_log_uses_option_write",
+    newsletter_send_newsletter_reuses_functions:
+      "elixir.newsletter.send_newsletter_reuses_functions",
     newsletter_send_newsletter_does_not_call_write:
       "elixir.newsletter.send_newsletter_does_not_call_write",
 

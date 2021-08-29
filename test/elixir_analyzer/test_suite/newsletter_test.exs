@@ -139,6 +139,86 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
     end
   end
 
+  describe "send_newsletter doesn't reuse other functions" do
+    test_exercise_analysis "send_newsletter doesn't use open_log",
+      comments_include: [Constants.newsletter_send_newsletter_reuses_functions()] do
+      defmodule Newsletter do
+        def send_newsletter(emails_path, log_path, send_fun) do
+          log_pid = File.open!(path, [:write])
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end
+    end
+
+    test_exercise_analysis "send_newsletter doesn't use close_log",
+      comments_include: [Constants.newsletter_send_newsletter_reuses_functions()] do
+      defmodule Newsletter do
+        def send_newsletter(emails_path, log_path, send_fun) do
+          log_pid = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          File.close(log_pid)
+        end
+      end
+    end
+
+    test_exercise_analysis "send_newsletter doesn't use read_emails",
+      comments_include: [Constants.newsletter_send_newsletter_reuses_functions()] do
+      defmodule Newsletter do
+        def send_newsletter(emails_path, log_path, send_fun) do
+          log_pid = open_log(log_path)
+
+          emails_path
+          |> File.read!()
+          |> String.split()
+          |> Enum.each(fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end
+    end
+
+    test_exercise_analysis "send_newsletter doesn't use log_sent_email",
+      comments_include: [Constants.newsletter_send_newsletter_reuses_functions()] do
+      defmodule Newsletter do
+        def send_newsletter(emails_path, log_path, send_fun) do
+          log_pid = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> IO.puts(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end
+    end
+  end
+
   test_exercise_analysis "send_newsletter uses File.write",
     comments_include: [Constants.newsletter_send_newsletter_does_not_call_write()] do
     [
