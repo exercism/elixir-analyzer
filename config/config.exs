@@ -54,6 +54,9 @@ config :elixir_analyzer,
     "need-for-speed" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NeedForSpeed
     },
+    "newsletter" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Newsletter
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
