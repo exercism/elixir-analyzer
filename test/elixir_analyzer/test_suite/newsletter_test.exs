@@ -218,28 +218,4 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
       end
     end
   end
-
-  test_exercise_analysis "send_newsletter uses File.write",
-    comments_include: [Constants.newsletter_send_newsletter_does_not_call_write()] do
-    [
-      defmodule Newsletter do
-        def send_newsletter(emails_path, log_path, send_fun) do
-          read_emails(emails_path)
-          |> Enum.each(fn email ->
-            if send_fun.(email) == :ok,
-              do: File.write(log_path, email <> "\n", [:append])
-          end)
-        end
-      end,
-      defmodule Newsletter do
-        def send_newsletter(emails_path, log_path, send_fun) do
-          read_emails(emails_path)
-          |> Enum.each(fn email ->
-            if send_fun.(email) == :ok,
-              do: File.write!(log_path, email <> "\n", [:append])
-          end)
-        end
-      end
-    ]
-  end
 end

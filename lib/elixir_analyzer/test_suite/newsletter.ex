@@ -86,18 +86,4 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
     called_fn name: :log_sent_email
     calling_fn module: Newsletter, name: :send_newsletter
   end
-
-  assert_no_call "send_newsletter/3 doesn't use File.write" do
-    type :essential
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_does_not_call_write()
-    called_fn module: File, name: :write
-    calling_fn module: Newsletter, name: :send_newsletter
-  end
-
-  assert_no_call "send_newsletter/3 doesn't use File.write!" do
-    type :essential
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_does_not_call_write()
-    called_fn module: File, name: :write!
-    calling_fn module: Newsletter, name: :send_newsletter
-  end
 end

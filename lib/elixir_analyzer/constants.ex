@@ -75,8 +75,6 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_open_log_uses_option_write: "elixir.newsletter.open_log_uses_option_write",
     newsletter_send_newsletter_reuses_functions:
       "elixir.newsletter.send_newsletter_reuses_functions",
-    newsletter_send_newsletter_does_not_call_write:
-      "elixir.newsletter.send_newsletter_does_not_call_write",
 
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
