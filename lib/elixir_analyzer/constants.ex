@@ -66,6 +66,16 @@ defmodule ElixirAnalyzer.Constants do
     need_for_speed_import_ANSI_with_except: "elixir.need-for-speed.import_ANSI_with_except",
     need_for_speed_do_not_modify_code: "elixir.need-for-speed.do_not_modify_code",
 
+    # Newsletter Comments
+    newsletter_close_log_returns_implicitly: "elixir.newsletter.close_log_returns_implicitly",
+    newsletter_log_sent_email_returns_implicitly:
+      "elixir.newsletter.log_sent_email_returns_implicitly",
+    newsletter_send_newsletter_returns_implicitly:
+      "elixir.newsletter.send_newsletter_returns_implicitly",
+    newsletter_open_log_uses_option_write: "elixir.newsletter.open_log_uses_option_write",
+    newsletter_send_newsletter_reuses_functions:
+      "elixir.newsletter.send_newsletter_reuses_functions",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
@@ -89,6 +99,7 @@ defmodule ElixirAnalyzer.Constants do
     rpn_calculator_output_write_in_try: "elixir.rpn-calculator-output.write_in_try",
     rpn_calculator_output_output_in_else: "elixir.rpn-calculator-output.output_in_else",
     rpn_calculator_output_close_in_after: "elixir.rpn-calculator-output.close_in_after",
+
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
