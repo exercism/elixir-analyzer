@@ -117,26 +117,48 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
 
   test_exercise_analysis "open_log uses :append",
     comments_include: [Constants.newsletter_open_log_uses_option_write()] do
-    defmodule Newsletter do
-      def open_log(path) do
-        File.open!(path, [:append])
+    [
+      defmodule Newsletter do
+        def open_log(path) do
+          File.open(path, [:append])
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun) do
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            log_pid = open_log(log_path)
+
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+
+            close_log(log_pid)
+          end)
+        end
+      end,
+      defmodule Newsletter do
+        def open_log(path) do
+          File.open!(path, [:append])
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun) do
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            log_pid = open_log(log_path)
+
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+
+            close_log(log_pid)
+          end)
+        end
       end
-
-      def send_newsletter(emails_path, log_path, send_fun) do
-        emails = read_emails(emails_path)
-
-        Enum.each(emails, fn email ->
-          log_pid = open_log(log_path)
-
-          case send_fun.(email) do
-            :ok -> log_sent_email(log_pid, email)
-            _ -> nil
-          end
-
-          close_log(log_pid)
-        end)
-      end
-    end
+    ]
   end
 
   describe "send_newsletter doesn't reuse other functions" do

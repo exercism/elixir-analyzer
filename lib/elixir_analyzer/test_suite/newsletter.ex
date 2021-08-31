@@ -47,8 +47,17 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
   end
 
   feature "open_log used the option :write" do
+    find :any
     type :essential
     comment Constants.newsletter_open_log_uses_option_write()
+
+    form do
+      def open_log(_ignore) do
+        _block_includes do
+          File.open(_ignore, [:write])
+        end
+      end
+    end
 
     form do
       def open_log(_ignore) do
