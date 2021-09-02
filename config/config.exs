@@ -30,6 +30,9 @@ config :elixir_analyzer,
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
+    "chessboard" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
+    },
     "file-sniffer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FileSniffer
     },
