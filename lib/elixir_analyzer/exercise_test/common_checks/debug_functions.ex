@@ -10,7 +10,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions do
   use ElixirAnalyzer.ExerciseTest, suppress_common_tests: true
 
   assert_no_call "solution doesn't use IO.inspect" do
-    type :actionable
+    type :informational
     comment ElixirAnalyzer.Constants.solution_debug_functions()
     called_fn module: IO, name: :inspect
   end
