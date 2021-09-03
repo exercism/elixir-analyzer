@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.Chessboard do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Boutique Suggestions
+  This is an exercise analyzer extension module for the concept exercise Chessboard
   """
 
   use ElixirAnalyzer.ExerciseTest
