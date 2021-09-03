@@ -102,6 +102,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
                {:fail,
                 %Comment{
                   type: :informative,
+                  name: Constants.solution_indentation(),
                   comment: Constants.solution_indentation()
                 }}
              ]
@@ -122,6 +123,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
                {:fail,
                 %Comment{
                   type: :informative,
+                  name: Constants.solution_indentation(),
                   comment: Constants.solution_indentation()
                 }}
              ]
@@ -142,6 +144,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
                {:fail,
                 %Comment{
                   type: :informative,
+                  name: Constants.solution_indentation(),
                   comment: Constants.solution_indentation()
                 }}
              ]
@@ -162,6 +165,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
                {:fail,
                 %Comment{
                   type: :informative,
+                  name: Constants.solution_indentation(),
                   comment: Constants.solution_indentation()
                 }}
              ]
@@ -182,6 +186,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.IndentationTest do
                {:fail,
                 %Comment{
                   type: :informative,
+                  name: Constants.solution_indentation(),
                   comment: Constants.solution_indentation()
                 }}
              ]

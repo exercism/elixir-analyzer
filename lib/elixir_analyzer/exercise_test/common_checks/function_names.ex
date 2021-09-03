@@ -26,6 +26,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames do
         {:fail,
          %Comment{
            type: :actionable,
+           name: Constants.solution_function_name_snake_case(),
            comment: Constants.solution_function_name_snake_case(),
            params: %{
              expected: correct_name,

@@ -231,4 +231,39 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
   end
+
+  describe "debugging functions" do
+    test_exercise_analysis "reports IO.inspect",
+      comments: [Constants.solution_debug_functions()] do
+      [
+        defmodule Module do
+          def foo() do
+            (1 + 1)
+            |> IO.inspect()
+          end
+        end,
+        defmodule Module do
+          alias IO, as: Debug
+
+          def foo(name) do
+            Debug.inspect(name)
+          end
+        end,
+        defmodule Module do
+          import IO
+
+          def foo(name) do
+            inspect(name)
+          end
+        end,
+        defmodule Module do
+          import IO, only: [inspect: 1]
+
+          def foo(name) do
+            inspect(name)
+          end
+        end
+      ]
+    end
+  end
 end

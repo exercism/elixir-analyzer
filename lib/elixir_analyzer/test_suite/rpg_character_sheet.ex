@@ -3,8 +3,10 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheet do
   This is an exercise analyzer extension module for the concept exercise rpg-character-sheet
   """
 
-  use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
+
+  use ElixirAnalyzer.ExerciseTest,
+    suppress_tests: [Constants.solution_debug_functions()]
 
   feature "welcome ends with IO.puts" do
     type :actionable

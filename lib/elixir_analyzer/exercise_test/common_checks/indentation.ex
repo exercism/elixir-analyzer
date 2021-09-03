@@ -13,6 +13,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation do
         {:fail,
          %Comment{
            type: :informative,
+           name: Constants.solution_indentation(),
            comment: Constants.solution_indentation()
          }}
       ]

@@ -24,6 +24,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
         {:fail,
          %Comment{
            type: :actionable,
+           name: Constants.solution_module_pascal_case(),
            comment: Constants.solution_module_pascal_case(),
            params: %{
              expected: correct_name,
