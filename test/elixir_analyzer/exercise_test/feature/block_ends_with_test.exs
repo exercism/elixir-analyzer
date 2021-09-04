@@ -394,6 +394,44 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.BlockEndsWithTest do
     ]
   end
 
+  test_exercise_analysis "code with a block finishing on a function with pipes",
+    comments_exclude: ["cannot detect a block finishing on a function"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          final_function(:ok)
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          :ok |> final_function()
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          :ok |> baz(:error) |> final_function()
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "code with a block not finishing on a function with pipes",
+    comments_include: ["cannot detect a block finishing on a function"] do
+    [
+      defmodule MyModule do
+        def foo() do
+          final_function(:ok)
+          :super_final
+        end
+      end,
+      defmodule MyModule do
+        def foo() do
+          :ok |> final_function() |> super_final()
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "code with nested blocks",
     comments_exclude: ["cannot detect nested blocks"] do
     [
