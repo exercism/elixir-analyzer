@@ -32,5 +32,14 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
     comment ElixirAnalyzer.Constants.high_score_use_module_attribute()
     calling_fn module: HighScore, name: :reset_score
     called_fn name: :@
+    suppress_if "uses add_player in reset_score", :pass
+  end
+
+  assert_call "uses add_player in reset_score" do
+    type :essential
+    comment ElixirAnalyzer.Constants.high_score_use_module_attribute()
+    calling_fn module: HighScore, name: :reset_score
+    called_fn name: :add_player
+    suppress_if "uses the module attribute in reset_score", :pass
   end
 end
