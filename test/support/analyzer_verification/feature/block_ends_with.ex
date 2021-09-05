@@ -57,6 +57,19 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.Feature.BlockEndsWith do
     end
   end
 
+  feature "can detect a block finishing on a function" do
+    type :essential
+    comment "cannot detect a block finishing on a function"
+
+    form do
+      def foo() do
+        _block_ends_with do
+          final_function(_ignore)
+        end
+      end
+    end
+  end
+
   feature "can detect nested blocks" do
     type :essential
     comment "cannot detect nested blocks"
