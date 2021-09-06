@@ -10,7 +10,7 @@ defmodule TwoFer do
 	def two_fer(name \\ "you")
 
 	def two_fer(name) when is_binary(name) do
-		"One for #{name}, one for me"
+		"One for #{name}, one for me."
 	end
 
 	def two_fer(_nameInPascalCase), do: raise(FunctionClauseError)

@@ -130,7 +130,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
     comment Constants.two_fer_use_string_interpolation()
 
     form do
-      "One for #{_ignore}, one for me"
+      "One for #{_ignore}, one for me."
     end
   end
 

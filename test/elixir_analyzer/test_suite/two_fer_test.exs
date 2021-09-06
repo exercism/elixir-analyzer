@@ -10,7 +10,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       """
       @spec two_fer(String.t()) :: String.t()
       def two_fer(name \\ "you") when is_binary(name) do
-        "One for #{name}, one for me"
+        "One for #{name}, one for me."
       end
     end
   end
@@ -20,7 +20,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
     defmodule TwoFer do
       @spec two_fer(String.t()) :: String.t()
       def two_fer(name \\ "you") when is_binary(name) do
-        "One for #{name}, one for me"
+        "One for #{name}, one for me."
       end
     end
   end
@@ -58,7 +58,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         Two-fer or 2-fer is short for two for one. One for you and one for me.
         """
         def two_fer(name \\ "you") when is_binary(name) do
-          "One for #{name}, one for me"
+          "One for #{name}, one for me."
         end
       end
     end
@@ -73,7 +73,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         end,
         defmodule TwoFer do
           def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
         end
       ]
@@ -90,19 +90,19 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         end,
         defmodule TwoFer do
           def two_fer(name) do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
         end,
         defmodule TwoFer do
-          def two_fer(name), do: "One for #{name}, one for me"
+          def two_fer(name), do: "One for #{name}, one for me."
         end,
         defmodule TwoFer do
           def two_fer(name) when is_binary(name) do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
         end,
         defmodule TwoFer do
-          def two_fer(name) when is_binary(name), do: "One for #{name}, one for me"
+          def two_fer(name) when is_binary(name), do: "One for #{name}, one for me."
         end
       ]
     end
@@ -122,7 +122,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       comments_include: [Constants.two_fer_use_guards()] do
       defmodule TwoFer do
         def two_fer(name \\ "you") do
-          "One for #{name}, one for me"
+          "One for #{name}, one for me."
         end
       end
     end
@@ -133,13 +133,13 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         defmodule TwoFer do
           def two_fer(name \\ "you") do
             is_binary(name)
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
         end,
         defmodule TwoFer do
           def two_fer(name \\ "you") do
             if is_bitstring(name) do
-              "One for #{name}, one for me"
+              "One for #{name}, one for me."
             else
               raise FunctionClauseError
             end
@@ -154,11 +154,11 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       comments_exclude: [Constants.two_fer_use_of_aux_functions()] do
       defmodule TwoFer do
         def two_fer("foo") do
-          "One for foo, one for me"
+          "One for foo, one for me."
         end
 
         def two_fer(name) do
-          "One for #{name}, one for me"
+          "One for #{name}, one for me."
         end
       end
     end
@@ -168,7 +168,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       [
         defmodule TwoFer do
           def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
 
           defp foo() do
@@ -176,21 +176,21 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         end,
         defmodule TwoFer do
           def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
 
           defp foo(), do: nil
         end,
         defmodule TwoFer do
           def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
 
           defp foo(_a), do: nil
         end,
         defmodule TwoFer do
           def two_fer(name \\ "you") do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           end
 
           defp foo(_a, _b), do: nil
@@ -204,7 +204,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       comments_include: [Constants.two_fer_use_string_interpolation()] do
       defmodule TwoFer do
         def two_fer(name \\ "you") when is_binary(name) do
-          "One for " <> name <> ", one for me"
+          "One for " <> name <> ", one for me."
         end
       end
     end
@@ -216,7 +216,7 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
       defmodule TwoFer do
         def two_fer(name \\ "you") do
           if is_bitstring(name) do
-            "One for #{name}, one for me"
+            "One for #{name}, one for me."
           else
             raise FunctionClauseError
           end
