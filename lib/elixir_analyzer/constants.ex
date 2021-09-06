@@ -33,6 +33,11 @@ defmodule ElixirAnalyzer.Constants do
     boutique_suggestions_use_list_comprehensions:
       "elixir.boutique-suggestions.use_list_comprehensions",
 
+    # Chessboard Comments
+    chessboard_function_reuse: "elixir.chessboard.function_reuse",
+    chessboard_change_codepoint_to_string_directly:
+      "elixir.chessboard.change_codepoint_to_string_directly",
+
     # File Sniffer Comments
     file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
 
