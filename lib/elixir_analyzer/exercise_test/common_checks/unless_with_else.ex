@@ -4,55 +4,61 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.UnlessWithElse do
 
   Common check to be run on every single solution.
   """
-  alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
-
-  @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
+  alias ElixirAnalyzer.Constants
 
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
-    {_, issues} = Macro.prewalk(ast, [], &traverse/2)
+    {_ast, else_block} = Macro.prewalk(ast, [], &traverse/2)
 
-    # correct_implementation = if_else_implementation()
-    # wrong_implementation = issues
-
-    # if else_block? do
-    # [
-    #   {:fail,
-    #    %Comment{
-    #      type: :actionable,
-    #      comment: Constants.solution_unless_with_else(),
-    #      params: %{
-    #        expected: correct_implementation,
-    #        actual: wrong_implementation
-    #      }
-    #    }}
-    # ]
-    # end
-  end
-
-  defp traverse({:unless, meta, args} = ast, issues) do
-    if else_block?(args) do
-      {ast, issues}
+    if Enum.empty?(else_block) do
+      []
     else
-      nil
+      [
+        {:fail,
+         %Comment{
+           type: :actionable,
+           comment: Constants.solution_unless_with_else()
+         }}
+      ]
     end
   end
 
-  defp else_block?(args) do
-    case else_block_for(args) do
-      {:ok, else_block} -> else_block
-      nil -> nil
+  defp traverse({:@, _, [{:unless, _, _}]} = ast, issues) do
+    if else_block?(ast) do
+      else_block = else_block_for(ast)
+      {ast, [else_block | issues]}
+    else
+      {ast, []}
     end
   end
 
-  defp else_block_for(args) when is_list(args) do
-    Enum.find_value(args, &find_keyword(&1, :else))
+  defp traverse({:unless, _, _} = ast, issues) do
+    if else_block?(ast) do
+      else_block = else_block_for(ast)
+      {ast, [else_block | issues]}
+    else
+      {ast, []}
+    end
   end
 
-  defp if_else_implementation({:unless, meta, args} = ast) do
-    [_, [do: do_block, else: else_block] = block] = args
+  defp else_block?(ast) do
+    case else_block_for(ast) do
+      {:ok, _block} -> true
+      nil -> false
+    end
   end
+
+  defp else_block_for({_atom, _meta, arguments}) when is_list(arguments),
+    do: else_block_for(arguments)
+
+  defp else_block_for(do: _do_block, else: else_block), do: {:ok, else_block}
+
+  defp else_block_for(arguments) when is_list(arguments) do
+    Enum.find_value(arguments, &find_keyword(&1, :else))
+  end
+
+  defp else_block_for(_), do: nil
 
   defp find_keyword(list, keyword) when is_list(list) do
     if Keyword.has_key?(list, keyword) do
