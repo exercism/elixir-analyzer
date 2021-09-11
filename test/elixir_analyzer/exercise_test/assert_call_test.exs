@@ -44,11 +44,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
-  test_exercise_analysis "missing local call from specific function solution",
-    comments: [
-      "didn't find a local call to helper/0 within function/0",
-      "didn't find a local call to private_helper/0 within function/0"
-    ] do
+  test_exercise_analysis "indirect call via a helper function",
+    comments: [] do
     defmodule AssertCallVerification do
       def function() do
         x = List.first([1, 2, 3])
@@ -93,10 +90,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
-  test_exercise_analysis "missing call to IO.puts/1 in function/0 solution",
-    comments: [
-      "didn't find a call to IO.puts/1 in function/0"
-    ] do
+  test_exercise_analysis "inderect call to IO.puts/1 in function/0 via helper function",
+    comments: [] do
     defmodule AssertCallVerification do
       def function() do
         l = List.first([1, 2, 3])
@@ -118,11 +113,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
-  test_exercise_analysis "missing call to a List function in function/0 solution",
-    comments: [
-      "didn't find a call to a List function in function/0",
-      "mock.constant"
-    ] do
+  test_exercise_analysis "indirect call to a List function in function/0 via helper function",
+    comments: [] do
     defmodule AssertCallVerification do
       def function() do
         result = helper()
