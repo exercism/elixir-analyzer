@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           file = Elixir.Mix.Utils.read_path("")
-          IO.inspect(file)
+          do_something(file)
           final_function(:math.pi())
         end
       end,
@@ -20,7 +20,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           helper("")
-          |> IO.inspect()
+          |> do_something()
         end
 
         def helper(path) do
@@ -32,7 +32,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           helper("")
-          |> IO.inspect()
+          |> do_something()
         end
 
         def helper(path) do
@@ -50,7 +50,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           helper("")
-          |> IO.inspect()
+          |> do_something()
         end
 
         def helper(path) do
@@ -70,7 +70,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           AssertCallVerification.helper("")
-          |> IO.inspect()
+          |> do_something()
         end
 
         def helper(path) do
@@ -82,7 +82,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       defmodule AssertCallVerification do
         def main_function() do
           __MODULE__.helper("")
-          |> IO.inspect()
+          |> do_something()
         end
 
         def helper(path) do
@@ -110,7 +110,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           :ok
           |> main_function()
           |> main_function()
-          |> IO.inspect()
+          |> do_something()
         end
       end,
       defmodule AssertCallVerification do
@@ -127,7 +127,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
         defmodule UnrelateInternaldModule do
           def main_function() do
             helper("")
-            |> IO.inspect()
+            |> do_something()
           end
 
           def helper(path) do
