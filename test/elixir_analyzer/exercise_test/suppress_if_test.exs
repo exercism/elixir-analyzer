@@ -1,3 +1,5 @@
+# credo:disable-for-this-file Credo.Check.Warning.IoInspect
+
 defmodule ElixirAnalyzer.ExerciseTest.SuppressIfTest do
   alias ElixirAnalyzer.Constants
 

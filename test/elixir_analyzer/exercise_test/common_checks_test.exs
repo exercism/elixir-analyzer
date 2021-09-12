@@ -2,6 +2,7 @@
 # credo:disable-for-this-file Credo.Check.Readability.FunctionNames
 # credo:disable-for-this-file Credo.Check.Readability.VariableNames
 # credo:disable-for-this-file Credo.Check.Readability.ModuleNames
+# credo:disable-for-this-file Credo.Check.Warning.IoInspect
 
 defmodule ElixirAnalyzer.ExerciseTestTest.Empty do
   use ElixirAnalyzer.ExerciseTest
