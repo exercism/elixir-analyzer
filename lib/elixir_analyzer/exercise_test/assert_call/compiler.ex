@@ -71,7 +71,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec handle_traverse_result({any, map()}) :: boolean
   def handle_traverse_result({_, %{found_called: found, calling_fn: calling_fn} = acc}) do
-    found || (!is_nil(calling_fn) && indirect_call?(acc))
+    found or (not is_nil(calling_fn) and indirect_call?(acc))
   end
 
   @doc """
@@ -404,24 +404,23 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   # Check if a function was called through helper functions
   def indirect_call?(%{called_fn: called_fn, calling_fn: calling_fn, function_call_tree: tree}) do
-    #    IO.inspect({called_fn, calling_fn, tree})
-
     cond do
+      # calling_fn wasn't defined in the code, or was searched already
       is_nil(tree[calling_fn]) ->
         false
 
+      # calling_fn directly called called_fn
       called_fn in tree[calling_fn] ->
         true
 
+      # calling_fn didn't call called_fn, recursively check if other called functions did
       true ->
-        tree[calling_fn]
-        # Delete function itself once because it is always added from the `def` node
-        |> List.delete(calling_fn)
-        |> Enum.any?(
+        Enum.any?(
+          tree[calling_fn],
           &indirect_call?(%{
             called_fn: called_fn,
             calling_fn: &1,
-            # Remove tree branch already explored in case of cyclical calls
+            # Remove tree branch since we know it doesn't call called_fn
             function_call_tree: Map.delete(tree, calling_fn)
           })
         )
