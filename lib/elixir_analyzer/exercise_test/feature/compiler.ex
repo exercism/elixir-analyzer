@@ -225,25 +225,24 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
     end
   end
 
+  # functions called with or without parentheses should match
+  def form_match?({function, form_params, []}, {function, params, atom}) when is_atom(atom) do
+    form_match?(form_params, params)
+  end
+
+  def form_match?({function, form_params, atom}, {function, params, []}) when is_atom(atom) do
+    form_match?(form_params, params)
+  end
+
   # Pipes are a special case, when pipes are in the form, they must be in the code
-  def form_match?({:|>, form_meta, [form_params, form_function]}, line) do
-    case line do
-      {:|>, meta, [params, function]} ->
-        form_function = add_parens_to_end_of_pipe(form_function)
-        function = add_parens_to_end_of_pipe(function)
-
-        form_match?(form_meta, meta) and form_match?(form_params, params) and
-          form_match?(form_function, function)
-
-      _ ->
-        false
-    end
+  def form_match?({:|>, form_meta, form_params}, {:|>, meta, params}) do
+    form_match?(form_meta, meta) and form_match?(form_params, params)
   end
 
   # When pipes are not in the form but in the code, we un-pipe the code
   def form_match?(form_params, {:|>, _, [params, {function, function_meta, function_params}]}) do
     if is_atom(function_params) do
-      form_match?(form_params, {function, function_meta, List.wrap(params)})
+      form_match?(form_params, {function, function_meta, [params]})
     else
       form_match?(form_params, {function, function_meta, [params | function_params]})
     end
@@ -282,13 +281,5 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
 
   defp all_forms_are_found?(form_params, _params) when is_list(form_params) do
     false
-  end
-
-  defp add_parens_to_end_of_pipe({name, meta, module}) when is_atom(module) do
-    {name, meta, []}
-  end
-
-  defp add_parens_to_end_of_pipe(node) do
-    node
   end
 end

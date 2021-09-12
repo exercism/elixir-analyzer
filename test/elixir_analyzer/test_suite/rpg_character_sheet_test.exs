@@ -73,6 +73,72 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheetTest do
           }
           |> IO.inspect(label: "Your character")
         end
+      end,
+      defmodule RPG.CharacterSheet do
+        @moduledoc """
+        A collection of functions related to creating a character sheet.
+        """
+
+        @doc """
+        Prints out the welcome message.
+        """
+        @spec welcome() :: binary()
+
+        def welcome do
+          IO.puts("Welcome! Let's fill out your character sheet together.")
+        end
+
+        @doc """
+        Gets the character name via input.
+        """
+        @spec ask_name() :: binary()
+
+        def ask_name do
+          ask("What is your character's name?\n")
+        end
+
+        @doc """
+        Gets the character class via input.
+        """
+        @spec ask_class() :: binary()
+
+        def ask_class do
+          ask("What is your character's class?\n")
+        end
+
+        @doc """
+        Gets the character's level via input, returns an integer.
+        """
+        @spec ask_level() :: pos_integer()
+
+        def ask_level do
+          "What is your character's level?\n"
+          |> ask()
+          |> String.to_integer(10)
+        end
+
+        @doc """
+        Runs the character sheet creation workflow.
+        """
+        @spec run() :: %{name: binary(), class: binary(), level: pos_integer()}
+
+        def run do
+          welcome()
+
+          %{
+            name: ask_name(),
+            class: ask_class(),
+            level: ask_level()
+          }
+          |> IO.inspect(label: "Your character")
+        end
+
+        # Given a question, asks it and trims leading & trailing whitespaces.
+        defp ask(question) do
+          question
+          |> IO.gets()
+          |> String.trim()
+        end
       end
     ]
   end
