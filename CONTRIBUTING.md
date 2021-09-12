@@ -28,3 +28,4 @@ See [the Analyzer comment copy guidelines][analyzer-comments-guidelines] for gui
 [coc]: https://github.com/exercism/elixir/blob/main/CODE_OF_CONDUCT.md
 [analyzer-comments]: https://github.com/exercism/website-copy/tree/main/analyzer-comments
 [analyzer-comments-guidelines]: https://github.com/exercism/docs/blob/main/building/tooling/analyzers/comments.md#comment-copy-guidelines
+[issue-discussion]: https://github.com/exercism/elixir-analyzer/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22discussion+%F0%9F%92%AC%22
