@@ -57,7 +57,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       modules_in_scope: %{},
       found_called: false,
       called_fn: called_fn,
-      calling_fn: calling_fn
+      calling_fn: calling_fn,
+      function_call_tree: %{}
     }
 
     ast
@@ -69,7 +70,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   Handle the final result from the assert function
   """
   @spec handle_traverse_result({any, map()}) :: boolean
-  def handle_traverse_result({_, %{found_called: found}}), do: found
+  def handle_traverse_result({_, %{found_called: found, calling_fn: calling_fn} = acc}) do
+    found or (not is_nil(calling_fn) and indirect_call?(acc))
+  end
 
   @doc """
   When pre-order traversing, annotate the accumulator that we are now inside of a function definition
@@ -81,6 +84,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       acc
       |> track_aliases(node)
       |> track_imports(node)
+      |> track_all_functions(node)
 
     cond do
       module_def?(node) -> {node, %{acc | in_module: extract_module_name(node)}}
@@ -117,7 +121,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
           in_function_modules: in_function_modules,
           called_fn: called_fn,
           calling_fn: calling_fn,
-          in_function_def: name
+          in_function_def: name,
+          function_call_tree: tree
         } = acc
       ) do
     modules = Map.merge(modules_in_scope, in_function_modules)
@@ -128,10 +133,15 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
     match_calling_fn? = in_function?({module, name}, calling_fn) or is_nil(calling_fn)
 
-    if match_called_fn? and match_calling_fn? do
-      {node, %{acc | found_called: true}}
-    else
-      {node, acc}
+    cond do
+      match_called_fn? and match_calling_fn? ->
+        {node, %{acc | found_called: true}}
+
+      match_called_fn? ->
+        {node, %{acc | function_call_tree: Map.put(tree, {module, name}, [called_fn])}}
+
+      true ->
+        {node, acc}
     end
   end
 
@@ -372,5 +382,48 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
         do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
         else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
     end)
+  end
+
+  # track all called functions
+  def track_all_functions(
+        %{function_call_tree: tree, in_module: module, in_function_def: name} = acc,
+        {_, _, _} = function
+      )
+      when not is_nil(name) do
+    called =
+      case function do
+        {:., _, [{:__MODULE__, _, _}, fn_name]} -> {module, fn_name}
+        {:., _, [{:__aliases__, _, fn_module}, fn_name]} -> {fn_module, fn_name}
+        {fn_name, _, _} -> {module, fn_name}
+      end
+
+    %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
+  end
+
+  def track_all_functions(acc, _node), do: acc
+
+  # Check if a function was called through helper functions
+  def indirect_call?(%{called_fn: called_fn, calling_fn: calling_fn, function_call_tree: tree}) do
+    cond do
+      # calling_fn wasn't defined in the code, or was searched already
+      is_nil(tree[calling_fn]) ->
+        false
+
+      # calling_fn directly called called_fn
+      called_fn in tree[calling_fn] ->
+        true
+
+      # calling_fn didn't call called_fn, recursively check if other called functions did
+      true ->
+        Enum.any?(
+          tree[calling_fn],
+          &indirect_call?(%{
+            called_fn: called_fn,
+            calling_fn: &1,
+            # Remove tree branch since we know it doesn't call called_fn
+            function_call_tree: Map.delete(tree, calling_fn)
+          })
+        )
+    end
   end
 end
