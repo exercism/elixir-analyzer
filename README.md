@@ -10,29 +10,25 @@ See the project docs: https://github.com/exercism/docs/tree/main/building/toolin
 
 `ElixirAnalyzer.ExerciseTest` is able to generate static analysis tests and the analyze function loads the features to be tested.
 
-## How to run the prototype
+## How to run
 
 ### via CLI
 
 #### Fast start
 
 ```shell
-> git clone https://github.com/exercism/elixir-analyzer.git
-[git output]
-> cd elixir_analyzer
-
-> ./bin/build
+$ ./bin/build
 [output of CLI being build]
-> ./bin/elixir_analyzer <exercism slug for exercise> <root folder of solution to be analyzed> <folder to output contents>
+$ ./bin/elixir_analyzer <exercise-slug> <path the folder containing the solution> <path to folder for output>
 ```
 
 #### Running the analyzer
 
-running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
+Running `bin/elixir_analyzer` on a system with Elixir/Erlang/OTP installed
 
 ```text
   Usage:
-    $ elixir_analyzer <exercise-name> <path the folder containing the solution> <path to folder for output> [options]
+    $ elixir_analyzer <exercise-slug> <path the folder containing the solution> <path to folder for output> [options]
 
   You may also pass the following options:
     --skip-analysis                       flag skips running the static analysis
@@ -45,12 +41,24 @@ running `bin/elixir_analyzer` on a system with elixir/erlang/otp installed
 
 ### via IEX
 
-`iex -S mix`, then calling `ElixirAnalyzer.analyze_exercise("slug-name", "/path/to/solution/", "/path/to/output/")`.
+`iex -S mix`, then calling:
+```elixir
+ElixirAnalyzer.analyze_exercise("exercise-slug", "/path/to/solution/", "/path/to/output/")
+```
+
 This assumes the solution has the file of the proper name and also a test unit by the proper name.
 
-At this time "two-fer" is the only solution implemented at a most basic level. All that gets validated is if it passes the test unit completely. Goal will be to able to recognize the optimal solution through ast search for specific patterns.
+To check that it works without preparing a custom exercise solution, you can run it on one of the text fixtures: 
 
-As a demonstration, once iex loads with `iex -S mix` you can type `ElixirAnalyzer.analyze_exercise("two-fer", "./test_data/two_fer/passing_solution/", "./test_data/two_fer/passing_solution/")`.
+```elixir
+ElixirAnalyzer.analyze_exercise("two-fer", "./test_data/two_fer/imperfect_solution/", "./test_data/two_fer/imperfect_solution/")
+```
+
+## Tests
+
+The tests are run with `mix test`.
+
+However, there are also tests tagged as `:external` which are excluded by default. Those tests check if all of the comments used in this repository exist in [`exercism/website-copy`][website-copy-comments]. To run all tests, use the `--include external` flag.
 
 ## Design
 
@@ -106,7 +114,7 @@ This module contains macros for a DSL to be able to compare ideal solution featu
 
 ### `ElixirAnalyzer.Constants`
 
-Contains macro to generate a function returning the comment path on the `exercism/website-copy` repository. The current plan is to centralize these so that they can be easily tested and changed
+Contains macro to generate a function returning the comment path on the [`exercism/website-copy`][website-copy-comments] repository.
 
 ### `ElixirAnalyzer.CLI`
 
@@ -115,3 +123,5 @@ This module is a module for the CLI escript to parse the command line arguments 
 ### `ElixirAnalyzer.ExerciseTest.________`
 
 These modules are for describing the tests for which the analyzer is able to determine the state of the solution based on style, syntax. They use `ElixirAnalyzer.Exercise` for macro generation of code.
+
+[website-copy-comments]: https://github.com/exercism/website-copy/tree/main/analyzer-comments
