@@ -43,6 +43,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_pascal_case(),
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "FactorialModule",
@@ -66,6 +67,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_pascal_case(),
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "FactorialModule",
@@ -89,6 +91,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_pascal_case(),
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "FactorialSubmodule",
@@ -109,6 +112,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_pascal_case(),
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "MyLibrary.MathOps.Factorial",
@@ -131,6 +135,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCaseTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_pascal_case(),
                 comment: Constants.solution_module_pascal_case(),
                 params: %{
                   expected: "MathOps.Factorial",

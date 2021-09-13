@@ -24,6 +24,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames do
         {:fail,
          %Comment{
            type: :actionable,
+           name: Constants.solution_module_attribute_name_snake_case(),
            comment: Constants.solution_module_attribute_name_snake_case(),
            params: %{
              expected: correct_name,

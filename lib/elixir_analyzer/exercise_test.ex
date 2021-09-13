@@ -10,10 +10,12 @@ defmodule ElixirAnalyzer.ExerciseTest do
   alias ElixirAnalyzer.Comment
 
   @doc false
-  defmacro __using__(_opts) do
+  defmacro __using__(opts) do
     quote do
       use ElixirAnalyzer.ExerciseTest.Feature
       use ElixirAnalyzer.ExerciseTest.AssertCall
+      use ElixirAnalyzer.ExerciseTest.CommonChecks
+      @suppress_tests unquote(opts)[:suppress_tests]
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
@@ -29,6 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     # credo:disable-for-previous-line Credo.Check.Refactor.CyclomaticComplexity
     feature_test_data = Module.get_attribute(env.module, :feature_tests)
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
+    suppress_tests = Module.get_attribute(env.module, :suppress_tests, [])
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
@@ -53,25 +56,26 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       defp do_analyze(%Submission{} = submission, code_ast, code_as_string)
            when is_binary(code_as_string) do
-        feature_results = unquote(feature_tests) |> filter_suppressed_results()
-        assert_call_results = unquote(assert_call_tests) |> filter_suppressed_results()
-        common_checks_results = CommonChecks.run(code_ast, code_as_string)
+        results =
+          Enum.concat([
+            unquote(feature_tests),
+            unquote(assert_call_tests),
+            CommonChecks.run(code_ast, code_as_string)
+          ])
+          |> filter_suppressed_results()
 
         submission
-        |> append_test_comments(feature_results)
-        |> append_test_comments(assert_call_results)
-        |> append_test_comments(common_checks_results)
+        |> append_test_comments(results)
         |> Submission.sort_comments()
       end
 
       defp filter_suppressed_results(feature_results) do
-        feature_results
-        |> Enum.reject(fn
+        Enum.reject(feature_results, fn
           {_test_result, %{suppress_if: condition}} when condition !== false ->
             any_result_matches_suppress_condition?(feature_results, condition)
 
-          _result ->
-            false
+          {_test_result, %{comment: comment}} ->
+            comment in unquote(suppress_tests)
         end)
       end
 

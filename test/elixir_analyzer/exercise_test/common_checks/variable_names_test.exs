@@ -59,6 +59,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -79,6 +80,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_other_value", actual: "someOtherValue"}
                 }}
@@ -99,6 +101,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -119,6 +122,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -139,6 +143,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -159,6 +164,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -179,6 +185,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -199,6 +206,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -219,6 +227,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "one_param", actual: "oneParam"}
                 }}
@@ -239,6 +248,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -261,6 +271,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -285,6 +296,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -309,6 +321,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -332,6 +345,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_jam", actual: "someJam"}
                 }}
@@ -356,6 +370,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "time_out", actual: "timeOut"}
                 }}
@@ -376,6 +391,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "other_param", actual: "otherParam"}
                 }}
@@ -399,6 +415,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}
@@ -419,6 +436,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                {:fail,
                 %Comment{
                   type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
                   comment: Constants.solution_variable_name_snake_case(),
                   params: %{expected: "some_value", actual: "someValue"}
                 }}

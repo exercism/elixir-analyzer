@@ -56,6 +56,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNamesTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_attribute_name_snake_case(),
                 comment: Constants.solution_module_attribute_name_snake_case(),
                 params: %{
                   expected: "initial_value",
@@ -84,6 +85,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNamesTest do
              {:fail,
               %Comment{
                 type: :actionable,
+                name: Constants.solution_module_attribute_name_snake_case(),
                 comment: Constants.solution_module_attribute_name_snake_case(),
                 params: %{
                   expected: "something_else_camel_case",

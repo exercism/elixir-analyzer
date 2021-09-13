@@ -61,6 +61,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
               %Comment{
                 type: :actionable,
                 comment: Constants.solution_function_name_snake_case(),
+                name: Constants.solution_function_name_snake_case(),
                 params: %{
                   expected: "first_name",
                   actual: "firstName"
@@ -76,6 +77,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
          %Comment{
            type: :actionable,
            comment: Constants.solution_function_name_snake_case(),
+           name: Constants.solution_function_name_snake_case(),
            params: %{
              expected: expected,
              actual: actual
@@ -146,6 +148,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
               %Comment{
                 type: :actionable,
                 comment: Constants.solution_function_name_snake_case(),
+                name: Constants.solution_function_name_snake_case(),
                 params: %{
                   expected: "is_registered_user",
                   actual: "isRegisteredUser"
@@ -167,6 +170,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
               %Comment{
                 type: :actionable,
                 comment: Constants.solution_function_name_snake_case(),
+                name: Constants.solution_function_name_snake_case(),
                 params: %{
                   expected: "get_name",
                   actual: "getName"
@@ -188,6 +192,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNamesTest do
               %Comment{
                 type: :actionable,
                 comment: Constants.solution_function_name_snake_case(),
+                name: Constants.solution_function_name_snake_case(),
                 params: %{
                   expected: "get_name",
                   actual: "getName"

@@ -4,7 +4,7 @@ defmodule ElixirAnalyzer.Comment do
   (see https://github.com/exercism/docs/blob/main/building/tooling/analyzers/interface.md#comments)
   """
 
-  defstruct status: :test, name: nil, comment: nil, type: nil, suppress_if: nil, params: nil
+  defstruct status: :test, name: nil, comment: nil, type: nil, suppress_if: false, params: nil
 
   @type t :: %__MODULE__{
           name: String.t(),

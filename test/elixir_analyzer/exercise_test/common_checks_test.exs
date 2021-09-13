@@ -2,6 +2,7 @@
 # credo:disable-for-this-file Credo.Check.Readability.FunctionNames
 # credo:disable-for-this-file Credo.Check.Readability.VariableNames
 # credo:disable-for-this-file Credo.Check.Readability.ModuleNames
+# credo:disable-for-this-file Credo.Check.Warning.IoInspect
 
 defmodule ElixirAnalyzer.ExerciseTestTest.Empty do
   use ElixirAnalyzer.ExerciseTest
@@ -227,6 +228,41 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
         end,
         defmodule Module do
           def fun(some_value), do: ^someValue == nil
+        end
+      ]
+    end
+  end
+
+  describe "debugging functions" do
+    test_exercise_analysis "reports IO.inspect",
+      comments: [Constants.solution_debug_functions()] do
+      [
+        defmodule Module do
+          def foo() do
+            (1 + 1)
+            |> IO.inspect()
+          end
+        end,
+        defmodule Module do
+          alias IO, as: Debug
+
+          def foo(name) do
+            Debug.inspect(name)
+          end
+        end,
+        defmodule Module do
+          import IO
+
+          def foo(name) do
+            inspect(name)
+          end
+        end,
+        defmodule Module do
+          import IO, only: [inspect: 1]
+
+          def foo(name) do
+            inspect(name)
+          end
         end
       ]
     end

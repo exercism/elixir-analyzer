@@ -10,6 +10,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation
   alias ElixirAnalyzer.Comment
 
+  # CommonChecks that use feature or assert_call should be called here
+  defmacro __using__(_opts) do
+    quote do
+      use ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions
+    end
+  end
+
   @spec run(Macro.t(), String.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(code_ast, code_as_string) when is_binary(code_as_string) do
     [
