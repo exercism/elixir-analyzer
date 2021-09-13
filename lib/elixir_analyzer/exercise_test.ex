@@ -14,8 +14,8 @@ defmodule ElixirAnalyzer.ExerciseTest do
     quote do
       use ElixirAnalyzer.ExerciseTest.Feature
       use ElixirAnalyzer.ExerciseTest.AssertCall
+      use ElixirAnalyzer.ExerciseTest.CommonChecks
       @suppress_tests unquote(opts)[:suppress_tests]
-      @suppress_common_tests unquote(opts)[:suppress_common_tests]
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
@@ -32,7 +32,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
     feature_test_data = Module.get_attribute(env.module, :feature_tests)
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
     suppress_tests = Module.get_attribute(env.module, :suppress_tests, [])
-    suppress_common_tests = Module.get_attribute(env.module, :suppress_common_tests)
 
     # ast placeholder for the submission code ast
     code_ast = quote do: code_ast
@@ -61,11 +60,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
           Enum.concat([
             unquote(feature_tests),
             unquote(assert_call_tests),
-            if unquote(suppress_common_tests) do
-              []
-            else
-              CommonChecks.run(code_ast, code_as_string)
-            end
+            CommonChecks.run(code_ast, code_as_string)
           ])
           |> filter_suppressed_results()
 
