@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions do
   defmacro __using__(_opts) do
     quote do
       assert_no_call unquote(ElixirAnalyzer.Constants.solution_debug_functions()) do
-        type :informational
+        type :informative
         comment ElixirAnalyzer.Constants.solution_debug_functions()
         called_fn module: IO, name: :inspect
       end

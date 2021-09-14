@@ -41,7 +41,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
       |> walk_assert_call_block()
       |> Map.put(:description, description)
       |> Map.put(:should_call, should_call)
-      |> Map.put_new(:type, :informational)
+      |> Map.put_new(:type, :informative)
       |> Map.put_new(:calling_fn, nil)
 
     unless Map.has_key?(test_data, :comment) do
@@ -88,8 +88,15 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     {node, Map.put(test_data, :comment, comment)}
   end
 
-  defp do_walk_assert_call_block({:type, _, [type]} = node, test_data)
-       when type in ~w[essential actionable informational celebratory]a do
+  @supported_types ~w(essential actionable informative celebratory)a
+  defp do_walk_assert_call_block({:type, _, [type]} = node, test_data) do
+    if type not in @supported_types do
+      raise """
+      Unsupported type `#{type}`.
+      The macro `assert_call` supports the following types: #{Enum.join(@supported_types, ", ")}.
+      """
+    end
+
     {node, Map.put(test_data, :type, type)}
   end
 
