@@ -60,6 +60,7 @@ defmodule ElixirAnalyzer.Constants do
     high_score_use_module_attribute: "elixir.high-score.use_module_attribute",
     high_score_use_default_argument_with_module_attribute:
       "elixir.high-score.use_default_argument_with_module_attribute",
+    high_score_use_map_update: "elixir.high-score.use_map_update",
 
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",

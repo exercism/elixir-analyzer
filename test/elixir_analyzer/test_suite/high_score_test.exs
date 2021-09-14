@@ -196,5 +196,16 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
         end
       ]
     end
+
+    test_exercise_analysis "Map.update/4 not used in update_score",
+      comments_include: [Constants.high_score_use_map_update()] do
+      [
+        defmodule HighScore do
+          def update_score(scores, name, score) do
+            Map.put(scores, name, Map.get(scores, name) + 1)
+          end
+        end
+      ]
+    end
   end
 end
