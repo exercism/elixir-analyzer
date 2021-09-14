@@ -7,7 +7,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "found a call to :rand.normal in function/0",
-      "found a call to :rand.normal in module"
+      "found a call to :rand.normal in module",
+      "elixir.solution.last_line_assignment"
     ] do
     [
       defmodule AssertCallVerification do
@@ -37,7 +38,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "found a call to :rand.normal in function/0",
-      "found a call to :rand.normal in module"
+      "found a call to :rand.normal in module",
+      "elixir.solution.last_line_assignment"
     ] do
     [
       defmodule AssertCallVerification do
@@ -77,21 +79,26 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in module",
       "found a call to :rand.normal in module",
       "didn't find a call to :rand.normal/0 in function/0",
-      "didn't find a call to a :rand function in function/0"
+      "didn't find a call to a :rand function in function/0",
+      "elixir.solution.last_line_assignment"
     ] do
     [
       defmodule AssertCallVerification do
         def function() do
         end
 
-        r = :rand.normal()
+        def other_funtion() do
+          r = :rand.normal()
+        end
       end,
       defmodule AssertCallVerification do
         def function() do
           import :rand, except: [normal: 0]
         end
 
-        r = :rand.normal()
+        def other_funtion() do
+          r = :rand.normal()
+        end
       end
     ]
   end
@@ -101,7 +108,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "didn't find a call to :rand.normal anywhere in module",
-      "didn't find a call to :rand.normal/0 in function/0"
+      "didn't find a call to :rand.normal/0 in function/0",
+      "elixir.solution.last_line_assignment"
     ] do
     defmodule AssertCallVerification do
       def function() do
@@ -115,13 +123,16 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in module",
       "didn't find a call to :rand.normal anywhere in module",
       "didn't find a call to :rand.normal/0 in function/0",
-      "didn't find a call to a :rand function in function/0"
+      "didn't find a call to a :rand function in function/0",
+      "elixir.solution.last_line_assignment"
     ] do
     defmodule AssertCallVerification do
       def function() do
       end
 
-      r = :rand.uniform()
+      def other_funtion() do
+        r = :rand.uniform()
+      end
     end
   end
 
@@ -141,7 +152,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
         import :rand, except: [normal: 0]
 
         def function() do
-          r = normal()
+          normal()
         end
       end
     ]

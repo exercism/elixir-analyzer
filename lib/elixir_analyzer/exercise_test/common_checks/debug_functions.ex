@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions do
   @moduledoc """
-  This is an exercise analyzer extension module used for common tests lookin for debugging functions
+  This is an exercise analyzer extension module used for common tests looking for debugging functions
   """
 
   defmacro __using__(_opts) do
