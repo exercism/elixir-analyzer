@@ -51,6 +51,9 @@ config :elixir_analyzer,
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
+    "log-level" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.LogLevel
+    },
     "name-badge" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.NameBadge
     },
