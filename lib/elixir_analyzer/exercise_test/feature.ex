@@ -84,8 +84,20 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     :ok
   end
 
+  @supported_types ~w(essential actionable informative celebratory)a
+  defp gather_feature_data({:type, _, [type]} = node, acc) do
+    if type not in @supported_types do
+      raise """
+      Unsupported type `#{type}`.
+      The macro `feature` supports the following types: #{Enum.join(@supported_types, ", ")}.
+      """
+    end
+
+    {node, put_in(acc, [:type], type)}
+  end
+
   defp gather_feature_data({field, _, [f]} = node, acc)
-       when field in [:comment, :type, :find, :status] do
+       when field in [:comment, :find, :status] do
     {node, put_in(acc, [field], f)}
   end
 
