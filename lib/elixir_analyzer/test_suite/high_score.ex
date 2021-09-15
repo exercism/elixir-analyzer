@@ -42,4 +42,11 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
     called_fn name: :add_player
     suppress_if "uses the module attribute in reset_score", :pass
   end
+
+  assert_call "uses Map.update/4 in update_score" do
+    type :actionable
+    comment ElixirAnalyzer.Constants.high_score_use_map_update()
+    calling_fn module: HighScore, name: :update_score
+    called_fn module: Map, name: :update
+  end
 end
