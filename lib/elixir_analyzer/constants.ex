@@ -13,6 +13,8 @@ defmodule ElixirAnalyzer.Constants do
     # General Error Comments
     general_file_not_found: "elixir.general.file_not_found",
     general_parsing_error: "elixir.general.parsing_error",
+    general_exemplar_not_found: "elixir.general.exemplar_not_found",
+    general_exemplar_parsing_error: "elixir.general.exemplar_parsing_error",
 
     # General Solution Error / Warning Comments
     solution_use_moduledoc: "elixir.solution.use_module_doc",
@@ -26,6 +28,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_debug_functions: "elixir.solution.debug_functions",
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
+    solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
 
     # Concept exercises
 

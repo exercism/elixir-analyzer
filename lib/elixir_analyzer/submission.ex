@@ -29,6 +29,8 @@ defmodule ElixirAnalyzer.Submission do
             path: nil,
             code_path: nil,
             code_file: nil,
+            exemplar_path: nil,
+            exemplar_code: nil,
             code: nil,
             analysis_module: nil
 
@@ -40,6 +42,8 @@ defmodule ElixirAnalyzer.Submission do
           path: String.t(),
           code_path: String.t(),
           code_file: String.t(),
+          exemplar_path: String.t() | nil,
+          exemplar_code: String.t() | nil,
           code: String.t(),
           analysis_module: atom()
         }

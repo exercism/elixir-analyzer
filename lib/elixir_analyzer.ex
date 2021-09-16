@@ -16,6 +16,7 @@ defmodule ElixirAnalyzer do
   @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
   @meta_config ".meta/config.json"
+  @concept_exercice_path "elixir/exercises/concept"
 
   def default_exercise_config() do
     @exercise_config
@@ -43,8 +44,8 @@ defmodule ElixirAnalyzer do
   * `:output_file`, - specifies the name of the output_file, defaults to
     `@output_file` (`analysis.json`)
 
-  * `:exercise_config` - specifies the path to the JSON exercise configuration,
-    defaults to `@exercise_config` (`./config/exercise_data.json`)
+  * `:exercise_config` - specifies the path to the exercise configuration,
+    defaults to `@exercise_config` (`./config/config.exs`)
 
   * `:write_results` - boolean flag if an analysis should output the results to
     JSON file, defaults to `true`
@@ -110,11 +111,12 @@ defmodule ElixirAnalyzer do
     try do
       Logger.debug("Getting the exercise config")
       exercise_config = params.exercise_config[params.exercise]
-      {code_path, code_file, analysis_module} = do_init(params, exercise_config)
+      {code_path, code_file, exemplar_path, analysis_module} = do_init(params, exercise_config)
 
       Logger.debug("Initialization successful",
         path: params.path,
         code_path: code_path,
+        exemplar_path: exemplar_path,
         analysis_module: analysis_module
       )
 
@@ -131,6 +133,7 @@ defmodule ElixirAnalyzer do
         submission
         | code_path: code_path,
           code_file: code_file,
+          exemplar_path: exemplar_path,
           analysis_module: analysis_module
       }
     rescue
@@ -166,7 +169,14 @@ defmodule ElixirAnalyzer do
     code_path = Path.dirname(full_code_path)
     code_file = Path.basename(full_code_path)
 
-    {code_path, code_file, exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
+    exemplar_path =
+      case meta_config["files"]["exemplar"] do
+        [path | _] -> Path.join([@concept_exercice_path, params.exercise, path])
+        _ -> nil
+      end
+
+    {code_path, code_file, exemplar_path,
+     exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
   end
 
   # Else, use passed in params to analyze
@@ -181,7 +191,8 @@ defmodule ElixirAnalyzer do
   # Check
   # - check if the file exists
   # - read in the code
-  # - compile
+  # - check if there is an exemplar
+  # - read in the exemplar
   defp check(%Submission{halted: true} = submission, _params) do
     Logger.warning("Check not performed, halted previously")
     submission
@@ -192,7 +203,16 @@ defmodule ElixirAnalyzer do
          :ok <- Logger.info("Attempting to read code file", code_file_path: path_to_code),
          {:code_read, {:ok, code_str}} <- {:code_read, File.read(path_to_code)},
          :ok <- Logger.info("Code file read successfully"),
-         {:code_str, submission} <- {:code_str, %{submission | code: code_str}} do
+         submission <- %{submission | code: code_str},
+         :ok <- Logger.info("Check if exemplar exists", exemplar_path: submission.exemplar_path),
+         {:exemplar_exists, submission, exemplar_path} when not is_nil(exemplar_path) <-
+           {:exemplar_exists, submission, submission.exemplar_path},
+         :ok <-
+           Logger.info("Exemplar file exists, attempting to read", exemplar_path: exemplar_path),
+         {:exemplar_read, submission, {:ok, exemplar_code}} <-
+           {:exemplar_read, submission, File.read(exemplar_path)},
+         :ok <- Logger.info("Exemplar file read successfully"),
+         submission <- %{submission | exemplar_code: exemplar_code} do
       submission
     else
       {:code_read, {:error, reason}} ->
@@ -211,6 +231,22 @@ defmodule ElixirAnalyzer do
           },
           type: :essential
         })
+
+      {:exemplar_exists, submission, nil} ->
+        Logger.info("There is no exemplar file for this exercise")
+        submission
+
+      {:exemplar_read, submission, {:error, reason}} ->
+        Logger.warning("Exemplar file not found. Reason: #{reason}",
+          exemplar_path: submission.exemplar_path
+        )
+
+        submission
+        |> Submission.append_comment(%Comment{
+          comment: Constants.general_exemplar_not_found(),
+          params: %{"path" => submission.exemplar_path},
+          type: :informative
+        })
     end
   end
 
@@ -226,7 +262,7 @@ defmodule ElixirAnalyzer do
 
     submission =
       submission
-      |> submission.analysis_module.analyze(submission.code)
+      |> submission.analysis_module.analyze(submission.code, submission.exemplar_code)
       |> Submission.set_analyzed(true)
 
     Logger.info("Analyzing code complete")

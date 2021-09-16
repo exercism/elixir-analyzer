@@ -19,7 +19,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @dialyzer no_match: {:do_analyze, 3}
+      @dialyzer no_match: {:do_analyze, 4}
     end
   end
 
@@ -43,24 +43,31 @@ defmodule ElixirAnalyzer.ExerciseTest do
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
     quote do
-      @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(%Submission{} = submission, code_as_string) when is_binary(code_as_string) do
-        case Code.string_to_quoted(code_as_string) do
-          {:ok, code_ast} ->
-            do_analyze(submission, code_ast, code_as_string)
+      @spec analyze(Submission.t(), String.t(), nil | String.t()) :: Submission.t()
+      def analyze(%Submission{} = submission, code_as_string, exemplar_code) do
+        case {Code.string_to_quoted(code_as_string), exemplar_code,
+              Code.string_to_quoted(exemplar_code)} do
+          {{:ok, code_ast}, nil, _} ->
+            do_analyze(submission, code_ast, code_as_string, nil)
 
-          {:error, e} ->
+          {{:ok, code_ast}, _, {:ok, exemplar_ast}} ->
+            do_analyze(submission, code_ast, code_as_string, exemplar_ast)
+
+          {{:error, e}, _, _} ->
             append_analysis_failure(submission, e)
+
+          {_, _, {:error, e}} ->
+            append_analysis_failure(submission, e, :exemplar)
         end
       end
 
-      defp do_analyze(%Submission{} = submission, code_ast, code_as_string)
+      defp do_analyze(%Submission{} = submission, code_ast, code_as_string, exemplar_ast)
            when is_binary(code_as_string) do
         results =
           Enum.concat([
             unquote(feature_tests),
             unquote(assert_call_tests),
-            CommonChecks.run(code_ast, code_as_string)
+            CommonChecks.run(code_ast, code_as_string, exemplar_ast)
           ])
           |> filter_suppressed_results()
 
@@ -114,17 +121,31 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end)
       end
 
-      defp append_analysis_failure(%Submission{} = submission, {location, error, token}) do
+      defp append_analysis_failure(
+             %Submission{} = submission,
+             {location, error, token},
+             exemplar \\ false
+           ) do
         line = Keyword.get(location, :line)
         comment_params = %{line: line, error: "#{error}#{token}"}
 
         submission
         |> Submission.halt()
-        |> Submission.append_comment(%Comment{
-          comment: Constants.general_parsing_error(),
-          params: comment_params,
-          type: :essential
-        })
+        |> Submission.append_comment(
+          if exemplar do
+            %Comment{
+              comment: Constants.general_exemplar_parsing_error(),
+              params: comment_params,
+              type: :informative
+            }
+          else
+            %Comment{
+              comment: Constants.general_parsing_error(),
+              params: comment_params,
+              type: :essential
+            }
+          end
+        )
       end
     end
   end
