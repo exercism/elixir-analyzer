@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.RpnCalculatorOutput
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule RPNCalculator.Output do
         def write(resource, filename, equation) do
@@ -19,7 +19,13 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutputTest do
             resource.close(file)
           end
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule RPNCalculator.Output do
         def write(my_resource, my_filename, my_equation) do
           {:ok, file} = my_resource.open(my_filename)

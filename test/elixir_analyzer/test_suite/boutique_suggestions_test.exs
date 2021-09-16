@@ -2,8 +2,8 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueSuggestionsTest do
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
 
-  test_exercise_analysis "correct solutions",
-    comments: [] do
+  test_exercise_analysis "example solution",
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule BoutiqueSuggestions do
         def get_combinations(tops, bottoms, options \\ []) do
@@ -18,7 +18,13 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueSuggestionsTest do
             {top, bottom}
           end
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "correct solutions",
+    comments: [] do
+    [
       defmodule BoutiqueSuggestions do
         def get_combinations(tops, bottoms, options \\ []) do
           maximum_price = Keyword.get(options, :maximum_price, 100.00)

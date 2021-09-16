@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.NameBadge
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule NameBadge do
         def print(id, name, department) do
@@ -31,7 +31,13 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
 
           prefix <> "#{name} - #{String.upcase(department)}"
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule NameBadge do
         def totally_not_if(a, b, c), do: if(a, do: b, else: c)
 

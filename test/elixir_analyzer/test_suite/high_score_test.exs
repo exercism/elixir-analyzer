@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.HighScore
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule HighScore do
         @initial_score 0
@@ -29,7 +29,13 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
         def get_players(scores) do
           Map.keys(scores)
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule HighScore do
         @initial_score 0
 
