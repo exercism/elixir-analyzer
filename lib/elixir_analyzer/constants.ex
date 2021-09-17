@@ -62,6 +62,9 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.high-score.use_default_argument_with_module_attribute",
     high_score_use_map_update: "elixir.high-score.use_map_update",
 
+    # Language List Comments
+    language_list_do_not_use_enum: "elixir.language-list.do_not_use_enum",
+
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",
 
