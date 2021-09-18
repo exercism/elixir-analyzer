@@ -48,7 +48,7 @@ config :elixir_analyzer,
     "high-score" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.HighScore
     },
-    "language_list" => %{
+    "language-list" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.LanguageList
     },
     "lasagna" => %{
