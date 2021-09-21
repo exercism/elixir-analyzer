@@ -83,6 +83,9 @@ config :elixir_analyzer,
     "accumulate" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
     },
+    "leap" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Leap
+    },
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
     },

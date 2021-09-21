@@ -68,6 +68,9 @@ defmodule ElixirAnalyzer.Constants do
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",
 
+    # Leap Comments
+    leap_erlang_calendar: "elixir.leap.erlang_calendar",
+
     # Name Badge Comments
     name_badge_use_if: "elixir.name-badge.use_if",
 
