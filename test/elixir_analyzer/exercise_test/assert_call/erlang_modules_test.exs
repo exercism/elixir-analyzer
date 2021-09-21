@@ -7,27 +7,26 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "found a call to :rand.normal in function/0",
-      "found a call to :rand.normal in module",
-      "elixir.solution.last_line_assignment"
+      "found a call to :rand.normal in module"
     ] do
     [
       defmodule AssertCallVerification do
         def function() do
-          r = :rand.normal()
+          :rand.normal()
         end
       end,
       defmodule AssertCallVerification do
         alias :rand, as: Rand
 
         def function() do
-          r = Rand.normal()
+          Rand.normal()
         end
       end,
       defmodule AssertCallVerification do
         alias :rand
 
         def function() do
-          r = :rand.normal()
+          :rand.normal()
         end
       end
     ]
@@ -38,22 +37,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "found a call to :rand.normal in function/0",
-      "found a call to :rand.normal in module",
-      "elixir.solution.last_line_assignment"
+      "found a call to :rand.normal in module"
     ] do
     [
       defmodule AssertCallVerification do
         import :rand
 
         def function() do
-          r = normal()
+          normal()
         end
       end,
       defmodule AssertCallVerification do
         import :rand, only: [normal: 0]
 
         def function() do
-          r = normal()
+          normal()
         end
       end,
       defmodule AssertCallVerification do
@@ -61,14 +59,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
 
         def function() do
           import :rand, only: [normal: 0]
-          r = normal()
+          normal()
         end
       end,
       defmodule AssertCallVerification do
         import :rand, only: :functions
 
         def function() do
-          r = normal()
+          normal()
         end
       end
     ]
@@ -79,26 +77,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in module",
       "found a call to :rand.normal in module",
       "didn't find a call to :rand.normal/0 in function/0",
-      "didn't find a call to a :rand function in function/0",
-      "elixir.solution.last_line_assignment"
+      "didn't find a call to a :rand function in function/0"
     ] do
     [
       defmodule AssertCallVerification do
         def function() do
         end
 
-        def other_funtion() do
-          r = :rand.normal()
-        end
+        :rand.normal()
       end,
       defmodule AssertCallVerification do
         def function() do
           import :rand, except: [normal: 0]
         end
 
-        def other_funtion() do
-          r = :rand.normal()
-        end
+        :rand.normal()
       end
     ]
   end
@@ -108,12 +101,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in function/0",
       "found a call to :rand in module",
       "didn't find a call to :rand.normal anywhere in module",
-      "didn't find a call to :rand.normal/0 in function/0",
-      "elixir.solution.last_line_assignment"
+      "didn't find a call to :rand.normal/0 in function/0"
     ] do
     defmodule AssertCallVerification do
       def function() do
-        r = :rand.uniform()
+        :rand.uniform()
       end
     end
   end
@@ -123,16 +115,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       "found a call to :rand in module",
       "didn't find a call to :rand.normal anywhere in module",
       "didn't find a call to :rand.normal/0 in function/0",
-      "didn't find a call to a :rand function in function/0",
-      "elixir.solution.last_line_assignment"
+      "didn't find a call to a :rand function in function/0"
     ] do
     defmodule AssertCallVerification do
       def function() do
       end
 
-      def other_funtion() do
-        r = :rand.uniform()
-      end
+      :rand.uniform()
     end
   end
 
