@@ -13,6 +13,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.UncommonErrors do
         form do
           raise FunctionClauseError
         end
+
+        form do
+          raise %FunctionClauseError{}
+        end
       end
     end
   end
