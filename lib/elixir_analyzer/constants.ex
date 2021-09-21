@@ -24,6 +24,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_variable_name_snake_case: "elixir.solution.variable_name_snake_case",
     solution_indentation: "elixir.solution.indentation",
     solution_debug_functions: "elixir.solution.debug_functions",
+    solution_last_line_assignment: "elixir.solution.last_line_assignment",
 
     # Concept exercises
 

@@ -162,7 +162,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     comments: [
       "didn't find a call to a List function",
       "didn't find a call to a List function in function/0",
-      "mock.constant"
+      "mock.constant",
+      "elixir.solution.last_line_assignment"
     ] do
     defmodule AssertCallVerification do
       def function() do

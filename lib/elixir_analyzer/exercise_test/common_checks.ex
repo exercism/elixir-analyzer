@@ -14,6 +14,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   defmacro __using__(_opts) do
     quote do
       use ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions
+      use ElixirAnalyzer.ExerciseTest.CommonChecks.LastLineAssignment
     end
   end
 
