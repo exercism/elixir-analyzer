@@ -69,6 +69,9 @@ defmodule ElixirAnalyzer.Constants do
     # Lasagna Comments
     lasagna_function_reuse: "elixir.lasagna.function_reuse",
 
+    # Log Level Comments
+    log_level_use_cond: "elixir.log-level.use_cond",
+
     # Name Badge Comments
     name_badge_use_if: "elixir.name-badge.use_if",
 
