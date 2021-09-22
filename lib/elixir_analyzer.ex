@@ -16,7 +16,6 @@ defmodule ElixirAnalyzer do
   @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
   @output_file "analysis.json"
   @meta_config ".meta/config.json"
-  @concept_exercice_path "elixir/exercises/concept"
 
   def default_exercise_config() do
     @exercise_config
@@ -171,7 +170,7 @@ defmodule ElixirAnalyzer do
 
     exemplar_path =
       case meta_config["files"]["exemplar"] do
-        [path | _] -> Path.join([@concept_exercice_path, params.exercise, path])
+        [path | _] -> Path.join(params.path, path)
         _ -> nil
       end
 
