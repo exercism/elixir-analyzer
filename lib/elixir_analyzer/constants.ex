@@ -4,7 +4,7 @@ defmodule ElixirAnalyzer.Constants do
   ```
   elixir.[directory].[filename]
   ```
-
+  
   `[directory]` must correspond to a directory in https://github.com/exercism/website-copy/tree/main/analyzer-comments/elixir
   and `[filename].md` must be a file in that directory.
   """
@@ -129,6 +129,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
+
+    # Strain Comments
+    strain_use_recursion: "elixir.strain.use_recursion",
 
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",

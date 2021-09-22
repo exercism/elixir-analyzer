@@ -92,6 +92,9 @@ config :elixir_analyzer,
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
     },
+    "strain" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Strain
+    },
     "square-root" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot
     },
