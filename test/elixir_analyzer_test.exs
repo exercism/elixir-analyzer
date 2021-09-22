@@ -6,7 +6,7 @@ defmodule ElixirAnalyzerTest do
 
   alias ElixirAnalyzer.Submission
 
-  describe "ElixirAnalyzer" do
+  describe "ElixirAnalyzer for practice exercise" do
     @options [puts_summary: false, write_results: false]
 
     # @tag :pending
@@ -74,6 +74,60 @@ defmodule ElixirAnalyzerTest do
 
         assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
       end)
+    end
+  end
+
+  describe "ElixirAnalyzer for concept exercise" do
+    @options [puts_summary: false, write_results: false]
+
+    # @tag :pending
+    test "perfect solution" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/perfect_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.solution.same_as_exemplar\",\"type\":\"celebratory\"}],\"summary\":\"🎉\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
+    # @tag :pending
+    test "failing solution with comments" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/failing_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.lasagna.function_reuse\",\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
+
+      assert Submission.to_json(analyzed_exercise) == expected_output
+    end
+
+    # @tag :pending
+    test "solution with missing exemplar" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/missing_exemplar/"
+
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.general.exemplar_not_found\",\"params\":{\"path\":\"./test_data/lasagna/missing_exemplar/.meta/exemplar.ex\"},\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
+    # @tag :pending
+    test "solution with parsing error for incomplete exemplar" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_exemplar/"
+
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.general.exemplar_parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 3)\",\"line\":4},\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
   end
 
