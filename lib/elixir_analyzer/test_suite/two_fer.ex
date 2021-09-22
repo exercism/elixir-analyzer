@@ -134,17 +134,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
     end
   end
 
-  feature "raises function clause error" do
-    # status :skip
-    find :none
-    type :actionable
-    comment Constants.solution_raise_fn_clause_error()
-
-    form do
-      raise FunctionClauseError
-    end
-  end
-
   feature "first level @moduledoc recommended" do
     # status :skip
     find :all

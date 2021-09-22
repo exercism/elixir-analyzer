@@ -24,6 +24,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_variable_name_snake_case: "elixir.solution.variable_name_snake_case",
     solution_indentation: "elixir.solution.indentation",
     solution_debug_functions: "elixir.solution.debug_functions",
+    solution_last_line_assignment: "elixir.solution.last_line_assignment",
 
     # Concept exercises
 
@@ -70,6 +71,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Leap Comments
     leap_erlang_calendar: "elixir.leap.erlang_calendar",
+
+    # Log Level Comments
+    log_level_use_cond: "elixir.log-level.use_cond",
 
     # Name Badge Comments
     name_badge_use_if: "elixir.name-badge.use_if",
