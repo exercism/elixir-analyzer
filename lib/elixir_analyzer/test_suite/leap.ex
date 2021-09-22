@@ -10,22 +10,4 @@ defmodule ElixirAnalyzer.TestSuite.Leap do
     called_fn module: :calendar, name: :_
     comment ElixirAnalyzer.Constants.leap_erlang_calendar()
   end
-
-  feature "does not alias or import :calendar" do
-    find :none
-    type :essential
-    comment ElixirAnalyzer.Constants.leap_erlang_calendar()
-
-    form do
-      import :calendar
-    end
-
-    form do
-      import :calendar, _ignore
-    end
-
-    form do
-      alias :calendar, as: _ignore
-    end
-  end
 end
