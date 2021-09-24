@@ -43,7 +43,7 @@ defmodule ElixirAnalyzer.Submission do
           code_path: String.t(),
           code_file: String.t(),
           exemplar_path: String.t() | nil,
-          exemplar_code: String.t() | nil,
+          exemplar_code: Macro.t() | nil,
           code: String.t(),
           analysis_module: atom()
         }

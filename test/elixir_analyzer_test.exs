@@ -109,12 +109,14 @@ defmodule ElixirAnalyzerTest do
       exercise = "lasagna"
       path = "./test_data/lasagna/missing_exemplar/"
 
-      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
-      expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.general.exemplar_not_found\",\"params\":{\"path\":\"./test_data/lasagna/missing_exemplar/.meta/exemplar.ex\"},\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
+               expected_output =
+                 "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
 
-      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+               assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+             end) =~ "Exemplar file not found. Reason: enoent"
     end
 
     # @tag :pending
@@ -122,12 +124,14 @@ defmodule ElixirAnalyzerTest do
       exercise = "lasagna"
       path = "./test_data/lasagna/wrong_exemplar/"
 
-      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
-      expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.general.exemplar_parsing_error\",\"params\":{\"error\":\"missing terminator: end (for \\\"do\\\" starting at line 3)\",\"line\":4},\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
+               expected_output =
+                 "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
 
-      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+               assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+             end) =~ "Exemplar file could not be parsed."
     end
   end
 

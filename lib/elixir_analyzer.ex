@@ -192,6 +192,7 @@ defmodule ElixirAnalyzer do
   # - read in the code
   # - check if there is an exemplar
   # - read in the exemplar
+  # - parse the exemplar into an AST
   defp check(%Submission{halted: true} = submission, _params) do
     Logger.warning("Check not performed, halted previously")
     submission
@@ -210,7 +211,10 @@ defmodule ElixirAnalyzer do
            Logger.info("Exemplar file exists, attempting to read", exemplar_path: exemplar_path),
          {:exemplar_read, submission, {:ok, exemplar_code}} <-
            {:exemplar_read, submission, File.read(exemplar_path)},
-         :ok <- Logger.info("Exemplar file read successfully"),
+         :ok <- Logger.info("Exemplar file read successfully, attempting to parse"),
+         {:exemplar_ast, submission, {:ok, exemplar_code}} <-
+           {:exemplar_ast, submission, Code.string_to_quoted(exemplar_code)},
+         :ok <- Logger.info("Exemplar file parsed successfully"),
          submission <- %{submission | exemplar_code: exemplar_code} do
       submission
     else
@@ -241,11 +245,13 @@ defmodule ElixirAnalyzer do
         )
 
         submission
-        |> Submission.append_comment(%Comment{
-          comment: Constants.general_exemplar_not_found(),
-          params: %{"path" => submission.exemplar_path},
-          type: :informative
-        })
+
+      {:exemplar_ast, submission, {:error, reason}} ->
+        Logger.warning("Exemplar file could not be parsed. Reason: #{inspect(reason)}",
+          exemplar_code: submission.exemplar_code
+        )
+
+        submission
     end
   end
 

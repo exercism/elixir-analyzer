@@ -166,7 +166,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
            [@concept_exercice_path, slug, @meta_config] |> Path.join() |> File.read(),
          %{"files" => %{"exemplar" => [path]}} <- Jason.decode!(config_file),
          exemplar_code <-
-           [@concept_exercice_path, slug, path] |> Path.join() |> File.read!() do
+           [@concept_exercice_path, slug, path] |> Path.join() |> File.read!(),
+         exemplar_code <- Code.string_to_quoted!(exemplar_code) do
       exemplar_code
     else
       _ -> nil
