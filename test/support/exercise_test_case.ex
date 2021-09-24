@@ -157,16 +157,22 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   end
 
   def find_exemplar_code(exercise_test_module) do
+    # Returns the exemplar AST if it exists
+    # First find slug or fail gracefully for non-exercice tests (like assert_call tests)
     with {slug, _module} <-
-           Enum.find(@exercise_config, fn
-             {_slug, %{analyzer_module: ^exercise_test_module}} -> true
-             _ -> false
-           end),
+           Enum.find(
+             @exercise_config,
+             &match?({_slug, %{analyzer_module: ^exercise_test_module}}, &1)
+           ),
+         # Find path to concept config file or fail gracefully for practice exercises 
          {:ok, config_file} <-
            [@concept_exercice_path, slug, @meta_config] |> Path.join() |> File.read(),
+         # Decode config file or crash
          %{"files" => %{"exemplar" => [path]}} <- Jason.decode!(config_file),
+         # Read exemplar file or crash
          exemplar_code <-
            [@concept_exercice_path, slug, path] |> Path.join() |> File.read!(),
+         # Parse exemplar or crash
          exemplar_code <- Code.string_to_quoted!(exemplar_code) do
       exemplar_code
     else
