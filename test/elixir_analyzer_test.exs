@@ -9,7 +9,6 @@ defmodule ElixirAnalyzerTest do
   describe "ElixirAnalyzer for practice exercise" do
     @options [puts_summary: false, write_results: false]
 
-    # @tag :pending
     test "solution with no comments" do
       exercise = "two-fer"
       path = "./test_data/two_fer/perfect_solution/"
@@ -22,7 +21,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
-    # @tag :pending
     test "referred solution with comments" do
       exercise = "two-fer"
       path = "./test_data/two_fer/imperfect_solution/"
@@ -34,7 +32,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
 
-    # @tag :pending
     test "error solution" do
       exercise = "two-fer"
       path = "./test_data/two_fer/error_solution/"
@@ -80,7 +77,6 @@ defmodule ElixirAnalyzerTest do
   describe "ElixirAnalyzer for concept exercise" do
     @options [puts_summary: false, write_results: false]
 
-    # @tag :pending
     test "perfect solution" do
       exercise = "lasagna"
       path = "./test_data/lasagna/perfect_solution/"
@@ -92,7 +88,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
-    # @tag :pending
     test "failing solution with comments" do
       exercise = "lasagna"
       path = "./test_data/lasagna/failing_solution/"
@@ -104,7 +99,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
 
-    # @tag :pending
     test "solution with missing exemplar" do
       exercise = "lasagna"
       path = "./test_data/lasagna/missing_exemplar/"
@@ -119,7 +113,6 @@ defmodule ElixirAnalyzerTest do
              end) =~ "Exemplar file not found. Reason: enoent"
     end
 
-    # @tag :pending
     test "solution with parsing error for incomplete exemplar" do
       exercise = "lasagna"
       path = "./test_data/lasagna/wrong_exemplar/"
