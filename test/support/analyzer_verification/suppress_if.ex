@@ -18,10 +18,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
 
   assert_no_call "assert 1: no foo() unless common check was found" do
     comment "assert 1: foo() was called"
-    # This should work:
-    # suppress_if Constants.solution_debug_functions(), :fail
-    # but in assert_call, it gets treated as an AST, so the final string is required 
-    suppress_if "elixir.solution.debug_functions", :fail
+    suppress_if Constants.solution_debug_functions(), :fail
     called_fn name: :foo
   end
 

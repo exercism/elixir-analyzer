@@ -70,28 +70,28 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
 
   assert_call "send_newsletter/3 calls open_log/1" do
     type :actionable
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_reuses_functions()
+    comment Constants.newsletter_send_newsletter_reuses_functions()
     called_fn name: :open_log
     calling_fn module: Newsletter, name: :send_newsletter
   end
 
   assert_call "send_newsletter/3 calls close_log/1" do
     type :actionable
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_reuses_functions()
+    comment Constants.newsletter_send_newsletter_reuses_functions()
     called_fn name: :close_log
     calling_fn module: Newsletter, name: :send_newsletter
   end
 
   assert_call "send_newsletter/3 calls read_emails/1" do
     type :actionable
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_reuses_functions()
+    comment Constants.newsletter_send_newsletter_reuses_functions()
     called_fn name: :read_emails
     calling_fn module: Newsletter, name: :send_newsletter
   end
 
   assert_call "send_newsletter/3 calls log_sent_email/2" do
     type :actionable
-    comment ElixirAnalyzer.Constants.newsletter_send_newsletter_reuses_functions()
+    comment Constants.newsletter_send_newsletter_reuses_functions()
     called_fn name: :log_sent_email
     calling_fn module: Newsletter, name: :send_newsletter
   end

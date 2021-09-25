@@ -4,34 +4,35 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
   """
 
   use ElixirAnalyzer.ExerciseTest
+  alias ElixirAnalyzer.Constants
 
   assert_no_call "doesn't convert anything to a string" do
     type :essential
     called_fn name: :to_string
-    comment ElixirAnalyzer.Constants.german_sysadmin_no_string()
+    comment Constants.german_sysadmin_no_string()
   end
 
   assert_no_call "doesn't convert anything to a charlist" do
     type :essential
     called_fn name: :to_charlist
-    comment ElixirAnalyzer.Constants.german_sysadmin_no_string()
+    comment Constants.german_sysadmin_no_string()
   end
 
   assert_no_call "doesn't use any string functions" do
     type :essential
     called_fn module: String, name: :_
-    comment ElixirAnalyzer.Constants.german_sysadmin_no_string()
+    comment Constants.german_sysadmin_no_string()
   end
 
   assert_no_call "doesn't create binaries from character codes" do
     type :essential
     called_fn name: :<<>>
-    comment ElixirAnalyzer.Constants.german_sysadmin_no_string()
+    comment Constants.german_sysadmin_no_string()
   end
 
   assert_call "using case is required" do
     type :essential
     called_fn name: :case
-    comment ElixirAnalyzer.Constants.german_sysadmin_use_case()
+    comment Constants.german_sysadmin_use_case()
   end
 end
