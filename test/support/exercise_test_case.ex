@@ -156,27 +156,23 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     :noop
   end
 
-  def find_exemplar_code(exercise_test_module) do
-    # Returns the exemplar AST if it exists
-    # First find slug or fail gracefully for non-exercice tests (like assert_call tests)
-    with {slug, _module} <-
-           Enum.find(
-             @exercise_config,
-             &match?({_slug, %{analyzer_module: ^exercise_test_module}}, &1)
-           ),
-         # Find path to concept config file or fail gracefully for practice exercises 
+  # Return the exemplar AST for concept exercises, or nil for pracices exercises and other tests
+  def find_exemplar_code(test_module) do
+    with {slug, _test_module} <-
+           Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1)),
          {:ok, config_file} <-
-           [@concept_exercice_path, slug, @meta_config] |> Path.join() |> File.read(),
-         # Decode config file or crash
-         %{"files" => %{"exemplar" => [path]}} <- Jason.decode!(config_file),
-         # Read exemplar file or crash
-         exemplar_code <-
-           [@concept_exercice_path, slug, path] |> Path.join() |> File.read!(),
-         # Parse exemplar or crash
-         exemplar_code <- Code.string_to_quoted!(exemplar_code) do
-      exemplar_code
+           Path.join([@concept_exercice_path, slug, @meta_config]) |> File.read() do
+      get_exemplar_ast!(config_file, slug)
     else
       _ -> nil
     end
+  end
+
+  defp get_exemplar_ast!(config_file_path, slug) do
+    %{"files" => %{"exemplar" => [path]}} = Jason.decode!(config_file_path)
+
+    Path.join([@concept_exercice_path, slug, path])
+    |> File.read!()
+    |> Code.string_to_quoted!()
   end
 end
