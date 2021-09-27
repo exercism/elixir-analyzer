@@ -43,14 +43,16 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
       |> Map.put(:should_call, should_call)
       |> Map.put_new(:type, :informative)
       |> Map.put_new(:calling_fn, nil)
+      # made into a key-val list for better quoting
+      |> Map.to_list()
 
-    unless Map.has_key?(test_data, :comment) do
+    unless Keyword.has_key?(test_data, :comment) do
       raise "Comment must be defined for each assert_call test"
     end
 
     quote do
       @assert_call_tests [
-        unquote(Macro.escape(test_data)) | @assert_call_tests
+        unquote(test_data) | @assert_call_tests
       ]
     end
   end

@@ -3,11 +3,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions do
   This is an exercise analyzer extension module used for common tests looking for debugging functions
   """
 
+  alias ElixirAnalyzer.Constants
+
   defmacro __using__(_opts) do
     quote do
-      assert_no_call unquote(ElixirAnalyzer.Constants.solution_debug_functions()) do
+      assert_no_call Constants.solution_debug_functions() do
         type :informative
-        comment ElixirAnalyzer.Constants.solution_debug_functions()
+        comment Constants.solution_debug_functions()
         called_fn module: IO, name: :inspect
       end
     end

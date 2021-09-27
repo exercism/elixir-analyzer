@@ -2,13 +2,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.UncommonErrors do
   @moduledoc """
   This is an exercise analyzer extension module used for common tests looking for uncommon errors raised
   """
+  alias ElixirAnalyzer.Constants
 
   defmacro __using__(_opts) do
     quote do
-      feature "raises function clause error" do
+      feature Constants.solution_raise_fn_clause_error() do
         find :none
         type :actionable
-        comment ElixirAnalyzer.Constants.solution_raise_fn_clause_error()
+        comment Constants.solution_raise_fn_clause_error()
 
         form do
           raise FunctionClauseError

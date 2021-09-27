@@ -10,13 +10,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   alias ElixirAnalyzer.Comment
 
   def compile(assert_call_data, code_ast) do
-    name = assert_call_data.description
-    called_fn = Macro.escape(assert_call_data.called_fn)
-    calling_fn = Macro.escape(assert_call_data.calling_fn)
-    {comment, _} = Code.eval_quoted(assert_call_data.comment)
-    should_call = assert_call_data.should_call
-    type = assert_call_data.type
-    suppress_if = Map.get(assert_call_data, :suppress_if, false)
+    name = Keyword.fetch!(assert_call_data, :description)
+    called_fn = Keyword.fetch!(assert_call_data, :called_fn)
+    calling_fn = Keyword.fetch!(assert_call_data, :calling_fn)
+    comment = Keyword.fetch!(assert_call_data, :comment)
+    should_call = Keyword.fetch!(assert_call_data, :should_call)
+    type = Keyword.fetch!(assert_call_data, :type)
+    suppress_if = Keyword.get(assert_call_data, :suppress_if, false)
 
     test_description =
       Macro.escape(%Comment{

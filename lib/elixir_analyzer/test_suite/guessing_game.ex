@@ -4,11 +4,12 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
   """
 
   use ElixirAnalyzer.ExerciseTest
+  alias ElixirAnalyzer.Constants
 
   feature "uses guards" do
     find :any
     type :essential
-    comment ElixirAnalyzer.Constants.guessing_game_use_guards()
+    comment Constants.guessing_game_use_guards()
 
     form do
       def compare(_ignore, _ignore) when _ignore do
@@ -20,7 +21,7 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
   feature "uses default arguments" do
     find :any
     type :essential
-    comment ElixirAnalyzer.Constants.guessing_game_use_default_argument()
+    comment Constants.guessing_game_use_default_argument()
 
     form do
       def compare(_ignore, _ignore \\ :no_guess)
@@ -42,18 +43,18 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
   assert_no_call "doesn't use if, only multiple clause functions" do
     type :essential
     called_fn name: :if
-    comment ElixirAnalyzer.Constants.guessing_game_use_multiple_clause_functions()
+    comment Constants.guessing_game_use_multiple_clause_functions()
   end
 
   assert_no_call "doesn't use case, only multiple clause functions" do
     type :essential
     called_fn name: :case
-    comment ElixirAnalyzer.Constants.guessing_game_use_multiple_clause_functions()
+    comment Constants.guessing_game_use_multiple_clause_functions()
   end
 
   assert_no_call "doesn't use cond, only multiple clause functions" do
     type :essential
     called_fn name: :cond
-    comment ElixirAnalyzer.Constants.guessing_game_use_multiple_clause_functions()
+    comment Constants.guessing_game_use_multiple_clause_functions()
   end
 end
