@@ -54,6 +54,24 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
           <<0xFF, 0xD8, 0xFF, rest::binary>> -> "image/jpg"
           <<0x47, 0x49, 0x46, rest::binary>> -> "image/gif"
         end
+      end,
+      def type_from_binary(file_binary) do
+        case file_binary do
+          <<0x7F, 0x45, 0x4C, 0x46, rest::bitstring>> -> "application/octet-stream"
+          <<0x42, 0x4D, rest::bitstring>> -> "image/bmp"
+          <<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, rest::bitstring>> -> "image/png"
+          <<0xFF, 0xD8, 0xFF, rest::bitstring>> -> "image/jpg"
+          <<0x47, 0x49, 0x46, rest::bitstring>> -> "image/gif"
+        end
+      end,
+      def type_from_binary(file_binary) do
+        case file_binary do
+          <<0x7F, 0x45, 0x4C, 0x46, rest::bits>> -> "application/octet-stream"
+          <<0x42, 0x4D, rest::bits>> -> "image/bmp"
+          <<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, rest::bits>> -> "image/png"
+          <<0xFF, 0xD8, 0xFF, rest::bits>> -> "image/jpg"
+          <<0x47, 0x49, 0x46, rest::bits>> -> "image/gif"
+        end
       end
     ]
   end
