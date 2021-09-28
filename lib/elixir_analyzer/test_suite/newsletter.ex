@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.Newsletter do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Newsletter 
+  This is an exercise analyzer extension module for the concept exercise Newsletter
   """
 
   alias ElixirAnalyzer.Constants
@@ -20,9 +20,24 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
     end
   end
 
+  feature "use IO.puts in log_sent_email rather than IO.write" do
+    find :none
+    type :actionable
+    comment Constants.newsletter_log_sent_email_prefer_io_puts()
+
+    form do
+      def log_sent_email(_ignore, _ignore) do
+        _block_ends_with do
+          IO.write(_ignore, _ignore)
+        end
+      end
+    end
+  end
+
   feature "log_sent_email ends with IO.puts" do
     type :actionable
     comment Constants.newsletter_log_sent_email_returns_implicitly()
+    suppress_if "use IO.puts in log_sent_email rather than IO.write", :fail
 
     form do
       def log_sent_email(_ignore, _ignore) do
