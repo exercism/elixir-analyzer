@@ -25,6 +25,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_indentation: "elixir.solution.indentation",
     solution_debug_functions: "elixir.solution.debug_functions",
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
+    solution_compiler_warnings: "elixir.solution.compiler_warnings",
 
     # Concept exercises
 

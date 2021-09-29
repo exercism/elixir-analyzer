@@ -3,11 +3,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   This module aggregates all common checks that should be run on every single solution.
   """
 
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation
+  alias ElixirAnalyzer.ExerciseTest.CommonChecks.{
+    FunctionNames,
+    VariableNames,
+    ModuleAttributeNames,
+    ModulePascalCase,
+    CompilerWarnings,
+    Indentation
+  }
+
   alias ElixirAnalyzer.Comment
 
   # CommonChecks that use feature or assert_call should be called here
@@ -26,6 +30,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast),
       ModulePascalCase.run(code_ast),
+      CompilerWarnings.run(code_ast),
       Indentation.run(code_ast, code_as_string)
     ]
     |> List.flatten()

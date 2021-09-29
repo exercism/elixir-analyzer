@@ -54,6 +54,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     Passing a list of code blocks is also supported.
   """
   defmacro test_exercise_analysis(name, assertions, do: test_cases) do
+    alias ElixirAnalyzer.Constants
+
     supported_assertions_keys = [:comments, :comments_include, :comments_exclude]
     assertions_keys = Keyword.keys(assertions)
     assertions_key_diff = assertions_keys -- supported_assertions_keys
@@ -97,6 +99,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
           comments =
             result.comments
             |> Enum.map(fn comment_details -> comment_details.comment end)
+            # There are too many compiler warnings in tests
+            |> Enum.reject(&(&1 == Constants.solution_compiler_warnings()))
 
           Enum.map(Keyword.keys(unquote(assertions)), fn
             :comments ->
