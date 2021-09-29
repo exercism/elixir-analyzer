@@ -1,4 +1,7 @@
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
+  @moduledoc """
+  This is an exercise analyzer extension module used for capturing compiler warnings
+  """
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
