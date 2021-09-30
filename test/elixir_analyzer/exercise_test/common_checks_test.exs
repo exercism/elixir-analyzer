@@ -187,22 +187,22 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
     test_exercise_analysis "doesn't report snake_case variable names",
       comments_exclude: [Constants.solution_variable_name_snake_case()] do
       [
-        defmodule Module do
+        defmodule MyModule do
           def f(some_variable) do
             another_variable = [some_variable]
           end
         end,
-        defmodule Module do
+        defmodule MyModule do
           a = 1
           b = 2
           {var_one, var_two} = {a, b}
           [b, var_two | var_one]
         end,
-        defmodule Module do
+        defmodule MyModule do
           "hi " <> first_name = polite_morning_greeting
           %{first_name: first_name}
         end,
-        defmodule Module do
+        defmodule MyModule do
           def fun(some_value), do: ^some_value == nil
         end
       ]
@@ -211,22 +211,22 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
     test_exercise_analysis "reports non snake_case variable names",
       comments_include: [Constants.solution_variable_name_snake_case()] do
       [
-        defmodule Module do
+        defmodule MyModule do
           def f(someVariable) do
             another_variable = [someVariable]
           end
         end,
-        defmodule Module do
+        defmodule MyModule do
           a = 1
           b = 2
           {var_one, varTwwo} = {a, b}
           [b, varTwwo | var_one]
         end,
-        defmodule Module do
+        defmodule MyModule do
           "hi " <> first_name = polite_morningGreeting
           %{first_name: first_name}
         end,
-        defmodule Module do
+        defmodule MyModule do
           def fun(some_value), do: ^someValue == nil
         end
       ]
@@ -237,27 +237,27 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
     test_exercise_analysis "reports IO.inspect",
       comments: [Constants.solution_debug_functions()] do
       [
-        defmodule Module do
+        defmodule MyModule do
           def foo() do
             (1 + 1)
             |> IO.inspect()
           end
         end,
-        defmodule Module do
+        defmodule MyModule do
           alias IO, as: Debug
 
           def foo(name) do
             Debug.inspect(name)
           end
         end,
-        defmodule Module do
+        defmodule MyModule do
           import IO
 
           def foo(name) do
             inspect(name)
           end
         end,
-        defmodule Module do
+        defmodule MyModule do
           import IO, only: [inspect: 1]
 
           def foo(name) do
