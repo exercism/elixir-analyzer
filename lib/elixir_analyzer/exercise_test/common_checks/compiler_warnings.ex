@@ -7,6 +7,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
 
   def run(code_ast) do
     import ExUnit.CaptureIO
+    Application.put_env(:elixir, :ansi_enabled, false)
 
     warnings =
       capture_io(:stderr, fn ->
@@ -22,6 +23,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
           _ -> nil
         end
       end)
+
+    Application.put_env(:elixir, :ansi_enabled, true)
 
     if warnings == "" do
       []
