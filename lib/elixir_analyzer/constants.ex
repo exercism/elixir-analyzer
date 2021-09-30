@@ -85,6 +85,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # Newsletter Comments
     newsletter_close_log_returns_implicitly: "elixir.newsletter.close_log_returns_implicitly",
+    newsletter_log_sent_email_prefer_io_puts: "elixir.newsletter.log_sent_email_prefer_io_puts",
     newsletter_log_sent_email_returns_implicitly:
       "elixir.newsletter.log_sent_email_returns_implicitly",
     newsletter_send_newsletter_returns_implicitly:

@@ -39,6 +39,80 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
     end
   end
 
+  describe "using IO.write in log_sent_email" do
+    test_exercise_analysis "recommends IO.puts over IO.write",
+      comments_include: [Constants.newsletter_log_sent_email_prefer_io_puts()],
+      comments_exclude: [Constants.newsletter_log_sent_email_returns_implicitly()] do
+      [
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            IO.write(pid, email <> "\n")
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            IO.write(pid, "#{email}\n")
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            IO.write(pid, email)
+            IO.write(pid, "\n")
+          end
+        end
+      ]
+    end
+
+    test_exercise_analysis "recommends IO.puts over IO.write and points out explicit return",
+      comments_include: [
+        Constants.newsletter_log_sent_email_prefer_io_puts(),
+        Constants.newsletter_log_sent_email_returns_implicitly()
+      ] do
+      [
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            IO.write(pid, "#{email}\n")
+            :ok
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            x = IO.write(pid, "#{email}\n")
+            :ok
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            x = :ok
+            IO.write(pid, email <> "\n")
+            x
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            x = IO.write(pid, email)
+            x = IO.write(pid, "\n")
+            x
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            x = IO.write(pid, email)
+            x = IO.puts(pid, "")
+            x
+          end
+        end,
+        defmodule Newsletter do
+          def log_sent_email(pid, email) do
+            IO.write(pid, email)
+            IO.puts(pid, "")
+            :ok
+          end
+        end
+      ]
+    end
+  end
+
   describe "detects non-implicit returns" do
     test_exercise_analysis "explicit return in close_log",
       comments_include: [Constants.newsletter_close_log_returns_implicitly()] do
