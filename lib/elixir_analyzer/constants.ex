@@ -4,7 +4,7 @@ defmodule ElixirAnalyzer.Constants do
   ```
   elixir.[directory].[filename]
   ```
-
+  
   `[directory]` must correspond to a directory in https://github.com/exercism/website-copy/tree/main/analyzer-comments/elixir
   and `[filename].md` must be a file in that directory.
   """
@@ -121,6 +121,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
+
+    # Wine Cellar Comments
+    wine_cellar_use_keyword_get_values: "elixir.wine-cellar.use_keyword_get_values",
 
     # Practice exercises
 
