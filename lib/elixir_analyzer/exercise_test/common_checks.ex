@@ -19,6 +19,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     quote do
       use ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions
       use ElixirAnalyzer.ExerciseTest.CommonChecks.LastLineAssignment
+      use ElixirAnalyzer.ExerciseTest.CommonChecks.ListPrependHead
       use ElixirAnalyzer.ExerciseTest.CommonChecks.UncommonErrors
     end
   end
