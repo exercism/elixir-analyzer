@@ -66,17 +66,16 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
   end
 
   defp render_names(type, name) do
-    starts_with_is = String.starts_with?(name, "is_")
-    end_with_? = String.ends_with?(name, "?")
+    is_encloded_? = String.starts_with?(name, "is_") and String.ends_with?(name, "?")
 
     name_without_is = String.replace_leading(name, "is_", "")
     name_without_? = String.replace_trailing(name, "?", "")
 
     correct_name =
       cond do
-        type in [:def, :defp] and starts_with_is and end_with_? -> name_without_is
+        type in [:def, :defp] and is_encloded_? -> name_without_is
         type in [:def, :defp] -> name_without_is <> "?"
-        type in [:defguard, :defguardp] and starts_with_is and end_with_? -> name_without_?
+        type in [:defguard, :defguardp] and is_encloded_? -> name_without_?
         type in [:defguard, :defguardp] -> "is_" <> name_without_?
         true -> "#{name_without_?} or #{type} #{name_without_is}"
       end
