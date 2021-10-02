@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ExemplarComparaison do
+defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ExemplarComparison do
   @moduledoc """
   Compares the solution to the exemplar solution for concept exercises.
   Ignores practice exercises.
