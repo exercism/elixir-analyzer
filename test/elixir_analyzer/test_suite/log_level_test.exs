@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.LogLevelTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.LogLevel
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [Constants.solution_same_as_exemplar()] do
     [
       defmodule LogLevel do
         def to_label(level, legacy?) do

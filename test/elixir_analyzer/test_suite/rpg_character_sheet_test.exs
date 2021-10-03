@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheetTest do
   alias ElixirAnalyzer.Constants
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule RPG.CharacterSheet do
         def welcome() do
@@ -42,7 +42,13 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheetTest do
 
           IO.inspect(character, label: "Your character")
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule RPG.CharacterSheet do
         def welcome() do
           IO.puts("Welcome! Let's fill out your character sheet together.")

@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.GermanSysadmin
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule Username do
       def sanitize('') do
         ''

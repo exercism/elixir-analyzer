@@ -12,11 +12,15 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   use ExUnit.CaseTemplate
 
   @dialyzer no_match: {:assert_comments, 3}
+  @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
+  @concept_exercice_path "elixir/exercises/concept"
+  @meta_config ".meta/config.json"
 
   using opts do
     quote do
       @exercise_test_module unquote(opts)[:exercise_test_module]
       @unsorted_comments unquote(opts)[:unsorted_comments]
+      @exemplar_code ElixirAnalyzer.ExerciseTestCase.find_exemplar_code(@exercise_test_module)
       require ElixirAnalyzer.ExerciseTestCase
       import ElixirAnalyzer.ExerciseTestCase
       alias ElixirAnalyzer.Constants
@@ -94,7 +98,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             analysis_module: ""
           }
 
-          result = @exercise_test_module.analyze(empty_submission, unquote(code))
+          result = @exercise_test_module.analyze(empty_submission, unquote(code), @exemplar_code)
 
           comments =
             result.comments
@@ -150,5 +154,25 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
   def assert_comments(_, _, _) do
     :noop
+  end
+
+  # Return the exemplar AST for concept exercises, or nil for pracices exercises and other tests
+  def find_exemplar_code(test_module) do
+    with {slug, _test_module} <-
+           Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1)),
+         {:ok, config_file} <-
+           Path.join([@concept_exercice_path, slug, @meta_config]) |> File.read() do
+      get_exemplar_ast!(config_file, slug)
+    else
+      _ -> nil
+    end
+  end
+
+  defp get_exemplar_ast!(config_file_path, slug) do
+    %{"files" => %{"exemplar" => [path]}} = Jason.decode!(config_file_path)
+
+    Path.join([@concept_exercice_path, slug, path])
+    |> File.read!()
+    |> Code.string_to_quoted!()
   end
 end

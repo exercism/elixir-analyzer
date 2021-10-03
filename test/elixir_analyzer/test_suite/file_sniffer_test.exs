@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.FileSniffer
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule FileSniffer do
         def type_from_extension("bmp"), do: "image/bmp"
@@ -33,7 +33,13 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
             {:error, "Warning, file format and file extension do not match."}
           end
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule FileSniffer do
         def type_from_binary(<<?B, ?M, _::binary>>), do: "image/bmp"
 

@@ -1,9 +1,11 @@
 defmodule ElixirAnalyzer.TestSuite.LasagnaTest do
+  alias ElixirAnalyzer.Constants
+
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.TestSuite.Lasagna
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [Constants.solution_same_as_exemplar()] do
     defmodule Lasagna do
       def expected_minutes_in_oven() do
         40
