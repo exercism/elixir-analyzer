@@ -30,6 +30,9 @@ config :elixir_analyzer,
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
+    "captains-log" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.CaptainsLog
+    },
     "chessboard" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
     },

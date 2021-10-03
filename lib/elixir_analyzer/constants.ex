@@ -42,6 +42,11 @@ defmodule ElixirAnalyzer.Constants do
     chessboard_change_codepoint_to_string_directly:
       "elixir.chessboard.change_codepoint_to_string_directly",
 
+    # Captains Log Comments
+    captains_log_use_enum_random: "elixir.captains-log.use_enum_random",
+    captains_log_use_rand_uniform: "elixir.captains-log.use_rand_uniform",
+    captains_log_use_io_lib: "elixir.captains-log.use_io_lib",
+
     # File Sniffer Comments
     file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
 
