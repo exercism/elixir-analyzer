@@ -68,7 +68,7 @@ The submodule is used only by the tests.
 
 ### External tests
 
-However, there are also tests tagged as `:external` which are excluded by default. Those tests check if all of the comments used in this repository exist in [`exercism/website-copy`][website-copy-comments]. To run all tests, use the `--include external` flag.
+There are also tests tagged as `:external` which are excluded by default. Those tests check if all of the comments used in this repository exist in [`exercism/website-copy`][website-copy-comments]. To run all tests, use the `--include external` flag.
 
 ## Design
 
