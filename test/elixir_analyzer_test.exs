@@ -6,10 +6,9 @@ defmodule ElixirAnalyzerTest do
 
   alias ElixirAnalyzer.Submission
 
-  describe "ElixirAnalyzer" do
+  describe "ElixirAnalyzer for practice exercise" do
     @options [puts_summary: false, write_results: false]
 
-    # @tag :pending
     test "solution with no comments" do
       exercise = "two-fer"
       path = "./test_data/two_fer/perfect_solution/"
@@ -22,7 +21,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
-    # @tag :pending
     test "referred solution with comments" do
       exercise = "two-fer"
       path = "./test_data/two_fer/imperfect_solution/"
@@ -34,7 +32,6 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
 
-    # @tag :pending
     test "error solution" do
       exercise = "two-fer"
       path = "./test_data/two_fer/error_solution/"
@@ -74,6 +71,60 @@ defmodule ElixirAnalyzerTest do
 
         assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
       end)
+    end
+  end
+
+  describe "ElixirAnalyzer for concept exercise" do
+    @options [puts_summary: false, write_results: false]
+
+    test "perfect solution" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/perfect_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.solution.same_as_exemplar\",\"type\":\"celebratory\"}],\"summary\":\"You're doing something right. 🎉\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
+    test "failing solution with comments" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/failing_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.lasagna.function_reuse\",\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
+
+      assert Submission.to_json(analyzed_exercise) == expected_output
+    end
+
+    test "solution with missing exemplar" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/missing_exemplar/"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               expected_output =
+                 "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+               assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+             end) =~ "Exemplar file not found. Reason: enoent"
+    end
+
+    test "solution with parsing error for incomplete exemplar" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_exemplar/"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               expected_output =
+                 "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+               assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+             end) =~ "Exemplar file could not be parsed."
     end
   end
 

@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.TestSuite.NeedForSpeedTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.NeedForSpeed
 
   test_exercise_analysis "perfect solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     ~S'''
     defmodule NeedForSpeed do
       alias NeedForSpeed.Race
