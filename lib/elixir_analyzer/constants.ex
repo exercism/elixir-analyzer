@@ -125,6 +125,9 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Wine Cellar Comments
+    wine_cellar_use_keyword_get_values: "elixir.wine-cellar.use_keyword_get_values",
+
     # Practice exercises
 
     # Accumulate Comments

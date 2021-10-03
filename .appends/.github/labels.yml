@@ -62,3 +62,7 @@
 - name: "won't fix ⛔️"
   description: ""
   color: "fce0e2"
+
+- name: "hacktoberfest"
+  description: "Advertizing the issue as suitable for hacktoberfest"
+  color: "a6692d"

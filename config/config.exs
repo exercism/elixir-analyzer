@@ -81,6 +81,9 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "wine-cellar" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.WineCellar
+    },
 
     # practice exercises
     "accumulate" => %{
