@@ -83,7 +83,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.solution.same_as_exemplar\",\"type\":\"celebratory\"}],\"summary\":\"🎉\"}"
+        "{\"comments\":[{\"comment\":\"elixir.solution.same_as_exemplar\",\"type\":\"celebratory\"}],\"summary\":\"You're doing something right. 🎉\"}"
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
