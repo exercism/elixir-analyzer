@@ -58,6 +58,16 @@ ElixirAnalyzer.analyze_exercise("two-fer", "./test_data/two_fer/imperfect_soluti
 
 The tests are run with `mix test`.
 
+### Git submodule
+
+Some of the tests depend on the `/elixir` git submodule. Run `git submodule update --init --recursive` once after cloning this repo to also get the submodule.
+
+To check at which commit the submodule is, run `git submodule`. To update the submodule to the newest commit, run `git submodule update --remote --merge`.
+
+The submodule is used only by the tests.
+
+### External tests
+
 However, there are also tests tagged as `:external` which are excluded by default. Those tests check if all of the comments used in this repository exist in [`exercism/website-copy`][website-copy-comments]. To run all tests, use the `--include external` flag.
 
 ## Design
