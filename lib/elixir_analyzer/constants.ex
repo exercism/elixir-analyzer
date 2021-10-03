@@ -26,7 +26,9 @@ defmodule ElixirAnalyzer.Constants do
     solution_debug_functions: "elixir.solution.debug_functions",
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
-    solution_boolean_functions: "elixir.solution.boolean_functions",
+    solution_def_with_is: "elixir.solution.def_with_is",
+    solution_defguard_with_?: "elixir.solution.defguard_with_?",
+    solution_defmacro_with_is_?: "elixir.solution.defmacro_with_is_?",
 
     # Concept exercises
 

@@ -13,29 +13,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
 
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(ast) do
-    {_, %{function_names: function_names}} =
-      Macro.prewalk(ast, %{function_names: []}, &traverse/2)
+    {_, function_names} =
+      Macro.prewalk(ast, %{defs: [], defguards: [], defmacros: []}, &traverse/2)
 
-    case List.last(function_names) do
-      nil ->
-        []
-
-      {def_type, name} ->
-        {wrong_def, correct_def} = render_names(def_type, name)
-
-        [
-          {:fail,
-           %Comment{
-             type: :actionable,
-             name: Constants.solution_boolean_functions(),
-             comment: Constants.solution_boolean_functions(),
-             params: %{
-               expected: correct_def,
-               actual: wrong_def
-             }
-           }}
-        ]
-    end
+    function_names
+    |> Enum.map(fn {type, list} -> {type, List.last(list)} end)
+    |> Enum.map(&to_comment/1)
+    |> List.flatten()
   end
 
   @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
@@ -45,7 +29,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
     if correct_name?(op, name) do
       {ast, acc}
     else
-      {ast, Map.update!(acc, :function_names, &[{op, name} | &1])}
+      {ast, put_correct_name(acc, op, name)}
     end
   end
 
@@ -65,21 +49,74 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
     end
   end
 
-  defp render_names(type, name) do
-    is_encloded_? = String.starts_with?(name, "is_") and String.ends_with?(name, "?")
+  defp put_correct_name(acc, type, wrong_name) when type in [:def, :defp] do
+    name =
+      wrong_name
+      |> String.replace_leading("is_", "")
+      |> String.replace_trailing("?", "")
 
-    name_without_is = String.replace_leading(name, "is_", "")
-    name_without_? = String.replace_trailing(name, "?", "")
+    Map.update!(acc, :defs, &[{"#{type} #{wrong_name}", "#{type} #{name}?"} | &1])
+  end
 
-    correct_name =
-      cond do
-        type in [:def, :defp] and is_encloded_? -> name_without_is
-        type in [:def, :defp] -> name_without_is <> "?"
-        type in [:defguard, :defguardp] and is_encloded_? -> name_without_?
-        type in [:defguard, :defguardp] -> "is_" <> name_without_?
-        true -> "#{name_without_?} or #{type} #{name_without_is}"
-      end
+  defp put_correct_name(acc, type, wrong_name) when type in [:defguard, :defguardp] do
+    name =
+      wrong_name
+      |> String.replace_leading("is_", "")
+      |> String.replace_trailing("?", "")
 
-    {"#{type} #{name}", "#{type} #{correct_name}"}
+    Map.update!(acc, :defguards, &[{"#{type} #{wrong_name}", "#{type} is_#{name}"} | &1])
+  end
+
+  defp put_correct_name(acc, type, wrong_name) do
+    option1 = String.replace_leading(wrong_name, "is_", "")
+    option2 = String.replace_trailing(wrong_name, "?", "")
+
+    Map.update!(
+      acc,
+      :defmacros,
+      &[{"#{type} #{wrong_name}", "#{type} #{option1}", "#{type} #{option2}"} | &1]
+    )
+  end
+
+  defp to_comment({_, nil}), do: []
+
+  defp to_comment({:defs, {wrong_def, correct_def}}) do
+    {:fail,
+     %Comment{
+       type: :actionable,
+       name: Constants.solution_def_with_is(),
+       comment: Constants.solution_def_with_is(),
+       params: %{
+         expected: correct_def,
+         actual: wrong_def
+       }
+     }}
+  end
+
+  defp to_comment({:defguards, {wrong_def, correct_def}}) do
+    {:fail,
+     %Comment{
+       type: :actionable,
+       name: Constants.solution_defguard_with_?(),
+       comment: Constants.solution_defguard_with_?(),
+       params: %{
+         expected: correct_def,
+         actual: wrong_def
+       }
+     }}
+  end
+
+  defp to_comment({:defmacros, {wrong_def, correct_?, correct_is}}) do
+    {:fail,
+     %Comment{
+       type: :actionable,
+       name: Constants.solution_defmacro_with_is_?(),
+       comment: Constants.solution_defmacro_with_is_?(),
+       params: %{
+         actual: wrong_def,
+         option1: correct_?,
+         option2: correct_is
+       }
+     }}
   end
 end

@@ -37,13 +37,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
     assert BooleanFunctions.run(code) == []
   end
 
-  def assert_result(code, expected, actual) do
+  def assert_result(code, comment, expected, actual) do
     assert BooleanFunctions.run(code) == [
              {:fail,
               %Comment{
                 type: :actionable,
-                comment: Constants.solution_boolean_functions(),
-                name: Constants.solution_boolean_functions(),
+                comment: comment,
+                name: comment,
                 params: %{
                   expected: expected,
                   actual: actual
@@ -60,7 +60,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "def active_user?", "def is_active_user?")
+    assert_result(
+      code,
+      Constants.solution_def_with_is(),
+      "def active_user?",
+      "def is_active_user?"
+    )
   end
 
   test "is_active_user? also works for defp, defmacro, defmacrop, defguard, and defguardp" do
@@ -71,7 +76,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defp active_user?", "defp is_active_user?")
+    assert_result(
+      code,
+      Constants.solution_def_with_is(),
+      "defp active_user?",
+      "defp is_active_user?"
+    )
 
     code =
       quote do
@@ -80,11 +90,19 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(
-      code,
-      "defmacro is_active_user or defmacro active_user?",
-      "defmacro is_active_user?"
-    )
+    assert BooleanFunctions.run(code) == [
+             {:fail,
+              %Comment{
+                type: :actionable,
+                comment: Constants.solution_defmacro_with_is_?(),
+                name: Constants.solution_defmacro_with_is_?(),
+                params: %{
+                  actual: "defmacro is_active_user?",
+                  option1: "defmacro active_user?",
+                  option2: "defmacro is_active_user"
+                }
+              }}
+           ]
 
     code =
       quote do
@@ -93,11 +111,19 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(
-      code,
-      "defmacrop is_active_user or defmacrop active_user?",
-      "defmacrop is_active_user?"
-    )
+    assert BooleanFunctions.run(code) == [
+             {:fail,
+              %Comment{
+                type: :actionable,
+                comment: Constants.solution_defmacro_with_is_?(),
+                name: Constants.solution_defmacro_with_is_?(),
+                params: %{
+                  actual: "defmacrop is_active_user?",
+                  option1: "defmacrop active_user?",
+                  option2: "defmacrop is_active_user"
+                }
+              }}
+           ]
 
     code =
       quote do
@@ -106,7 +132,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defguard is_active_user", "defguard is_active_user?")
+    assert_result(
+      code,
+      Constants.solution_defguard_with_?(),
+      "defguard is_active_user",
+      "defguard is_active_user?"
+    )
 
     code =
       quote do
@@ -115,7 +146,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defguardp is_active_user", "defguardp is_active_user?")
+    assert_result(
+      code,
+      Constants.solution_defguard_with_?(),
+      "defguardp is_active_user",
+      "defguardp is_active_user?"
+    )
   end
 
   test "is_active_user get comment for def, defp" do
@@ -126,7 +162,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "def active_user?", "def is_active_user")
+    assert_result(
+      code,
+      Constants.solution_def_with_is(),
+      "def active_user?",
+      "def is_active_user"
+    )
 
     code =
       quote do
@@ -135,7 +176,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defp active_user?", "defp is_active_user")
+    assert_result(
+      code,
+      Constants.solution_def_with_is(),
+      "defp active_user?",
+      "defp is_active_user"
+    )
   end
 
   test "active_user? get comment for defguard, defguardp" do
@@ -146,7 +192,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defguard is_active_user", "defguard active_user?")
+    assert_result(
+      code,
+      Constants.solution_defguard_with_?(),
+      "defguard is_active_user",
+      "defguard active_user?"
+    )
 
     code =
       quote do
@@ -155,7 +206,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "defguardp is_active_user", "defguardp active_user?")
+    assert_result(
+      code,
+      Constants.solution_defguard_with_?(),
+      "defguardp is_active_user",
+      "defguardp active_user?"
+    )
   end
 
   test "only reports the first wrong name" do
@@ -167,6 +223,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
         end
       end
 
-    assert_result(code, "def active_user?", "def is_active_user?")
+    assert_result(
+      code,
+      Constants.solution_def_with_is(),
+      "def active_user?",
+      "def is_active_user?"
+    )
   end
 end
