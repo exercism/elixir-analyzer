@@ -134,7 +134,7 @@ defmodule ElixirAnalyzer.Submission do
 
   # Celebratory
   defp summary_response(%{celebratory: count}) when count > 0,
-    do: "🎉"
+    do: "You're doing something right. 🎉"
 
   defp summary_response(_),
     do: "Submission analyzed. No automated suggestions found."
