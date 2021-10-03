@@ -32,6 +32,8 @@ ex_mentor-*.tar
 test_results.json
 analysis.json
 
+.mix/
+
 tmp/
 
 /priv/plts/*.plt

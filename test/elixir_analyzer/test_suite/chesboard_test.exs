@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.ChessboardTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.Chessboard
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule Chessboard do
       def rank_range do
         1..8

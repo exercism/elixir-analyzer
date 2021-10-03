@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.Newsletter
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule Newsletter do
       def read_emails(path) do
         path

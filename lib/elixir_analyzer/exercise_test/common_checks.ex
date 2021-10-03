@@ -9,6 +9,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     ModuleAttributeNames,
     ModulePascalCase,
     CompilerWarnings,
+    ExemplarComparison,
     Indentation
   }
 
@@ -23,14 +24,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     end
   end
 
-  @spec run(Macro.t(), String.t()) :: [{:pass | :fail | :skip, %Comment{}}]
-  def run(code_ast, code_as_string) when is_binary(code_as_string) do
+  @spec run(Macro.t(), String.t(), nil | Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  def run(code_ast, code_as_string, exemplar_ast) when is_binary(code_as_string) do
     [
       FunctionNames.run(code_ast),
       VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast),
       ModulePascalCase.run(code_ast),
       CompilerWarnings.run(code_ast),
+      ExemplarComparison.run(code_ast, exemplar_ast),
       Indentation.run(code_ast, code_as_string)
     ]
     |> List.flatten()

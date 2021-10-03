@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.TakeANumber
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule TakeANumber do
       def start() do
         spawn(fn -> loop(0) end)

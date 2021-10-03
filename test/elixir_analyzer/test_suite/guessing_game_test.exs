@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GuessingGameTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.GuessingGame
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule GuessingGame do
       def compare(secret_number, guess \\ :no_guess)
 

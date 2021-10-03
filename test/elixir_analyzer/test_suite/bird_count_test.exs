@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.BirdCount
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule BirdCount do
       def today([]), do: nil
       def today([head | _]), do: head

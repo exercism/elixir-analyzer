@@ -3,7 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FreelancerRatesTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.FreelancerRates
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     [
       defmodule FreelancerRates do
         def daily_rate(hourly_rate) do
@@ -26,7 +26,13 @@ defmodule ElixirAnalyzer.ExerciseTest.FreelancerRatesTest do
           days_in_budget = budget / daily_rate_after_discount
           Float.floor(days_in_budget, 1)
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions",
+    comments: [] do
+    [
       defmodule FreelancerRates do
         def daily_rate(hourly_rate) do
           hourly_rate * 8.0

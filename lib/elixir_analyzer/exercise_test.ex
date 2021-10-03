@@ -19,7 +19,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @dialyzer no_match: {:do_analyze, 3}
+      @dialyzer no_match: {:do_analyze, 4}
     end
   end
 
@@ -43,24 +43,24 @@ defmodule ElixirAnalyzer.ExerciseTest do
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
     quote do
-      @spec analyze(Submission.t(), String.t()) :: Submission.t()
-      def analyze(%Submission{} = submission, code_as_string) when is_binary(code_as_string) do
+      @spec analyze(Submission.t(), String.t(), nil | Macro.t()) :: Submission.t()
+      def analyze(%Submission{} = submission, code_as_string, exemplar_ast) do
         case Code.string_to_quoted(code_as_string) do
           {:ok, code_ast} ->
-            do_analyze(submission, code_ast, code_as_string)
+            do_analyze(submission, code_ast, code_as_string, exemplar_ast)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
         end
       end
 
-      defp do_analyze(%Submission{} = submission, code_ast, code_as_string)
+      defp do_analyze(%Submission{} = submission, code_ast, code_as_string, exemplar_ast)
            when is_binary(code_as_string) do
         results =
           Enum.concat([
             unquote(feature_tests),
             unquote(assert_call_tests),
-            CommonChecks.run(code_ast, code_as_string)
+            CommonChecks.run(code_ast, code_as_string, exemplar_ast)
           ])
           |> filter_suppressed_results()
 
