@@ -15,9 +15,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ListPrependHeadTest do
         def prepend_ok(list) do
           [:ok | list]
         end
-
-        def concat_lists() do
+      end,
+      defmodule MyModule do
+        def concat_equal_lists() do
           [1, 2, 3] ++ [4, 5, 6]
+        end
+      end,
+      defmodule MyModule do
+        def append_element() do
+          [1, 2, 3, 4, 5] ++ [6]
         end
       end
     ]
@@ -28,7 +34,28 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ListPrependHeadTest do
     [
       defmodule MyModule do
         def prepend_ok(list) do
-          [:ok] ++ list
+          [:ok] ++ [:foo]
+        end
+      end,
+      defmodule MyModule do
+        def foo_list(), do: [:foo, :bar, :baz]
+
+        def prepend_ok(list) do
+          [:ok] ++ foo_list()
+        end
+      end,
+      defmodule MyModule do
+        def foo_list(), do: [:foo, :bar, :baz]
+
+        def prepend_ok(list) do
+          foo_list() |> (&([:ok] ++ &1))
+        end
+      end,
+      defmodule MyModule do
+        def foo_list(), do: [:foo, :bar, :baz]
+
+        def prepend_ok(list) do
+          :ok |> (&([&1] ++ foo_list()))
         end
       end
     ]
