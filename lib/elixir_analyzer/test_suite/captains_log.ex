@@ -26,7 +26,7 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     comment Constants.captains_log_use_rand_uniform()
   end
 
-  assert_call "random_stardate uses :rand_uniform" do
+  assert_call "random_stardate uses :rand.uniform" do
     type :essential
     calling_fn module: CaptainsLog, name: :random_stardate
     called_fn module: :rand, name: :uniform
