@@ -61,7 +61,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
     comments_include: [Constants.captains_log_use_rand_uniform()] do
     defmodule CaptainsLog do
       def random_stardate do
-        Enum.random(41000..42000) |> Kernel./()
+        Enum.random(4_100_000..4_200_000) |> Kernel./(100)
       end
     end
   end
@@ -70,7 +70,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
     comments_include: [Constants.captains_log_use_io_lib()] do
     defmodule CaptainsLog do
       def format_stardate(stardate) do
-        Float.round(stardate, 1) |> to_string()
+        if is_float(stardate) do
+          Float.round(stardate, 1) |> to_string()
+        else
+          raise ArgumentError
+        end
       end
     end
   end
