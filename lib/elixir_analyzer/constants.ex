@@ -27,6 +27,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
+    solution_list_prepend_head: "elixir.solution.list_prepend_head",
 
     # Concept exercises
 
