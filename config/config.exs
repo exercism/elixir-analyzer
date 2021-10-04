@@ -48,6 +48,9 @@ config :elixir_analyzer,
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
+    "high-school-sweetheart" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.HighSchoolSweetheart
+    },
     "high-score" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.HighScore
     },
