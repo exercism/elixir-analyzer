@@ -10,7 +10,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     ModulePascalCase,
     CompilerWarnings,
     ExemplarComparison,
-    Indentation
+    Indentation,
+    DocSpecOrder
   }
 
   alias ElixirAnalyzer.Comment
@@ -34,7 +35,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       ModulePascalCase.run(code_ast),
       CompilerWarnings.run(code_ast),
       ExemplarComparison.run(code_ast, exemplar_ast),
-      Indentation.run(code_ast, code_as_string)
+      Indentation.run(code_ast, code_as_string),
+      DocSpecOrder.run(code_ast)
     ]
     |> List.flatten()
   end
