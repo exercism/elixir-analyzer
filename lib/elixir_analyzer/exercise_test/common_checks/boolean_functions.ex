@@ -97,8 +97,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
     {:fail,
      %Comment{
        type: :actionable,
-       name: Constants.solution_defguard_with_?(),
-       comment: Constants.solution_defguard_with_?(),
+       name: Constants.solution_defguard_with_question_mark(),
+       comment: Constants.solution_defguard_with_question_mark(),
        params: %{
          expected: correct_def,
          actual: wrong_def
@@ -110,8 +110,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
     {:fail,
      %Comment{
        type: :actionable,
-       name: Constants.solution_defmacro_with_is_?(),
-       comment: Constants.solution_defmacro_with_is_?(),
+       name: Constants.solution_defmacro_with_is_and_question_mark(),
+       comment: Constants.solution_defmacro_with_is_and_question_mark(),
        params: %{
          actual: wrong_def,
          option1: correct_?,
