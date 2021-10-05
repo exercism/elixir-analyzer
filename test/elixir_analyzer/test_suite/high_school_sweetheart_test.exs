@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
     exercise_test_module: ElixirAnalyzer.TestSuite.HighSchoolSweetheart
 
   test_exercise_analysis "example solution",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     defmodule HighSchoolSweetheart do
       def first_letter(name) do
         name
