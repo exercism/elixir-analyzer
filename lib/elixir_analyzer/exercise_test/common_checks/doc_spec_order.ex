@@ -27,10 +27,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     attrs =
       attrs
       |> Enum.reverse()
-      |> Enum.chunk_every(3)
+      |> Enum.chunk_by(& &1 in @def_ops)
 
     Enum.reduce_while(attrs, [], fn
-      [:spec, :doc, op], acc when op in @def_ops -> {:halt, [error_msg | acc]}
+      [:spec, :doc], acc -> {:halt, [error_msg | acc]}
       _el, acc -> {:cont, acc}
     end)
   end
