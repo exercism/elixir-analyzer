@@ -21,7 +21,7 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheart do
     comment Constants.high_school_sweetheart_function_reuse()
   end
 
-  assert_call "pair/1 reuses initials/1" do
+  assert_call "pair/2 reuses initials/1" do
     type :actionable
     calling_fn module: HighSchoolSweetheart, name: :pair
     called_fn name: :initials
