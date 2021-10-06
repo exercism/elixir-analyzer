@@ -98,14 +98,26 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   defp order_error_msg(attr) do
     {fn_op, fn_name} = attr.definition
 
+    actual = """
+    @spec #{Atom.to_string(fn_name)}
+    @doc
+    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    """
+
+    correct = """
+    @doc
+    @spec #{Atom.to_string(fn_name)}
+    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    """
+
     {:fail,
      %Comment{
        type: :informative,
        name: Constants.solution_doc_spec_order(),
        comment: Constants.solution_doc_spec_order(),
        params: %{
-         op: Atom.to_string(fn_op),
-         fn_name: Atom.to_string(fn_name)
+         actual: actual,
+         correct: correct
        }
      }}
   end
@@ -113,15 +125,24 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   defp spec_name_error_msg(attr) do
     {fn_op, fn_name} = attr.definition
 
+    actual = """
+    @spec #{Atom.to_string(attr.spec)}
+    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    """
+
+    correct = """
+    @spec #{Atom.to_string(fn_name)}
+    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    """
+
     {:fail,
      %Comment{
        type: :informative,
        name: Constants.solution_wrong_spec_name(),
        comment: Constants.solution_wrong_spec_name(),
        params: %{
-         op: Atom.to_string(fn_op),
-         fn_name: Atom.to_string(fn_name),
-         spec_name: Atom.to_string(attr.spec)
+         correct: correct,
+         actual: actual
        }
      }}
   end

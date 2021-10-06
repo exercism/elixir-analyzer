@@ -21,8 +21,16 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                 name: Constants.solution_doc_spec_order(),
                 comment: Constants.solution_doc_spec_order(),
                 params: %{
-                  op: "def",
-                  fn_name: "x"
+                  correct: """
+                  @doc
+                  @spec x
+                  def x
+                  """,
+                  actual: """
+                  @spec x
+                  @doc
+                  def x
+                  """
                 }
               }}
            ]
@@ -37,8 +45,16 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
            name: Constants.solution_doc_spec_order(),
            comment: Constants.solution_doc_spec_order(),
            params: %{
-             op: op,
-             fn_name: name
+             correct: """
+             @doc
+             @spec #{name}
+             #{op} #{name}
+             """,
+             actual: """
+             @spec #{name}
+             @doc
+             #{op} #{name}
+             """
            }
          }}
       ]
@@ -160,8 +176,16 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                 name: Constants.solution_doc_spec_order(),
                 comment: Constants.solution_doc_spec_order(),
                 params: %{
-                  op: "def",
-                  fn_name: "c"
+                  correct: """
+                  @doc
+                  @spec c
+                  def c
+                  """,
+                  actual: """
+                  @spec c
+                  @doc
+                  def c
+                  """
                 }
               }}
            ]
@@ -204,9 +228,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                 name: Constants.solution_wrong_spec_name(),
                 comment: Constants.solution_wrong_spec_name(),
                 params: %{
-                  op: "def",
-                  fn_name: "x",
-                  spec_name: "y"
+                  actual: """
+                  @spec y
+                  def x
+                  """,
+                  correct: """
+                  @spec x
+                  def x
+                  """
                 }
               }}
            ]
