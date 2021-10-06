@@ -21,7 +21,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                 name: Constants.solution_doc_spec_order(),
                 comment: Constants.solution_doc_spec_order(),
                 params: %{
-                  correct: """
+                  expected: """
                   @doc
                   @spec x
                   def x
@@ -45,7 +45,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
            name: Constants.solution_doc_spec_order(),
            comment: Constants.solution_doc_spec_order(),
            params: %{
-             correct: """
+             expected: """
              @doc
              @spec #{name}
              #{op} #{name}
@@ -176,7 +176,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                 name: Constants.solution_doc_spec_order(),
                 comment: Constants.solution_doc_spec_order(),
                 params: %{
-                  correct: """
+                  expected: """
                   @doc
                   @spec c
                   def c
@@ -232,7 +232,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
                   @spec y
                   def x
                   """,
-                  correct: """
+                  expected: """
                   @spec x
                   def x
                   """

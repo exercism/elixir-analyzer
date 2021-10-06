@@ -104,7 +104,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
     """
 
-    correct = """
+    expected = """
     @doc
     @spec #{Atom.to_string(fn_name)}
     #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
@@ -117,7 +117,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
        comment: Constants.solution_doc_spec_order(),
        params: %{
          actual: actual,
-         correct: correct
+         expected: expected
        }
      }}
   end
@@ -130,7 +130,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
     """
 
-    correct = """
+    expected = """
     @spec #{Atom.to_string(fn_name)}
     #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
     """
@@ -141,7 +141,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
        name: Constants.solution_wrong_spec_name(),
        comment: Constants.solution_wrong_spec_name(),
        params: %{
-         correct: correct,
+         expected: expected,
          actual: actual
        }
      }}
