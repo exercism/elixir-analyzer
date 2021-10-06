@@ -4,20 +4,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder
 
-  setup_all do
-    error = [
-      {:fail,
-       %Comment{
-         type: :informative,
-         name: Constants.solution_doc_spec_order(),
-         comment: Constants.solution_doc_spec_order()
-       }}
-    ]
-
-    [error: error]
-  end
-
-  test "wrong order crashes", %{error: error} do
+  test "wrong order crashes" do
     ast =
       quote do
         defmodule Test do
@@ -27,10 +14,36 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == [
+             {:fail,
+              %Comment{
+                type: :informative,
+                name: Constants.solution_doc_spec_order(),
+                comment: Constants.solution_doc_spec_order(),
+                params: %{
+                  op: "def",
+                  fn_name: "x"
+                }
+              }}
+           ]
   end
 
-  test "works for def, defp, defmacro, defmacrop, defguard, and defguardp", %{error: error} do
+  test "works for def, defp, defmacro, defmacrop, defguard, and defguardp" do
+    order_error = fn op, name ->
+      [
+        {:fail,
+         %Comment{
+           type: :informative,
+           name: Constants.solution_doc_spec_order(),
+           comment: Constants.solution_doc_spec_order(),
+           params: %{
+             op: op,
+             fn_name: name
+           }
+         }}
+      ]
+    end
+
     ast =
       quote do
         defmodule Test do
@@ -40,7 +53,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("def", "x")
 
     ast =
       quote do
@@ -51,7 +64,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("defp", "x")
 
     ast =
       quote do
@@ -62,7 +75,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("defmacro", "x")
 
     ast =
       quote do
@@ -73,7 +86,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("defmacrop", "x")
 
     ast =
       quote do
@@ -84,7 +97,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("defguard", "x")
 
     ast =
       quote do
@@ -95,17 +108,19 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == order_error.("defguardp", "x")
   end
 
   test "non related definitions will not make crash" do
     ast =
       quote do
-        @doc ""
-        def x
+        defmodule Test do
+          @doc ""
+          def x
 
-        @spec y
-        def y
+          @spec y
+          def y
+        end
       end
 
     assert DocSpecOrder.run(ast) == []
@@ -125,7 +140,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
     assert DocSpecOrder.run(ast) == []
   end
 
-  test "function definition order doesnt impact", %{error: error} do
+  test "function definition order doesnt impact" do
     ast =
       quote do
         defmodule Test do
@@ -138,7 +153,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
         end
       end
 
-    assert DocSpecOrder.run(ast) == error
+    assert DocSpecOrder.run(ast) == [
+             {:fail,
+              %Comment{
+                type: :informative,
+                name: Constants.solution_doc_spec_order(),
+                comment: Constants.solution_doc_spec_order(),
+                params: %{
+                  op: "def",
+                  fn_name: "c"
+                }
+              }}
+           ]
   end
 
   test "other modules attributes will not make it crash" do
@@ -160,5 +186,29 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
       end
 
     assert DocSpecOrder.run(ast) == []
+  end
+
+  test "different function and spec name should make it should" do
+    ast =
+      quote do
+        defmodule Test do
+          @spec y
+          def x
+        end
+      end
+
+    assert DocSpecOrder.run(ast) == [
+             {:fail,
+              %Comment{
+                type: :informative,
+                name: Constants.solution_wrong_spec_name(),
+                comment: Constants.solution_wrong_spec_name(),
+                params: %{
+                  op: "def",
+                  fn_name: "x",
+                  spec_name: "y"
+                }
+              }}
+           ]
   end
 end
