@@ -6,6 +6,7 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
 
   test_exercise_analysis "example solution",
     comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
+    ~S'''
     defmodule HighSchoolSweetheart do
       def first_letter(name) do
         name
@@ -47,6 +48,7 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
         """
       end
     end
+    '''
   end
 
   describe "function reuse" do
