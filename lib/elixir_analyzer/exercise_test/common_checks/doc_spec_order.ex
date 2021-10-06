@@ -29,6 +29,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     |> check_errors
   end
 
+  defp transverse({:@, _meta, [{:spec, _meta2, [{_, _, [fn_name, _, _]}]} | []]} = ast, acc) do
+    {ast, [{:spec, fn_name} | acc]}
+  end
+
+  defp transverse({:@, _meta, [{:spec, _meta2, [{_, _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
+    {ast, [{:spec, fn_name} | acc]}
+  end
+
   defp transverse({:@, _meta, [{:spec, _meta2, [{fn_name, _, _}]} | _]} = ast, acc) do
     {ast, [{:spec, fn_name} | acc]}
   end
@@ -37,7 +45,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     {ast, [:doc | acc]}
   end
 
-  defp transverse({op, _meta, [{fn_name, _, _} | _]} = ast, acc)
+  defp transverse({op, _meta, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
+       when op in @def_ops do
+    {ast, [{op, fn_name} | acc]}
+  end
+
+  defp transverse({op, _meta, [{fn_name, _, _part2} | _]} = ast, acc)
        when op in @def_ops do
     {ast, [{op, fn_name} | acc]}
   end
@@ -53,6 +66,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   end
 
   defp check_wrong_order(acc, attr) do
+
     case attr.order do
       [:spec, :doc] -> [order_error_msg(attr) | acc]
       _ -> acc
@@ -70,6 +84,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   defp check_name_match(acc, _), do: acc
 
   defp to_map(attr) do
+
     Enum.reduce(attr, %{order: []}, fn
       {:spec = op, name}, acc ->
         acc |> Map.put(op, name) |> Map.update!(:order, &Enum.reverse([op | &1]))

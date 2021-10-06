@@ -188,7 +188,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
     assert DocSpecOrder.run(ast) == []
   end
 
-  test "different function and spec name should make it should" do
+  test "different function and spec name should make it crash" do
     ast =
       quote do
         defmodule Test do
