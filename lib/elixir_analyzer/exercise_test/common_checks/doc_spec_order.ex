@@ -66,7 +66,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   end
 
   defp check_wrong_order(acc, attr) do
-
     case attr.order do
       [:spec, :doc] -> [order_error_msg(attr) | acc]
       _ -> acc
@@ -84,7 +83,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   defp check_name_match(acc, _), do: acc
 
   defp to_map(attr) do
-
     Enum.reduce(attr, %{order: []}, fn
       {:spec = op, name}, acc ->
         acc |> Map.put(op, name) |> Map.update!(:order, &Enum.reverse([op | &1]))
