@@ -26,6 +26,10 @@ defmodule ElixirAnalyzer.Constants do
     solution_debug_functions: "elixir.solution.debug_functions",
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
+    solution_def_with_is: "elixir.solution.def_with_is",
+    solution_defguard_with_question_mark: "elixir.solution.defguard_with_question_mark",
+    solution_defmacro_with_is_and_question_mark:
+      "elixir.solution.defmacro_with_is_and_question_mark",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
 

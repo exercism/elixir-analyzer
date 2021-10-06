@@ -9,6 +9,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     ModuleAttributeNames,
     ModulePascalCase,
     CompilerWarnings,
+    BooleanFunctions,
     ExemplarComparison,
     Indentation
   }
@@ -33,6 +34,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       ModuleAttributeNames.run(code_ast),
       ModulePascalCase.run(code_ast),
       CompilerWarnings.run(code_ast),
+      BooleanFunctions.run(code_ast),
       ExemplarComparison.run(code_ast, exemplar_ast),
       Indentation.run(code_ast, code_as_string)
     ]
