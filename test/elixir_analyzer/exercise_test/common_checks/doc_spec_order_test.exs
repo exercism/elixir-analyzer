@@ -240,4 +240,71 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
               }}
            ]
   end
+
+  test "function using when clause works" do
+    ast =
+      quote do
+        defmodule Test do
+          @spec empty?(list()) :: boolean()
+          def empty?(list) when list == [], do: true
+          def empty?(_), do: false
+        end
+      end
+
+    assert DocSpecOrder.run(ast) == []
+  end
+
+  test "different @spec location works" do
+    ast =
+      quote do
+        defmodule Test do
+          def empty?(list) when list == [], do: true
+          @spec empty?(list()) :: boolean()
+          def empty?(_), do: false
+        end
+      end
+
+    assert DocSpecOrder.run(ast) == []
+  end
+
+  test "one spec for multiple function works" do
+    ast =
+      quote do
+        @spec is_one(integer()) :: integer()
+        def is_one(1), do: true
+        def is_one(2), do: false
+        def is_one(3), do: false
+        def is_one(4), do: false
+        def is_one(_), do: false
+      end
+
+    assert DocSpecOrder.run(ast) == []
+  end
+
+  test "spec with parameter works" do
+    ast =
+      quote do
+        defmodule Test do
+          @spec is_one(number)
+          def is_one(number), do: number == 1
+        end
+      end
+
+    assert DocSpecOrder.run(ast) == []
+  end
+
+  test "@doc and @spec between two definitions works" do
+    ast =
+      quote do
+        defmodule Test do
+          def a(x \\ [])
+          @doc ""
+          @spec a(list()) :: atom()
+          def a([]), do: :empty
+          def a(_), do: :full
+        end
+      end
+
+    assert DocSpecOrder.run(ast) == []
+  end
 end
