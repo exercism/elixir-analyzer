@@ -12,50 +12,38 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
   @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
 
   def run(ast) do
-    {_, attrs} = Macro.prewalk(ast, [], &transverse/2)
-
-    chunk_fun = fn
-      el, acc ->
-        case el do
-          {op, _} when op in @def_ops -> {:cont, Enum.reverse([el | acc]), []}
-          _ -> {:cont, [el | acc]}
-        end
-    end
+    {_, attrs} = Macro.prewalk(ast, [], &traverse/2)
 
     attrs
     |> Enum.reverse()
-    |> Enum.chunk_while([], chunk_fun, &{:cont, &1})
+    |> chuck_definitions()
     |> Enum.map(&to_map/1)
     |> check_errors
   end
 
-  defp transverse({:@, _meta, [{:spec, _meta2, [{_, _, [fn_name, _, _]}]} | []]} = ast, acc) do
+  defp traverse({:@, _meta, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
     {ast, [{:spec, fn_name} | acc]}
   end
 
-  defp transverse({:@, _meta, [{:spec, _meta2, [{_, _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
+  defp traverse({:@, _, [{:spec, _, [{fn_name, _, _}]}]} = ast, acc) do
     {ast, [{:spec, fn_name} | acc]}
   end
 
-  defp transverse({:@, _meta, [{:spec, _meta2, [{fn_name, _, _}]} | _]} = ast, acc) do
-    {ast, [{:spec, fn_name} | acc]}
-  end
-
-  defp transverse({:@, _meta, [{:doc, _meta2, _content} | _]} = ast, acc) do
+  defp traverse({:@, _, [{:doc, _, _}]} = ast, acc) do
     {ast, [:doc | acc]}
   end
 
-  defp transverse({op, _meta, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
+  defp traverse({op, _, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
        when op in @def_ops do
     {ast, [{op, fn_name} | acc]}
   end
 
-  defp transverse({op, _meta, [{fn_name, _, _part2} | _]} = ast, acc)
+  defp traverse({op, _, [{fn_name, _, _} | _]} = ast, acc)
        when op in @def_ops do
     {ast, [{op, fn_name} | acc]}
   end
 
-  defp transverse(ast, acc) do
+  defp traverse(ast, acc) do
     {ast, acc}
   end
 
@@ -82,6 +70,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
 
   defp check_name_match(acc, _), do: acc
 
+  defp chuck_definitions(definitions) do
+    chunk_fun = fn
+      el, acc ->
+        case el do
+          {op, _} when op in @def_ops -> {:cont, Enum.reverse([el | acc]), []}
+          _ -> {:cont, [el | acc]}
+        end
+    end
+
+    Enum.chunk_while(definitions, [], chunk_fun, &{:cont, &1})
+  end
+
   defp to_map(attr) do
     Enum.reduce(attr, %{order: []}, fn
       {:spec = op, name}, acc ->
@@ -99,15 +99,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     {fn_op, fn_name} = attr.definition
 
     actual = """
-    @spec #{Atom.to_string(fn_name)}
+    @spec #{fn_name}
     @doc
-    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    #{fn_op} #{fn_name}
     """
 
     expected = """
     @doc
-    @spec #{Atom.to_string(fn_name)}
-    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    @spec #{fn_name}
+    #{fn_op} #{fn_name}
     """
 
     {:fail,
@@ -126,13 +126,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
     {fn_op, fn_name} = attr.definition
 
     actual = """
-    @spec #{Atom.to_string(attr.spec)}
-    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    @spec #{attr.spec}
+    #{fn_op} #{fn_name}
     """
 
     expected = """
-    @spec #{Atom.to_string(fn_name)}
-    #{Atom.to_string(fn_op)} #{Atom.to_string(fn_name)}
+    @spec #{fn_name}
+    #{fn_op} #{fn_name}
     """
 
     {:fail,
