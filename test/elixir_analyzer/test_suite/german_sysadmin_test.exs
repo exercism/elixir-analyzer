@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
 
   test_exercise_analysis "example solution",
     comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
+    ~S"""
     defmodule Username do
       def sanitize('') do
         ''
@@ -24,10 +25,12 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
         sanitized ++ sanitize(tail)
       end
     end
+    """
   end
 
   test_exercise_analysis "other valid solutions",
     comments: [] do
+    ~S"""
     defmodule Username do
       def sanitize(list) do
         List.foldr(list, [], fn code, acc ->
@@ -46,11 +49,13 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
         end)
       end
     end
+    """
   end
 
   test_exercise_analysis "detects cheating with strings",
     comments: [Constants.german_sysadmin_no_string()] do
     [
+      ~S"""
       defmodule Username do
         def sanitize(charlist) do
           charlist
@@ -84,7 +89,9 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
           |> Enum.join("")
           |> to_charlist()
         end
-      end,
+      end
+      """,
+      ~S"""
       defmodule Username do
         def sanitize(list) do
           List.foldr(list, "", fn code, acc ->
@@ -104,12 +111,14 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
           |> to_charlist()
         end
       end
+      """
     ]
   end
 
   test_exercise_analysis "using case is required",
     comments: [Constants.german_sysadmin_use_case()] do
     [
+      ~S"""
       defmodule Username do
         def sanitize('') do
           ''
@@ -129,7 +138,9 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
 
           sanitized ++ sanitize(tail)
         end
-      end,
+      end
+      """,
+      ~S"""
       defmodule Username do
         def sanitize('') do
           ''
@@ -147,6 +158,33 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
         defp do_sanitize(x) when x >= ?a and x <= ?z, do: [x]
         defp do_sanitize(x), do: []
       end
+      """
     ]
+  end
+
+  test_exercise_analysis "detects integer litterals",
+    comments: [Constants.german_sysadmin_no_integer_literal()] do
+    ~S"""
+    defmodule Username do
+      def sanitize('') do
+        ''
+      end
+
+      def sanitize([head | tail]) do
+        sanitized =
+          case head do
+            252 -> 'ue'
+            246 -> 'oe'
+            228 -> 'ae'
+            223 -> 'ss'
+            x when x >= 97 and x <= 122 -> [x]
+            95 -> '_'
+            _ -> ''
+          end
+
+        sanitized ++ sanitize(tail)
+      end
+    end
+    """
   end
 end

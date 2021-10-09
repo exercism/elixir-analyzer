@@ -58,6 +58,7 @@ defmodule ElixirAnalyzer.Constants do
     # German Sysadmin Comments
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
+    german_sysadmin_no_integer_literal: "elixir.german-sysadmin.no_integer_literal",
 
     # Guessing Game Comments
     guessing_game_use_default_argument: "elixir.guessing-game.use_default_argument",
