@@ -90,7 +90,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
-  test_exercise_analysis "inderect call to IO.puts/1 in function/0 via helper function",
+  test_exercise_analysis "indirect call to IO.puts/1 in function/0 via helper function",
     comments: [] do
     defmodule AssertCallVerification do
       def function() do
