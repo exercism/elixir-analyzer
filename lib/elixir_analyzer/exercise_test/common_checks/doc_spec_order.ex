@@ -49,7 +49,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
 
   defp check_errors(attrs) do
     Enum.reduce(attrs, [], fn attr, acc ->
-      acc |> check_wrong_order(attr) |> check_name_match(attr)
+      check_wrong_order(acc, attr)
     end)
   end
 
@@ -118,31 +118,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrder do
        params: %{
          actual: actual,
          expected: expected
-       }
-     }}
-  end
-
-  defp spec_name_error_msg(attr) do
-    {fn_op, fn_name} = attr.definition
-
-    actual = """
-    @spec #{attr.spec}
-    #{fn_op} #{fn_name}
-    """
-
-    expected = """
-    @spec #{fn_name}
-    #{fn_op} #{fn_name}
-    """
-
-    {:fail,
-     %Comment{
-       type: :informative,
-       name: Constants.solution_wrong_spec_name(),
-       comment: Constants.solution_wrong_spec_name(),
-       params: %{
-         expected: expected,
-         actual: actual
        }
      }}
   end

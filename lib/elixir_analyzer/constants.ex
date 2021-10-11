@@ -29,7 +29,6 @@ defmodule ElixirAnalyzer.Constants do
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
     solution_doc_spec_order: "elixir.solution.doc_spec_order",
-    solution_wrong_spec_name: "elixir.solution.wrong_spec_name",
 
     # Concept exercises
 

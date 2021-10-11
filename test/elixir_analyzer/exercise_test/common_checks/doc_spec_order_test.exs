@@ -212,35 +212,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DocSpecOrderTest do
     assert DocSpecOrder.run(ast) == []
   end
 
-  test "different function and spec name should make it crash" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec y
-          def x
-        end
-      end
-
-    assert DocSpecOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_wrong_spec_name(),
-                comment: Constants.solution_wrong_spec_name(),
-                params: %{
-                  actual: """
-                  @spec y
-                  def x
-                  """,
-                  expected: """
-                  @spec x
-                  def x
-                  """
-                }
-              }}
-           ]
-  end
-
   test "function using when clause works" do
     ast =
       quote do
