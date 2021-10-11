@@ -58,7 +58,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource do
       if name not in @supported_expressions do
         raise """
         Unsupported expression `#{name}`.
-        The macro `check_course` supports expressions: #{Enum.join(@supported_expressions, ", ")}.
+        The macro `check_source` supports expressions: #{Enum.join(@supported_expressions, ", ")}.
         """
       end
     end)
