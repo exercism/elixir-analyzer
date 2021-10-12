@@ -27,6 +27,9 @@ config :elixir_analyzer,
     "bird-count" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
     },
+    "boutique-inventory" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueInventory
+    },
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
