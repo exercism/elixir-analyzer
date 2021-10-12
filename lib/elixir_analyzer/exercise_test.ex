@@ -46,7 +46,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     # compile each assert_call to a test
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
-    # compile each assert_call to a test
+    # compile each check_source to a test
     check_source_tests =
       Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, code_as_string))
 
