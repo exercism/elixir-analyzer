@@ -162,7 +162,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
     ]
   end
 
-  test_exercise_analysis "detects integer litterals",
+  test_exercise_analysis "detects integer literals",
     comments: [Constants.german_sysadmin_no_integer_literal()] do
     ~S"""
     defmodule Username do
