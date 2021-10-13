@@ -41,8 +41,8 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
     comment Constants.german_sysadmin_no_integer_literal()
 
     check(source) do
-      integers = ["252", "246", "228", "223"]
-      not Enum.any?(integers, &String.contains?(source, &1))
+      integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
+      Enum.all?(integers, &String.contains?(source, &1))
     end
   end
 end

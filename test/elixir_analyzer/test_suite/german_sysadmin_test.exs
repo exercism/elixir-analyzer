@@ -53,66 +53,71 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
   end
 
   test_exercise_analysis "detects cheating with strings",
+    comments: [
+      Constants.german_sysadmin_no_string(),
+      Constants.german_sysadmin_no_integer_literal()
+    ] do
+    ~S"""
+    defmodule Username do
+      def sanitize(charlist) do
+        charlist
+        |> Enum.filter(&(&1 < 0xD800))
+        |> to_string()
+        |> String.split("", trim: true)
+        |> Enum.map(fn letter ->
+          case letter do
+            "ß" ->
+              "ss"
+
+            "ä" ->
+              "ae"
+
+            "ö" ->
+              "oe"
+
+            "ü" ->
+              "ue"
+
+            letter when letter in ~w(a b c d e f g h i j k l m n o p q r s t u v w x y z) ->
+              letter
+
+            "_" ->
+              "_"
+
+            _ ->
+              ""
+          end
+        end)
+        |> Enum.join("")
+        |> to_charlist()
+      end
+    end
+    """
+  end
+
+  test_exercise_analysis "detects cheating with strings, with ?ß notation",
     comments: [Constants.german_sysadmin_no_string()] do
-    [
-      ~S"""
-      defmodule Username do
-        def sanitize(charlist) do
-          charlist
-          |> Enum.filter(&(&1 < 0xD800))
-          |> to_string()
-          |> String.split("", trim: true)
-          |> Enum.map(fn letter ->
-            case letter do
-              "ß" ->
-                "ss"
-
-              "ä" ->
-                "ae"
-
-              "ö" ->
-                "oe"
-
-              "ü" ->
-                "ue"
-
-              letter when letter in ~w(a b c d e f g h i j k l m n o p q r s t u v w x y z) ->
-                letter
-
-              "_" ->
-                "_"
-
-              _ ->
-                ""
+    ~S"""
+    defmodule Username do
+      def sanitize(list) do
+        List.foldr(list, "", fn code, acc ->
+          sanitized =
+            case code do
+              ?ß -> "ss"
+              ?ä -> "ae"
+              ?ö -> "oe"
+              ?ü -> "ue"
+              x when x >= ?a and x <= ?z -> <<x>>
+              ?_ -> "_"
+              _ -> ""
             end
-          end)
-          |> Enum.join("")
-          |> to_charlist()
-        end
-      end
-      """,
-      ~S"""
-      defmodule Username do
-        def sanitize(list) do
-          List.foldr(list, "", fn code, acc ->
-            sanitized =
-              case code do
-                ?ß -> "ss"
-                ?ä -> "ae"
-                ?ö -> "oe"
-                ?ü -> "ue"
-                x when x >= ?a and x <= ?z -> <<x>>
-                ?_ -> "_"
-                _ -> ""
-              end
 
-            sanitized <> acc
-          end)
-          |> to_charlist()
-        end
+          sanitized <> acc
+        end)
+        |> to_charlist()
       end
-      """
-    ]
+    end
+    """
   end
 
   test_exercise_analysis "using case is required",
@@ -186,5 +191,28 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
       end
     end
     """
+  end
+
+  test_exercise_analysis "valid solution without quoting triggers comment",
+    # This is because Elixir's ASTs don't differentiate between code points like ?ß and integers 
+    comments: [Constants.german_sysadmin_no_integer_literal()] do
+    defmodule Username do
+      def sanitize(list) do
+        List.foldr(list, [], fn code, acc ->
+          sanitized =
+            case code do
+              ?ß -> 'ss'
+              ?ä -> 'ae'
+              ?ö -> 'oe'
+              ?ü -> 'ue'
+              x when x >= ?a and x <= ?z -> [x]
+              ?_ -> '_'
+              _ -> ''
+            end
+
+          sanitized ++ acc
+        end)
+      end
+    end
   end
 end
