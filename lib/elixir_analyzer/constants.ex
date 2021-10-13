@@ -28,6 +28,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
+    solution_no_integer_literal: "elixir.solution.no_integer_literal",
 
     # Concept exercises
 
@@ -58,7 +59,6 @@ defmodule ElixirAnalyzer.Constants do
     # German Sysadmin Comments
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
-    german_sysadmin_no_integer_literal: "elixir.german-sysadmin.no_integer_literal",
 
     # Guessing Game Comments
     guessing_game_use_default_argument: "elixir.guessing-game.use_default_argument",

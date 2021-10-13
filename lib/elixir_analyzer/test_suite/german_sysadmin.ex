@@ -38,7 +38,7 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
 
   check_source "does not use integer literals for code points" do
     type :actionable
-    comment Constants.german_sysadmin_no_integer_literal()
+    comment Constants.solution_no_integer_literal()
 
     check(source) do
       integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]

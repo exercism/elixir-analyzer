@@ -55,7 +55,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
   test_exercise_analysis "detects cheating with strings",
     comments: [
       Constants.german_sysadmin_no_string(),
-      Constants.german_sysadmin_no_integer_literal()
+      Constants.solution_no_integer_literal()
     ] do
     ~S"""
     defmodule Username do
@@ -168,7 +168,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
   end
 
   test_exercise_analysis "detects integer literals",
-    comments: [Constants.german_sysadmin_no_integer_literal()] do
+    comments: [Constants.solution_no_integer_literal()] do
     ~S"""
     defmodule Username do
       def sanitize('') do
@@ -195,7 +195,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
 
   test_exercise_analysis "valid solution without quoting triggers comment",
     # This is because Elixir's ASTs don't differentiate between code points like ?ß and integers 
-    comments: [Constants.german_sysadmin_no_integer_literal()] do
+    comments: [Constants.solution_no_integer_literal()] do
     defmodule Username do
       def sanitize(list) do
         List.foldr(list, [], fn code, acc ->
