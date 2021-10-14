@@ -23,9 +23,9 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     end
   end
 
-  check_source "finds integer litteral" do
+  check_source "finds integer literal" do
     type :actionable
-    comment "used integer litteral from ?a to ?z"
+    comment "used integer literal from ?a to ?z"
 
     check(source) do
       integers = Enum.map(?a..?z, &to_string/1)

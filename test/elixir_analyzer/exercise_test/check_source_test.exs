@@ -10,10 +10,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
     """
   end
 
-  test_exercise_analysis "contains integer litterals",
+  test_exercise_analysis "contains integer literals",
     comments: [
       "always return false",
-      "used integer litteral from ?a to ?z",
+      "used integer literal from ?a to ?z",
       "didn't use multiline"
     ] do
     ~S"""
@@ -32,7 +32,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
   test_exercise_analysis "contains integer but false positive",
     comments: [
       "always return false",
-      "used integer litteral from ?a to ?z",
+      "used integer literal from ?a to ?z",
       "didn't use multiline"
     ] do
     ~S"""
