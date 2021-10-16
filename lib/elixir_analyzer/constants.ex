@@ -28,7 +28,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
-    solution_doc_spec_order: "elixir.solution.doc_spec_order",
+    solution_function_annotation_order: "elixir.solution.function_annotation_order",
 
     # Concept exercises
 
