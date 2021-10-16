@@ -14,4 +14,16 @@ defmodule ElixirAnalyzer.Comment do
           suppress_if: false | {String.t(), :pass | :fail},
           params: map()
         }
+
+  @supported_types ~w(essential actionable informative celebratory)a
+
+  @spec supported_type?(atom()) :: boolean()
+  def supported_type?(type) do
+    type in @supported_types
+  end
+
+  @spec supported_types() :: list(atom())
+  def supported_types do
+    @supported_types
+  end
 end

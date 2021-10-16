@@ -3,6 +3,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource do
   Defines a `check_source` macro that allows checking the source code
   """
 
+  alias ElixirAnalyzer.Comment
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -73,12 +75,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource do
     {node, Map.put(test_data, :comment, comment)}
   end
 
-  @supported_types ~w(essential actionable informative celebratory)a
   defp do_walk_check_source_block({:type, _, [type]} = node, test_data) do
-    if type not in @supported_types do
+    if not Comment.supported_type?(type) do
       raise """
       Unsupported type `#{type}`.
-      The macro `check_source` supports the following types: #{Enum.join(@supported_types, ", ")}.
+      The macro `check_source` supports the following types: #{Enum.join(Comment.supported_types(), ", ")}.
       """
     end
 
