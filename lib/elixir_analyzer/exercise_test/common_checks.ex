@@ -11,7 +11,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     CompilerWarnings,
     BooleanFunctions,
     ExemplarComparison,
-    Indentation
+    Indentation,
+    Comments
   }
 
   alias ElixirAnalyzer.Comment
@@ -36,7 +37,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       CompilerWarnings.run(code_ast),
       BooleanFunctions.run(code_ast),
       ExemplarComparison.run(code_ast, exemplar_ast),
-      Indentation.run(code_ast, code_as_string)
+      Indentation.run(code_ast, code_as_string),
+      Comments.run(code_ast, code_as_string)
     ]
     |> List.flatten()
   end

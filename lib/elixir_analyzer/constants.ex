@@ -33,6 +33,8 @@ defmodule ElixirAnalyzer.Constants do
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
     solution_no_integer_literal: "elixir.solution.no_integer_literal",
+    solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
+    solution_todo_comment: "elixir.solution.todo_comment",
 
     # Concept exercises
 
