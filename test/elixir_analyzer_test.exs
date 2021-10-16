@@ -94,7 +94,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.lasagna.function_reuse\",\"type\":\"actionable\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
+        "{\"comments\":[{\"comment\":\"elixir.lasagna.function_reuse\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.todo_comment\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
 
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
