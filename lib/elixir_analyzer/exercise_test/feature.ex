@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   whose AST matches part of the AST of the solution.
   """
 
+  alias ElixirAnalyzer.Comment
   alias ElixirAnalyzer.ExerciseTest.Feature.FeatureError
 
   @doc false
@@ -84,12 +85,11 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     :ok
   end
 
-  @supported_types ~w(essential actionable informative celebratory)a
   defp gather_feature_data({:type, _, [type]} = node, acc) do
-    if type not in @supported_types do
+    if not Comment.supported_type?(type) do
       raise """
       Unsupported type `#{type}`.
-      The macro `feature` supports the following types: #{Enum.join(@supported_types, ", ")}.
+      The macro `feature` supports the following types: #{Enum.join(Comment.supported_types(), ", ")}.
       """
     end
 

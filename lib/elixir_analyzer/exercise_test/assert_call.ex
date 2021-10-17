@@ -1,6 +1,8 @@
 defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   @moduledoc false
 
+  alias ElixirAnalyzer.Comment
+
   @type function_signature() :: {list(atom()), atom()} | {nil, atom()}
 
   @doc false
@@ -90,12 +92,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
     {node, Map.put(test_data, :comment, comment)}
   end
 
-  @supported_types ~w(essential actionable informative celebratory)a
   defp do_walk_assert_call_block({:type, _, [type]} = node, test_data) do
-    if type not in @supported_types do
+    if not Comment.supported_type?(type) do
       raise """
       Unsupported type `#{type}`.
-      The macro `assert_call` supports the following types: #{Enum.join(@supported_types, ", ")}.
+      The macro `assert_call` supports the following types: #{Enum.join(Comment.supported_types(), ", ")}.
       """
     end
 
