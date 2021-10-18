@@ -43,14 +43,6 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueInventoryTest do
           Enum.reject(inventory, fn item -> Map.get(item, :price) != nil end)
         end
 
-        def increase_quantity(item, count) do
-          Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
-            quantity_by_size
-            |> Enum.map(fn {size, quantity} -> {size, quantity + count} end)
-            |> Enum.into(%{})
-          end)
-        end
-
         def total_quantity(item) do
           Enum.reduce(Map.get(item, :quantity_by_size), 0, fn {_size, quantity}, acc ->
             acc + quantity
