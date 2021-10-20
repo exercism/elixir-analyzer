@@ -41,6 +41,12 @@ defmodule ElixirAnalyzer.Constants do
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
 
+    # Boutique Inventory Comments
+    boutique_inventory_use_enum_sort_by: "elixir.boutique-inventory.use_enum_sort_by",
+    boutique_inventory_use_enum_filter_or_enum_reject:
+      "elixir.boutique-inventory.use_enum_filter_or_enum_reject",
+    boutique_inventory_use_enum_reduce: "elixir.boutique-inventory.use_enum_reduce",
+
     # Boutique Suggestions Comments
     boutique_suggestions_use_list_comprehensions:
       "elixir.boutique-suggestions.use_list_comprehensions",
