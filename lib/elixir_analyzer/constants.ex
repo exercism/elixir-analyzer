@@ -46,6 +46,8 @@ defmodule ElixirAnalyzer.Constants do
     boutique_inventory_use_enum_filter_or_enum_reject:
       "elixir.boutique-inventory.use_enum_filter_or_enum_reject",
     boutique_inventory_use_enum_reduce: "elixir.boutique-inventory.use_enum_reduce",
+    boutique_inventory_use_enum_into: "elixir.boutique-inventory.use_enum_into",
+    boutique_inventory_use_enum_into_instead_enum_map: "elixir.boutique-inventory.use_enum_into_instead_enum_map",
 
     # Boutique Suggestions Comments
     boutique_suggestions_use_list_comprehensions:

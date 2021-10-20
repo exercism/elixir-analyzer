@@ -15,9 +15,7 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueInventoryTest do
 
       def increase_quantity(item, count) do
         Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
-          quantity_by_size
-          |> Enum.map(fn {size, quantity} -> {size, quantity + count} end)
-          |> Enum.into(%{})
+          Enum.into(quantity_by_size, %{}, fn {size, quantity} -> {size, quantity + count} end)
         end)
       end
 
@@ -58,6 +56,21 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueInventoryTest do
         def with_missing_price(inventory) do
           Enum.reduce(inventory, [], fn item, acc ->
             if is_nil(item.price), do: List.insert_at(acc, -1, item), else: acc
+          end)
+        end
+      end
+    end
+
+    test_exercise_analysis "increase_quantity using Enum.map instead of just Enum.into",
+      comments_include: [
+        ElixirAnalyzer.Constants.boutique_inventory_use_enum_into_instead_enum_map()
+      ] do
+      defmodule BoutiqueInventory do
+        def increase_quantity(item, count) do
+          Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+            quantity_by_size
+            |> Enum.map(fn {size, quantity} -> {size, quantity + count} end)
+            |> Enum.into(%{})
           end)
         end
       end
