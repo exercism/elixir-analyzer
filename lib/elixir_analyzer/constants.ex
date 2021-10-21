@@ -35,6 +35,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_no_integer_literal: "elixir.solution.no_integer_literal",
     solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
     solution_todo_comment: "elixir.solution.todo_comment",
+    solution_private_helper_functions: "elixir.solution.private_helper_functions",
 
     # Concept exercises
 

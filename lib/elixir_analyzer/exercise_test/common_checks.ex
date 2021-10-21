@@ -12,6 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     BooleanFunctions,
     ExemplarComparison,
     Indentation,
+    PrivateHelperFunctions,
     Comments
   }
 
@@ -38,6 +39,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       BooleanFunctions.run(code_ast),
       ExemplarComparison.run(code_ast, exemplar_ast),
       Indentation.run(code_ast, code_as_string),
+      PrivateHelperFunctions.run(code_ast, exemplar_ast),
       Comments.run(code_ast, code_as_string)
     ]
     |> List.flatten()
