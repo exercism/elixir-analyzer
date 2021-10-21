@@ -156,6 +156,9 @@ defmodule ElixirAnalyzer.Constants do
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
 
+    # Sieve Comments
+    sieve_do_not_use_div_rem: "elixir.sieve.do_not_use_div_rem",
+
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",
 
