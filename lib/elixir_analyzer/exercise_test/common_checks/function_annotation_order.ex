@@ -21,6 +21,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     |> check_errors()
   end
 
+  defp traverse({:defmodule, _, [{:__aliases__, _, aliases}, [do: do_block]]}, acc) do
+    context = {:context, Module.concat(aliases)}
+    {do_block, [context | acc]}
+  end
+
   defp traverse({:@, _meta, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
     {ast, [{:spec, fn_name} | acc]}
   end
@@ -73,14 +78,21 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
   defp chunk_definitions(definitions) do
     chunk_fun = fn
+      {:context, context}, %{context: nil} = chunk ->
+        {:cont, %{chunk | context: context}}
+
+      {:context, context}, %{context: _} = chunk ->
+        {:cont, chunk, %{context: context, name: nil, operations: []}}
+
       {op, name}, %{name: name, operations: ops} = chunk ->
         {:cont, %{chunk | operations: [op | ops]}}
 
-      {op, name}, %{name: nil, operations: ops} ->
-        {:cont, %{name: name, operations: [op | ops]}}
+      {op, name}, %{name: nil, operations: ops} = chunk ->
+        {:cont, %{chunk | name: name, operations: [op | ops]}}
 
       {op, name}, %{operations: ops} = chunk ->
-        {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: name, operations: [op]}}
+        {:cont, %{chunk | operations: Enum.reverse(ops)},
+         %{context: chunk.context, name: name, operations: [op]}}
 
       :doc, %{name: nil, operations: ops} = chunk ->
         {:cont, %{chunk | operations: [:doc | ops]}}
@@ -89,14 +101,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
         {:cont, %{chunk | operations: [:doc | ops]}}
 
       :doc, %{operations: ops} = chunk ->
-        {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: nil, operations: [:doc]}}
+        {:cont, %{chunk | operations: Enum.reverse(ops)},
+         %{context: chunk.context, name: nil, operations: [:doc]}}
     end
 
     Enum.chunk_while(
       definitions,
-      %{name: nil, operations: []},
+      %{name: nil, operations: [], context: nil},
       chunk_fun,
-      &{:cont, %{name: &1.name, operations: Enum.reverse(&1.operations)}, nil}
+      &{:cont, %{&1 | operations: Enum.reverse(&1.operations)}, nil}
     )
   end
 
@@ -108,7 +121,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   end
 
   defp do_merge_definitions([first | [second | rest] = tail], acc) do
-    if first.name == second.name || second.name == nil do
+    if (first.name == second.name || second.name == nil) and first.context == second.context do
       do_merge_definitions(rest, [
         %{name: first.name, operations: first.operations ++ second.operations} | acc
       ])

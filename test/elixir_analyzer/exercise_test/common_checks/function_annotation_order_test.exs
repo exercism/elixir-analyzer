@@ -540,4 +540,35 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
               }}
            ]
   end
+
+  asts = [
+    quote do
+      defmodule Test do
+        def x(), do: 1
+
+        defmodule Test.Y do
+          @spec x() :: integer()
+          def x(), do: 1
+        end
+      end
+    end,
+    quote do
+      defmodule Test do
+        alias Blah.Bluh
+        def x(), do: 1
+
+        defmodule Test.Y do
+          @doc ""
+          def x(), do: 1
+        end
+      end
+    end
+  ]
+
+  for {ast, n} <- Enum.with_index(asts) do
+    test "neenjaw -- false positive test ##{n}" do
+      assert FunctionAnnotationOrder.run(unquote(Macro.escape(ast))) == []
+    end
+  end
+
 end
