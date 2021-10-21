@@ -4,7 +4,7 @@ defmodule ElixirAnalyzer.Constants do
   ```
   elixir.[directory].[filename]
   ```
-
+  
   `[directory]` must correspond to a directory in https://github.com/exercism/website-copy/tree/main/analyzer-comments/elixir
   and `[filename].md` must be a file in that directory.
   """
@@ -117,6 +117,10 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_open_log_uses_option_write: "elixir.newsletter.open_log_uses_option_write",
     newsletter_send_newsletter_reuses_functions:
       "elixir.newsletter.send_newsletter_reuses_functions",
+
+    # New Passport Comments
+    new_passport_use_with: "elixir.new-passport.use_with",
+    new_passport_do_not_modify_code: "elixir.new-passport.do_not_modify_code",
 
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:

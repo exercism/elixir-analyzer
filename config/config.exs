@@ -75,6 +75,9 @@ config :elixir_analyzer,
     "newsletter" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Newsletter
     },
+    "new-passport" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NewPassport
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
