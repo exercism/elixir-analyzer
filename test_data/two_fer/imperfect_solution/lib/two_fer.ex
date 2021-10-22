@@ -14,4 +14,6 @@ defmodule TwoFer do
 	end
 
 	def two_fer(_nameInPascalCase), do: raise(FunctionClauseError)
+
+def public_helper(_pasta), do: :delicious
 end

@@ -5,11 +5,11 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
   test_exercise_analysis "example solution",
     comments: [] do
     defmodule ListOps do
-      @spec length(list) :: non_neg_integer
-      def length(l), do: do_length(l, 0)
+      @spec count(list) :: non_neg_integer
+      def count(l), do: do_count(l, 0)
 
-      defp do_length([], acc), do: acc
-      defp do_length([_ | t], acc), do: do_length(t, acc + 1)
+      defp do_count([], acc), do: acc
+      defp do_count([_ | t], acc), do: do_count(t, acc + 1)
 
       @spec reverse(list) :: list
       def reverse(l), do: do_reverse(l, [])
@@ -114,7 +114,7 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
         end
       end,
       defmodule ListOps do
-        def length(l), do: Kernel.length(l)
+        def count(l), do: Kernel.length(l)
       end
     ]
   end

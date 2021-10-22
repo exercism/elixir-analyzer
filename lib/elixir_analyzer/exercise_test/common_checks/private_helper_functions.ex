@@ -22,9 +22,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
 
       [{wrong_definition, correct_definition} | _] ->
         [
-          {:pass,
+          {:fail,
            %Comment{
-             type: :celebratory,
+             type: :informative,
              name: Constants.solution_private_helper_functions(),
              comment: Constants.solution_private_helper_functions(),
              params: %{
