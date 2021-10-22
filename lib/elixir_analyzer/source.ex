@@ -1,4 +1,7 @@
 defmodule ElixirAnalyzer.Source do
+  @moduledoc """
+  Represents all the data received: solution code, exemploid, slug and paths
+  """
   defstruct [
     :slug,
     :path,

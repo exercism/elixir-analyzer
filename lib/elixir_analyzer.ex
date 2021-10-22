@@ -210,8 +210,9 @@ defmodule ElixirAnalyzer do
   end
 
   defp check(%Submission{source: source} = submission, _params) do
-    with Logger.info("Attempting to read code file", code_file_path: source.code_path),
-         {:code_read, {:ok, code_string}} <- {:code_read, File.read(source.code_path)},
+    Logger.info("Attempting to read code file", code_file_path: source.code_path)
+
+    with {:code_read, {:ok, code_string}} <- {:code_read, File.read(source.code_path)},
          source <- %{source | code_string: code_string},
          Logger.info("Code file read successfully"),
          Logger.info("Attempting to read exemploid", exemploid_path: source.exemploid_path),
@@ -219,8 +220,8 @@ defmodule ElixirAnalyzer do
            {:exemploid_read, source, File.read(source.exemploid_path)},
          Logger.info("Exemploid file read successfully, attempting to parse"),
          {:exemploid_ast, _, {:ok, exemploid_ast}} <-
-           {:exemploid_ast, source, Code.string_to_quoted(exemploid_string)},
-         Logger.info("Exemploid file parsed successfully") do
+           {:exemploid_ast, source, Code.string_to_quoted(exemploid_string)} do
+      Logger.info("Exemploid file parsed successfully")
       source = %{source | exemploid_string: exemploid_string, exemploid_ast: exemploid_ast}
       %{submission | source: source}
     else

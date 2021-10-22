@@ -31,7 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
 
   @spec run(Source.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(%Source{
-    code_path: code_path,
+        code_path: code_path,
         code_ast: code_ast,
         code_string: code_string,
         exercice_type: type,
