@@ -17,6 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
   }
 
   alias ElixirAnalyzer.Comment
+  alias ElixirAnalyzer.Source
 
   # CommonChecks that use feature or assert_call should be called here
   defmacro __using__(_opts) do
@@ -28,8 +29,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     end
   end
 
-  @spec run(Macro.t(), String.t(), nil | Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
-  def run(code_ast, code_as_string, exemplar_ast) when is_binary(code_as_string) do
+  @spec run(Source.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  def run(%Source{
+        code_ast: code_ast,
+        code_string: code_string,
+        exercice_type: type,
+        exemploid_ast: exemploid_ast
+      }) do
     [
       FunctionNames.run(code_ast),
       VariableNames.run(code_ast),
@@ -37,10 +43,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       ModulePascalCase.run(code_ast),
       CompilerWarnings.run(code_ast),
       BooleanFunctions.run(code_ast),
-      ExemplarComparison.run(code_ast, exemplar_ast),
-      Indentation.run(code_ast, code_as_string),
-      PrivateHelperFunctions.run(code_ast, exemplar_ast),
-      Comments.run(code_ast, code_as_string)
+      ExemplarComparison.run(code_ast, type, exemploid_ast),
+      Indentation.run(code_ast, code_string),
+      PrivateHelperFunctions.run(code_ast, exemploid_ast),
+      Comments.run(code_ast, code_string)
     ]
     |> List.flatten()
   end

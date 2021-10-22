@@ -91,14 +91,18 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
       quote line: line do
         test "#{unquote(test_name)}" do
+          source = %ElixirAnalyzer.Source{
+            code_string: unquote(code),
+            exercice_type: :concept,
+            exemploid_ast: @exemplar_code
+          }
+
           empty_submission = %ElixirAnalyzer.Submission{
-            code_file: "",
-            code_path: "",
-            path: "",
+            source: source,
             analysis_module: ""
           }
 
-          result = @exercise_test_module.analyze(empty_submission, unquote(code), @exemplar_code)
+          result = @exercise_test_module.analyze(empty_submission, source)
 
           comments =
             result.comments
