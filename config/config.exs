@@ -104,7 +104,7 @@ config :elixir_analyzer,
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
     },
-    "sieve-root" => %{
+    "sieve" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Sieve
     },
     "square-root" => %{
