@@ -31,6 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
 
   @spec run(Source.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(%Source{
+    code_path: code_path,
         code_ast: code_ast,
         code_string: code_string,
         exercice_type: type,
@@ -41,7 +42,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast),
       ModulePascalCase.run(code_ast),
-      CompilerWarnings.run(code_ast),
+      CompilerWarnings.run(code_path, code_ast),
       BooleanFunctions.run(code_ast),
       ExemplarComparison.run(code_ast, type, exemploid_ast),
       Indentation.run(code_ast, code_string),

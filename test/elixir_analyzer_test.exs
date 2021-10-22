@@ -29,7 +29,7 @@ defmodule ElixirAnalyzerTest do
                analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
                expected_output =
-                 "{\"comments\":[{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  nofile:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
+                 "{\"comments\":[{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
 
                assert Submission.to_json(analyzed_exercise) == expected_output
              end) =~ "Exemploid file not found. Reason: enoent"
@@ -69,12 +69,14 @@ defmodule ElixirAnalyzerTest do
       exercise = "not-a-real-exercise"
       path = "./test_data/two_fer/imperfect_solution/"
 
-      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
-      expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  nofile:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
+               expected_output =
+                 "{\"comments\":[{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some code suggestions. 📣\"}"
 
-      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+               assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+             end) =~ "Exemploid file not found. Reason: enoent"
     end
   end
 
