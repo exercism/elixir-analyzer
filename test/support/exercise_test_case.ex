@@ -10,17 +10,16 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   """
 
   use ExUnit.CaseTemplate
+  alias ElixirAnalyzer.Source
 
   @dialyzer no_match: {:assert_comments, 3}
   @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
-  @concept_exercice_path "elixir/exercises/concept"
-  @meta_config ".meta/config.json"
 
   using opts do
     quote do
       @exercise_test_module unquote(opts)[:exercise_test_module]
       @unsorted_comments unquote(opts)[:unsorted_comments]
-      @exemplar_code ElixirAnalyzer.ExerciseTestCase.find_exemplar_code(@exercise_test_module)
+      @source ElixirAnalyzer.ExerciseTestCase.find_source(@exercise_test_module)
       require ElixirAnalyzer.ExerciseTestCase
       import ElixirAnalyzer.ExerciseTestCase
       alias ElixirAnalyzer.Constants
@@ -91,11 +90,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
       quote line: line do
         test "#{unquote(test_name)}" do
-          source = %ElixirAnalyzer.Source{
-            code_string: unquote(code),
-            exercice_type: :concept,
-            exemploid_ast: @exemplar_code
-          }
+          source = %{@source | code_string: unquote(code)}
 
           empty_submission = %ElixirAnalyzer.Submission{
             source: source,
@@ -160,23 +155,71 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     :noop
   end
 
-  # Return the exemplar AST for concept exercises, or nil for pracices exercises and other tests
-  def find_exemplar_code(test_module) do
-    with {slug, _test_module} <-
-           Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1)),
-         {:ok, config_file} <-
-           Path.join([@concept_exercice_path, slug, @meta_config]) |> File.read() do
-      get_exemplar_ast!(config_file, slug)
-    else
-      _ -> nil
+  # Return as much of the source data as can be found
+
+  @concept_exercice_path "elixir/exercises/concept"
+  @practice_exercice_path "elixir/exercises/practice"
+  @meta_config ".meta/config.json"
+  def find_source(test_module) do
+    %Source{}
+    |> find_source_slug(test_module)
+    |> find_source_type
+    |> find_source_exemploid_path
+    |> find_source_exemploid
+  end
+
+  defp find_source_slug(source, test_module) do
+    match_slug = Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1))
+
+    case match_slug do
+      {slug, _test_module} -> %{source | slug: slug}
+      _ -> source
     end
   end
 
-  defp get_exemplar_ast!(config_file_path, slug) do
-    %{"files" => %{"exemplar" => [path]}} = Jason.decode!(config_file_path)
+  defp find_source_type(%Source{slug: slug} = source) do
+    concept_ex = File.ls!(@concept_exercice_path)
+    practice_ex = File.ls!(@practice_exercice_path)
 
-    Path.join([@concept_exercice_path, slug, path])
-    |> File.read!()
-    |> Code.string_to_quoted!()
+    cond do
+      slug in concept_ex -> %{source | exercice_type: :concept}
+      slug in practice_ex -> %{source | exercice_type: :practice}
+      true -> source
+    end
   end
+
+  defp find_source_exemploid_path(%Source{slug: slug, exercice_type: :concept} = source) do
+    %{"files" => %{"exemplar" => [exemploid_path | _]}} =
+      [@concept_exercice_path, slug, @meta_config]
+      |> Path.join()
+      |> File.read!()
+      |> Jason.decode!()
+
+    exemploid_path = Path.join([@concept_exercice_path, slug, exemploid_path])
+    %{source | exemploid_path: exemploid_path}
+  end
+
+  defp find_source_exemploid_path(%Source{slug: slug, exercice_type: :practice} = source) do
+    %{"files" => %{"example" => [exemploid_path | _]}} =
+      [@practice_exercice_path, slug, @meta_config]
+      |> Path.join()
+      |> File.read!()
+      |> Jason.decode!()
+
+    exemploid_path = Path.join([@practice_exercice_path, slug, exemploid_path])
+
+    %{source | exemploid_path: exemploid_path}
+  end
+
+  defp find_source_exemploid_path(source), do: source
+
+  defp find_source_exemploid(%Source{exemploid_path: exemploid_path} = source)
+       when is_binary(exemploid_path) do
+    exemploid_string = File.read!(exemploid_path)
+    exemploid_ast = Code.string_to_quoted!(exemploid_string)
+
+    %{source | exemploid_string: exemploid_string, exemploid_ast: exemploid_ast}
+  end
+
+  defp find_source_exemploid(source), do: source
 end
