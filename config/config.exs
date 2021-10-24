@@ -63,6 +63,9 @@ config :elixir_analyzer,
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
+    "library-fees" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.LibraryFees
+    },
     "log-level" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.LogLevel
     },

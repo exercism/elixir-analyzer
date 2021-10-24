@@ -96,6 +96,9 @@ defmodule ElixirAnalyzer.Constants do
     # Leap Comments
     leap_erlang_calendar: "elixir.leap.erlang_calendar",
 
+    # Library Fees Comments
+    library_fees_function_reuse: "elixir.library-fees.function_reuse",
+
     # Log Level Comments
     log_level_use_cond: "elixir.log-level.use_cond",
 
