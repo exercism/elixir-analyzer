@@ -89,7 +89,57 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           Elixir.Mix.Utils.read_path(path)
           final_function(:math.pi())
         end
+      end,
+      # call without parentheses at the end of a pipe works
+      # Using a sigil because mix format will add parentheses: __MODULE__.helper()
+      ~S"""
+      defmodule AssertCallVerification do
+        def main_function do
+          :ok
+          |> __MODULE__.helper
+          |> do_something
+        end
+
+        def helper do
+          :ok |> Elixir.Mix.Utils.read_path
+          :ok |> :math.pi
+          :ok |> final_function
+        end
       end
+      """,
+      # call without parentheses inside of a pipe works
+      ~S"""
+      defmodule AssertCallVerification do
+        def main_function do
+          :ok
+          |> __MODULE__.helper
+          |> do_something
+          |> double_check
+        end
+
+        def helper do
+          :ok
+          |> Elixir.Mix.Utils.read_path
+          |> :math.pi
+          |> final_function
+          |> check
+        end
+      end
+      """,
+      # call without parentheses works inside of pipe calls or with an explicit module
+      ~S"""
+      defmodule AssertCallVerification do
+        def main_function do
+          __MODULE__.helper
+          |> do_something
+        end
+
+        def helper do
+          Elixir.Mix.Utils.read_path
+          :math.pi |> final_function
+        end
+      end
+      """
     ]
   end
 
@@ -137,6 +187,16 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
         end
 
         def main_function() do
+        end
+      end,
+      # function without parentheses doesn't get recognized (but compiler warning gets triggered)
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper(".")
+        end
+
+        def helper(path) do
+          final_function
         end
       end
     ]
