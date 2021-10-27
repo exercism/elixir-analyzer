@@ -34,7 +34,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
         code_path: code_path,
         code_ast: code_ast,
         code_string: code_string,
-        exercice_type: type,
+        exercise_type: type,
         exemploid_ast: exemploid_ast
       }) do
     [

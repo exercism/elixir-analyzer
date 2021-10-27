@@ -115,13 +115,13 @@ defmodule ElixirAnalyzer do
       Logger.debug("Getting the exercise config")
       exercise_config = params.exercise_config[params.exercise]
 
-      {code_path, exercice_type, exemploid_path, analysis_module} =
+      {code_path, exercise_type, exemploid_path, analysis_module} =
         do_init(params, exercise_config)
 
       Logger.debug("Initialization successful",
         path: params.path,
         code_path: code_path,
-        exercice_type: exercice_type,
+        exercise_type: exercise_type,
         exemploid_path: exemploid_path,
         analysis_module: analysis_module
       )
@@ -138,7 +138,7 @@ defmodule ElixirAnalyzer do
       source = %{
         source
         | code_path: code_path,
-          exercice_type: exercice_type,
+          exercise_type: exercise_type,
           exemploid_path: exemploid_path
       }
 
@@ -177,14 +177,14 @@ defmodule ElixirAnalyzer do
     relative_code_path = meta_config["files"]["solution"] |> hd()
     code_path = Path.join(params.path, relative_code_path)
 
-    {exercice_type, exemploid_path} =
+    {exercise_type, exemploid_path} =
       case meta_config["files"] do
         %{"exemplar" => [path | _]} -> {:concept, Path.join(params.path, path)}
         %{"example" => [path | _]} -> {:practice, Path.join(params.path, path)}
         _ -> nil
       end
 
-    {code_path, exercice_type, exemploid_path,
+    {code_path, exercise_type, exemploid_path,
      exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
   end
 

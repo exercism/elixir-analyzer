@@ -157,8 +157,8 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
   # Return as much of the source data as can be found
 
-  @concept_exercice_path "elixir/exercises/concept"
-  @practice_exercice_path "elixir/exercises/practice"
+  @concept_exercise_path "elixir/exercises/concept"
+  @practice_exercise_path "elixir/exercises/practice"
   @meta_config ".meta/config.json"
   def find_source(test_module) do
     %Source{}
@@ -178,35 +178,35 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   end
 
   defp find_source_type(%Source{slug: slug} = source) do
-    concept_ex = File.ls!(@concept_exercice_path)
-    practice_ex = File.ls!(@practice_exercice_path)
+    concept_ex = File.ls!(@concept_exercise_path)
+    practice_ex = File.ls!(@practice_exercise_path)
 
     cond do
-      slug in concept_ex -> %{source | exercice_type: :concept}
-      slug in practice_ex -> %{source | exercice_type: :practice}
+      slug in concept_ex -> %{source | exercise_type: :concept}
+      slug in practice_ex -> %{source | exercise_type: :practice}
       true -> source
     end
   end
 
-  defp find_source_exemploid_path(%Source{slug: slug, exercice_type: :concept} = source) do
+  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :concept} = source) do
     %{"files" => %{"exemplar" => [exemploid_path | _]}} =
-      [@concept_exercice_path, slug, @meta_config]
+      [@concept_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Path.join([@concept_exercice_path, slug, exemploid_path])
+    exemploid_path = Path.join([@concept_exercise_path, slug, exemploid_path])
     %{source | exemploid_path: exemploid_path}
   end
 
-  defp find_source_exemploid_path(%Source{slug: slug, exercice_type: :practice} = source) do
+  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :practice} = source) do
     %{"files" => %{"example" => [exemploid_path | _]}} =
-      [@practice_exercice_path, slug, @meta_config]
+      [@practice_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Path.join([@practice_exercice_path, slug, exemploid_path])
+    exemploid_path = Path.join([@practice_exercise_path, slug, exemploid_path])
 
     %{source | exemploid_path: exemploid_path}
   end

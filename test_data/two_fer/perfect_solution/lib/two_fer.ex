@@ -11,11 +11,3 @@ defmodule TwoFer do
     "One for #{name}, one for me."
   end
 end
-
-
-
-
-
-
-
-
