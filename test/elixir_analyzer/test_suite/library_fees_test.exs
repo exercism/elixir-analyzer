@@ -146,7 +146,7 @@ defmodule ElixirAnalyzer.TestSuite.LibraryFeesTest do
           days_late = if diff < 0, do: 0, else: diff
 
           rate = if monday?(actual_return_datetime), do: 0.5 * rate, else: rate
-          trunc(days_late_count * rate)
+          trunc(days_late * rate)
         end
       end
     end
