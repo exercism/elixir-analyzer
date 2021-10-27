@@ -166,7 +166,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # No module path in search
-  def matching_function_call?({name, _, _args}, {nil, name}, _modules) do
+  def matching_function_call?({name, _, args}, {nil, name}, _modules) when is_list(args) do
+    true
+  end
+
+  # Matching function call without parentheses in a pipe
+  def matching_function_call?({:|>, _, [_arg, {name, _, atom}]}, {nil, name}, _modules)
+      when is_atom(atom) do
     true
   end
 
@@ -391,13 +397,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   # track all called functions
   def track_all_functions(
         %{function_call_tree: tree, in_module: module, in_function_def: name} = acc,
-        {_, _, _} = function
+        {_, _, args} = function
       )
-      when not is_nil(name) do
+      when not is_nil(name) and is_list(args) do
     called =
       case function do
         {:., _, [{:__MODULE__, _, _}, fn_name]} -> {module, fn_name}
         {:., _, [{:__aliases__, _, fn_module}, fn_name]} -> {fn_module, fn_name}
+        {:|>, _, [_arg, {fn_name, _, atom}]} when is_atom(atom) -> {module, fn_name}
         {fn_name, _, _} -> {module, fn_name}
       end
 
