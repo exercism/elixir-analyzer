@@ -86,8 +86,6 @@ defmodule ElixirAnalyzer do
     defaults = [
       {:exercise, exercise},
       {:path, input_path},
-      {:file, nil},
-      {:module, nil},
       {:output_path, output_path},
       {:output_file, @output_file},
       {:exercise_config, default_exercise_config()},
@@ -171,8 +169,7 @@ defmodule ElixirAnalyzer do
     end
   end
 
-  # When file is nil, pull code params from config file
-  defp do_init(%{file: nil} = params, exercise_config) do
+  defp do_init(params, exercise_config) do
     meta_config = Path.join(params.path, @meta_config) |> File.read!() |> Jason.decode!()
     relative_code_path = meta_config["files"]["solution"] |> hd()
     code_path = Path.join(params.path, relative_code_path)
@@ -181,21 +178,10 @@ defmodule ElixirAnalyzer do
       case meta_config["files"] do
         %{"exemplar" => [path | _]} -> {:concept, Path.join(params.path, path)}
         %{"example" => [path | _]} -> {:practice, Path.join(params.path, path)}
-        _ -> nil
       end
 
     {code_path, exercise_type, exemploid_path,
      exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
-  end
-
-  # Else, use passed in params to analyze
-  defp do_init(params, _exercise_config) do
-    {
-      params.path,
-      params.type,
-      params.file,
-      String.to_existing_atom("ElixirAnalyzer.ExerciseTest.#{params.module}")
-    }
   end
 
   # Check
@@ -228,7 +214,7 @@ defmodule ElixirAnalyzer do
       {:code_read, {:error, reason}} ->
         Logger.warning("TestSuite halted: Code file not found. Reason: #{reason}",
           path: source.path,
-          file_name: source.code_path
+          code_path: source.code_path
         )
 
         submission
