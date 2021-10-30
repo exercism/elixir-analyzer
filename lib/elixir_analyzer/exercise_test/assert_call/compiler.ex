@@ -405,11 +405,20 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       when not is_nil(name) and is_list(args) do
     called =
       case function do
-        {:., _, [{:__MODULE__, _, _}, fn_name]} -> {module, fn_name}
-        {:., _, [{:__aliases__, _, fn_module}, fn_name]} -> {fn_module, fn_name}
-        {:|>, _, [_arg, {fn_name, _, atom}]} when is_atom(atom) -> {module, fn_name}
-        {:/, _, [{fn_name, _, atom}, _arity]} when is_atom(atom) -> {module, fn_name}
-        {fn_name, _, _} -> {module, fn_name}
+        {:., _, [{:__MODULE__, _, _}, fn_name]} ->
+          {module, fn_name}
+
+        {:., _, [{:__aliases__, _, fn_module}, fn_name]} ->
+          {fn_module, fn_name}
+
+        {:|>, _, [_arg, {fn_name, _, atom}]} when is_atom(atom) ->
+          {module, fn_name}
+
+        {:/, _, [{fn_name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) ->
+          {module, fn_name}
+
+        {fn_name, _, _} ->
+          {module, fn_name}
       end
 
     %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
