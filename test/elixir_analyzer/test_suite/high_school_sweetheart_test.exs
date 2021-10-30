@@ -51,6 +51,42 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
     '''
   end
 
+  test_exercise_analysis "other solution",
+    comments: [] do
+    # https://exercism.org/tracks/elixir/exercises/high-school-sweetheart/solutions/kavu
+    ~S'''
+    defmodule HighSchoolSweetheart do
+      def first_letter(name), do: name |> String.trim() |> String.first()
+      def initial(name), do: name |> first_letter |> String.upcase() |> Kernel.<>(".")
+
+      def initials(full_name),
+        do: full_name |> String.split() |> Enum.map(&initial/1) |> Enum.join(" ")
+
+      def pair(full_name1, full_name2) do
+        first_initials = initials(full_name1)
+        second_initials = initials(full_name2)
+
+        """
+             ******       ******
+           **      **   **      **
+         **         ** **         **
+        **            *            **
+        **                         **
+        **     #{first_initials}  +  #{second_initials}     **
+         **                       **
+           **                   **
+             **               **
+               **           **
+                 **       **
+                   **   **
+                     ***
+                      *
+        """
+      end
+    end
+    '''
+  end
+
   describe "function reuse" do
     test_exercise_analysis "detects lack of reuse in all cases",
       comments_include: [Constants.high_school_sweetheart_function_reuse()] do
