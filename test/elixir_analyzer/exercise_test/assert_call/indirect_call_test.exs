@@ -139,7 +139,33 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           :math.pi |> final_function
         end
       end
-      """
+      """,
+      # call helper function via captured function
+      defmodule AssertCallVerification do
+        def main_function do
+          :ok
+          |> then(&helper/0)
+          |> do_something
+        end
+
+        def helper do
+          Elixir.Mix.Utils.read_path()
+          :math.pi() |> final_function
+        end
+      end,
+      # helper function and target function in captured notation
+      defmodule AssertCallVerification do
+        def main_function do
+          :ok
+          |> then(&helper/0)
+          |> do_something
+        end
+
+        def helper do
+          Elixir.Mix.Utils.read_path()
+          :math.pi() |> then(&final_function/1)
+        end
+      end
     ]
   end
 
