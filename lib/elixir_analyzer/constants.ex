@@ -97,6 +97,9 @@ defmodule ElixirAnalyzer.Constants do
     # Leap Comments
     leap_erlang_calendar: "elixir.leap.erlang_calendar",
 
+    # Library Fees Comments
+    library_fees_function_reuse: "elixir.library-fees.function_reuse",
+
     # Log Level Comments
     log_level_use_cond: "elixir.log-level.use_cond",
 
@@ -156,6 +159,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
+
+    # Strain Comments
+    strain_use_recursion: "elixir.strain.use_recursion",
 
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",

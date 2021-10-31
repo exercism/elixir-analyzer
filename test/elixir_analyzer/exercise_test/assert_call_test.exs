@@ -4,23 +4,43 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
 
   test_exercise_analysis "perfect solution",
     comments: [] do
-    defmodule AssertCallVerification do
-      def function() do
-        x = List.first([1, 2, 3])
-        result = helper()
-        IO.puts(result)
+    [
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = helper()
+          IO.puts(result)
 
-        private_helper() |> IO.puts()
-      end
+          private_helper() |> IO.puts()
+        end
 
-      def helper do
-        :helped
-      end
+        def helper do
+          :helped
+        end
 
-      defp private_helper do
-        :privately_helped
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # call helper with capture notation
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = Enum.map(result, &helper/0)
+          IO.puts(result)
+
+          private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
       end
-    end
+    ]
   end
 
   test_exercise_analysis "missing local call from anywhere in solution",
@@ -134,6 +154,27 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
+  test_exercise_analysis "indirect call to a List function in function/0 via captured helper function",
+    comments: [] do
+    defmodule AssertCallVerification do
+      def function() do
+        result = helper()
+        IO.puts(result)
+
+        result |> Enum.map(&private_helper/1) |> IO.puts()
+      end
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper(list) do
+        l = List.first(list)
+        :privately_helped
+      end
+    end
+  end
+
   test_exercise_analysis "missing call to a List function in solution",
     comments: [
       "didn't find a call to a List function",
@@ -173,6 +214,31 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         2 * 3
 
         _ = private_helper() |> IO.puts()
+      end
+
+      def helper do
+        :helped
+      end
+
+      defp private_helper do
+        :privately_helped
+      end
+    end
+  end
+
+  test_exercise_analysis "function without parentheses doesn't get matched",
+    # Instead, we rely on the compiler warning
+    comments: [
+      "didn't find a local call to helper/0",
+      "didn't find a local call to helper/0 within function/0"
+    ] do
+    defmodule AssertCallVerification do
+      def function() do
+        x = List.first([1, 2, 3])
+        result = helper
+        IO.puts(result)
+
+        private_helper() |> IO.puts()
       end
 
       def helper do
