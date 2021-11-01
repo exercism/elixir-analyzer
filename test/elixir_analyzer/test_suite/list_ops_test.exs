@@ -80,19 +80,19 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
       end,
       defmodule ListOps do
         import Stream
-        def filter(l, a, f), do: Stream.filter(l, a, f) |> Enum.to_list()
+        def filter(l, f), do: filter(l, f) |> Enum.to_list()
       end,
       defmodule ListOps do
         def append(l1, l2), do: l1 ++ l2
       end,
       defmodule ListOps do
-        def map(l) do
+        def map(l, f) do
           try do
             hd(l)
           rescue
             _ -> []
           else
-            h -> [h | map(tl(l))]
+            h -> [f.(h) | map(tl(l), f)]
           end
         end
       end,
