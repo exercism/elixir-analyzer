@@ -12,10 +12,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
   def run(_ast, nil), do: []
 
   def run(code_ast, exemploid_ast) do
-    {_, code_definitions} = Macro.prewalk(code_ast, [], &traverse/2)
-    {_, exemploid_definitions} = Macro.prewalk(exemploid_ast, [], &traverse/2)
+    {_, code_hidden} = Macro.prewalk(code_ast, [], &find_hidden/2)
+    {_, code_def} = Macro.prewalk(code_ast, [], &traverse/2)
+    {_, exemploid_def} = Macro.prewalk(exemploid_ast, [], &traverse/2)
 
-    case Enum.reverse(find_public_helpers(code_definitions, exemploid_definitions)) do
+    case find_public_helpers(code_def, code_hidden, exemploid_def) |> Enum.reverse() do
       [] ->
         []
 
@@ -35,23 +36,55 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
     end
   end
 
-  defp traverse({op, _meta, [{:when, _, [{name, _, args} | _]} | _]} = ast, names)
+  defp find_hidden({_, _, args} = ast, names) when is_list(args) do
+    {ast, do_find_hidden(args, names)}
+  end
+
+  defp find_hidden(ast, names), do: {ast, names}
+
+  defp do_find_hidden([doc, function | rest], names) do
+    hidden? =
+      match?({:@, _, [{:doc, _, [false]}]}, doc) or match?({:@, _, [{:impl, _, [true]}]}, doc)
+
+    def? = function_def?(function)
+
+    if hidden? and def? do
+      names = [get_function_data(function) | names]
+      do_find_hidden(rest, names)
+    else
+      do_find_hidden([function | rest], names)
+    end
+  end
+
+  defp do_find_hidden(_, names), do: names
+
+  defp function_def?({_op, _, [{:when, _, [{_name, _, _args} | _]} | _]}), do: true
+  defp function_def?({_op, _, [{_name, _, _args} | _]}), do: true
+  defp function_def?(_node), do: false
+
+  defp get_function_data({op, _, [{:when, _, [{name, _, args} | _]} | _]}) do
+    {op, name, if(is_atom(args), do: 0, else: length(args))}
+  end
+
+  defp get_function_data({op, _, [{name, _, args} | _]}) do
+    {op, name, if(is_atom(args), do: 0, else: length(args))}
+  end
+
+  defp traverse({op, _, [{:when, _, [{name, _, args} | _]} | _]} = ast, names)
        when op in @public_ops do
     definition = {op, name, if(is_atom(args), do: 0, else: length(args))}
     {ast, [definition | names]}
   end
 
-  defp traverse({op, _meta, [{name, _, args} | _]} = ast, names) when op in @public_ops do
+  defp traverse({op, _, [{name, _, args} | _]} = ast, names) when op in @public_ops do
     definition = {op, name, if(is_atom(args), do: 0, else: length(args))}
     {ast, [definition | names]}
   end
 
-  defp traverse(ast, names) do
-    {ast, names}
-  end
+  defp traverse(ast, names), do: {ast, names}
 
-  defp find_public_helpers(code_definitions, exemploid_definitions) do
-    (Enum.uniq(code_definitions) -- exemploid_definitions)
+  defp find_public_helpers(code_def, code_hidden, exemploid_def) do
+    ((Enum.uniq(code_def) -- exemploid_def) -- code_hidden)
     |> Enum.map(&print_definition/1)
   end
 

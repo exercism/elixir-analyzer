@@ -204,6 +204,56 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
+
+    test "@doc false hides the function" do
+      code =
+        quote do
+          defmodule Rules do
+            defmodule BooleanLogic do
+              @doc false
+              def do_or(left, right), do: left or right
+
+              @doc false
+              def do_and(left, right) when is_boolean(left), do: left and right
+            end
+
+            def score?(touching_power_pellet, touching_dot) do
+              BooleanLogic.do_or(touching_power_pellet, touching_dot)
+            end
+
+            def eat_ghost?(power_pellet_active, touching_ghost) do
+              BooleanLogic.do_and(power_pellet_active, touching_ghost)
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == []
+    end
+
+    test "@impl true hides the function" do
+      code =
+        quote do
+          defmodule Rules do
+            defmodule BooleanLogic do
+              @impl true
+              def do_or(left, right), do: left or right
+
+              @impl true
+              def do_and(left, right) when is_boolean(left), do: left and right
+            end
+
+            def score?(touching_power_pellet, touching_dot) do
+              BooleanLogic.do_or(touching_power_pellet, touching_dot)
+            end
+
+            def eat_ghost?(power_pellet_active, touching_ghost) do
+              BooleanLogic.do_and(power_pellet_active, touching_ghost)
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == []
+    end
   end
 
   describe "practice exercise with square-root" do
