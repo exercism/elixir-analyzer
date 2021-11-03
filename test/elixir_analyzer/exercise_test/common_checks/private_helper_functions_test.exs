@@ -19,7 +19,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
     name: Constants.solution_private_helper_functions()
   }
 
-  describe "concept exercice with pacman-rules" do
+  describe "concept exercise with pacman-rules" do
     test "solution with private helpers" do
       code =
         quote do
@@ -206,7 +206,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
     end
   end
 
-  describe "practice exercice with square-root" do
+  describe "practice exercise with square-root" do
     test "solution with private helpers" do
       code =
         quote do
