@@ -5,13 +5,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
   alias ElixirAnalyzer.Comment
   alias ElixirAnalyzer.Constants
 
-  @pacman_stub "elixir/exercises/concept/pacman-rules/lib/rules.ex"
-               |> File.read!()
-               |> Code.string_to_quoted()
+  @pacman_exemplar "elixir/exercises/concept/pacman-rules/.meta/exemplar.ex"
+                   |> File.read!()
+                   |> Code.string_to_quoted()
 
-  @sqrt_stub "elixir/exercises/practice/square-root/lib/square_root.ex"
-             |> File.read!()
-             |> Code.string_to_quoted()
+  @sqrt_example "elixir/exercises/practice/square-root/.meta/example.ex"
+                |> File.read!()
+                |> Code.string_to_quoted()
 
   @comment %Comment{
     type: :informative,
@@ -50,7 +50,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
           end
         end
 
-      assert PrivateHelperFunctions.run(code, @pacman_stub) == []
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == []
     end
 
     test "solution with public guard" do
@@ -85,10 +85,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "defguard is_bool(a)", expected: "defguardp is_bool(a)"}
+        | params: %{actual: "defguard is_bool(_)", expected: "defguardp is_bool(_)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @pacman_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
 
     test "solution with public macro" do
@@ -123,10 +123,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "defmacro super_and(a, b)", expected: "defmacrop super_and(a, b)"}
+        | params: %{actual: "defmacro super_and(_, _)", expected: "defmacrop super_and(_, _)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @pacman_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
 
     test "solution with public def" do
@@ -161,10 +161,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "def do_or(a, b)", expected: "defp do_or(a, b)"}
+        | params: %{actual: "def do_or(_, _)", expected: "defp do_or(_, _)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @pacman_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
 
     test "only one comment will be shown" do
@@ -199,10 +199,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "def do_or(a, b)", expected: "defp do_or(a, b)"}
+        | params: %{actual: "defguard is_bool(_)", expected: "defguardp is_bool(_)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @pacman_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
   end
 
@@ -240,7 +240,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
           end
         end
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == []
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == []
     end
 
     test "solution with public guard" do
@@ -278,10 +278,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "defguard is_positive(a)", expected: "defguardp is_positive(a)"}
+        | params: %{actual: "defguard is_positive(_)", expected: "defguardp is_positive(_)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
     end
 
     test "solution with public macro" do
@@ -320,12 +320,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
       comment = %{
         @comment
         | params: %{
-            actual: "defmacro unless_equal_to(a, b, c)",
-            expected: "defmacrop unless_equal_to(a, b, c)"
+            actual: "defmacro unless_equal_to(_, _, _)",
+            expected: "defmacrop unless_equal_to(_, _, _)"
           }
       }
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
     end
 
     test "solution with public def" do
@@ -363,10 +363,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "def do_calculate(a, b)", expected: "defp do_calculate(a, b)"}
+        | params: %{actual: "def do_calculate(_, _)", expected: "defp do_calculate(_, _)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
     end
 
     test "solution with different arity" do
@@ -402,10 +402,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "def calculate(a, b)", expected: "defp calculate(a, b)"}
+        | params: %{actual: "def calculate(_, _)", expected: "defp calculate(_, _)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
     end
 
     test "solution with different arity using when" do
@@ -443,10 +443,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       comment = %{
         @comment
-        | params: %{actual: "def calculate(a, b)", expected: "defp calculate(a, b)"}
+        | params: %{actual: "def calculate(_, _)", expected: "defp calculate(_, _)"}
       }
 
-      assert PrivateHelperFunctions.run(code, @sqrt_stub) == [{:fail, comment}]
+      assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
         calculate(radicand, guess)
       end
 
-      def calculate(radicand, guess) do
+      defp calculate(radicand, guess) do
         new_guess = div(guess + div(radicand, guess), 2)
 
         if new_guess == guess do
