@@ -51,6 +51,23 @@ assert_no_call "does not call any ModuleName functions" do
 end
 ```
 
+## Suppress assert if another assert passed or failed
+
+This is useful to create conditionals between asserts.
+
+```elixir
+assert_call "call function_one if function_two not called" do
+  called_fn module: ModuleName, name: :function_one
+  suppress_if "call function_two if function_one not called", :pass
+end
+
+assert_call "call function_two if function_one not called" do
+  called_fn module: ModuleName, name: :function_two
+  suppress_if "call function_one if function_two not called", :pass
+end
+```
+
+
 Note that tracking imports only works for standard library modules, not user-defined modules.
 
 ## Find module attribute with given value and any name

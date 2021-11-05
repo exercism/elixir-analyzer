@@ -364,7 +364,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
           @not_answer :not_42
         end,
         defmodule Factorial do
-          @moduledoc "Calcualte the factorial"
+          @moduledoc "Calculate the factorial"
         end
       ]
     end

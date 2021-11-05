@@ -3,6 +3,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
   alias ElixirAnalyzer.ExerciseTest.Feature.Compiler, as: FeatureCompiler
   alias ElixirAnalyzer.ExerciseTest.AssertCall.Compiler, as: AssertCallCompiler
+  alias ElixirAnalyzer.ExerciseTest.CheckSource.Compiler, as: CheckSourceCompiler
   alias ElixirAnalyzer.ExerciseTest.CommonChecks
 
   alias ElixirAnalyzer.Submission
@@ -14,6 +15,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     quote do
       use ElixirAnalyzer.ExerciseTest.Feature
       use ElixirAnalyzer.ExerciseTest.AssertCall
+      use ElixirAnalyzer.ExerciseTest.CheckSource
       use ElixirAnalyzer.ExerciseTest.CommonChecks
       @suppress_tests unquote(opts)[:suppress_tests]
 
@@ -31,16 +33,22 @@ defmodule ElixirAnalyzer.ExerciseTest do
     # credo:disable-for-previous-line Credo.Check.Refactor.CyclomaticComplexity
     feature_test_data = Module.get_attribute(env.module, :feature_tests)
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
+    check_source_data = Module.get_attribute(env.module, :check_source_tests)
     suppress_tests = Module.get_attribute(env.module, :suppress_tests, [])
 
-    # ast placeholder for the submission code ast
+    # placeholders for submission code
     code_ast = quote do: code_ast
+    code_as_string = quote do: code_as_string
 
     # compile each feature to a test
     feature_tests = Enum.map(feature_test_data, &FeatureCompiler.compile(&1, code_ast))
 
     # compile each assert_call to a test
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
+
+    # compile each check_source to a test
+    check_source_tests =
+      Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, code_as_string))
 
     quote do
       @spec analyze(Submission.t(), String.t(), nil | Macro.t()) :: Submission.t()
@@ -60,6 +68,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
           Enum.concat([
             unquote(feature_tests),
             unquote(assert_call_tests),
+            unquote(check_source_tests),
             CommonChecks.run(code_ast, code_as_string, exemplar_ast)
           ])
           |> filter_suppressed_results()

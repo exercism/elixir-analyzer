@@ -26,14 +26,28 @@ defmodule ElixirAnalyzer.Constants do
     solution_debug_functions: "elixir.solution.debug_functions",
     solution_last_line_assignment: "elixir.solution.last_line_assignment",
     solution_compiler_warnings: "elixir.solution.compiler_warnings",
+    solution_def_with_is: "elixir.solution.def_with_is",
+    solution_defguard_with_question_mark: "elixir.solution.defguard_with_question_mark",
+    solution_defmacro_with_is_and_question_mark:
+      "elixir.solution.defmacro_with_is_and_question_mark",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
     solution_function_annotation_order: "elixir.solution.function_annotation_order",
+    solution_no_integer_literal: "elixir.solution.no_integer_literal",
+    solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
+    solution_todo_comment: "elixir.solution.todo_comment",
+
 
     # Concept exercises
 
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
+
+    # Boutique Inventory Comments
+    boutique_inventory_use_enum_sort_by: "elixir.boutique-inventory.use_enum_sort_by",
+    boutique_inventory_use_enum_filter_or_enum_reject:
+      "elixir.boutique-inventory.use_enum_filter_or_enum_reject",
+    boutique_inventory_use_enum_reduce: "elixir.boutique-inventory.use_enum_reduce",
 
     # Boutique Suggestions Comments
     boutique_suggestions_use_list_comprehensions:
@@ -72,6 +86,9 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.high-score.use_default_argument_with_module_attribute",
     high_score_use_map_update: "elixir.high-score.use_map_update",
 
+    # High School Sweetheart Comments
+    high_school_sweetheart_function_reuse: "elixir.high-school-sweetheart.function_reuse",
+
     # Language List Comments
     language_list_do_not_use_enum: "elixir.language-list.do_not_use_enum",
 
@@ -80,6 +97,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Leap Comments
     leap_erlang_calendar: "elixir.leap.erlang_calendar",
+
+    # Library Fees Comments
+    library_fees_function_reuse: "elixir.library-fees.function_reuse",
 
     # Log Level Comments
     log_level_use_cond: "elixir.log-level.use_cond",
@@ -140,6 +160,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
+
+    # Strain Comments
+    strain_use_recursion: "elixir.strain.use_recursion",
 
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",

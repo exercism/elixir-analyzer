@@ -22,6 +22,12 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     called_fn name: :foo
   end
 
+  check_source "check source 1: no foo() unless common check was found" do
+    comment "check source 1: foo() was called"
+    suppress_if Constants.solution_debug_functions(), :fail
+    check(source, do: not String.contains?(source, "foo"))
+  end
+
   feature "feature 2: no bar() unless assert 1 found a foo() first" do
     find :none
     comment "feature 2: bar() was called"
@@ -38,6 +44,12 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     called_fn name: :bar
   end
 
+  check_source "check source 2: no bar() unless assert 1 found a foo() first" do
+    comment "check source 2: bar() was called"
+    suppress_if "check source 1: no foo() unless common check was found", :fail
+    check(source, do: not String.contains?(source, "bar"))
+  end
+
   feature "feature 3: no baz() unless feature 1 found a foo() first" do
     find :none
     comment "feature 3: baz() was called"
@@ -52,5 +64,11 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     comment "assert 3: baz() was called"
     suppress_if "assert 1: no foo() unless common check was found", :fail
     called_fn name: :baz
+  end
+
+  check_source "check source 3: no baz() unless feature 1 found a foo() first" do
+    comment "check source 3: baz() was called"
+    suppress_if "feature 1: no foo() unless common check was found", :fail
+    check(source, do: not String.contains?(source, "baz"))
   end
 end
