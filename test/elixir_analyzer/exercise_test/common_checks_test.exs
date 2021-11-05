@@ -267,4 +267,27 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
   end
+
+  describe "boilerplate and TODO comments" do
+    test_exercise_analysis "reports both",
+      comments: [Constants.solution_boilerplate_comment(), Constants.solution_todo_comment()] do
+      [
+        ~S"""
+        defmodule Lasagna do
+          # Please define the 'expected_minutes_in_oven/0' function
+            def expected_minutes_in_oven() do
+          40
+          end
+
+          # Please define the 'alarm/0' function
+          def alarm() do
+            "Ding!"
+          end
+
+          # TODO: remove all of those boilerplate comments!
+        end
+        """
+      ]
+    end
+  end
 end

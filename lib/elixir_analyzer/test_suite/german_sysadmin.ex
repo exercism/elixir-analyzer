@@ -35,4 +35,14 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
     called_fn name: :case
     comment Constants.german_sysadmin_use_case()
   end
+
+  check_source "does not use integer literals for code points" do
+    type :actionable
+    comment Constants.solution_no_integer_literal()
+
+    check(source) do
+      integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
+      Enum.all?(integers, &String.contains?(source, &1))
+    end
+  end
 end

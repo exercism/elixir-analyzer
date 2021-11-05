@@ -27,6 +27,9 @@ config :elixir_analyzer,
     "bird-count" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
     },
+    "boutique-inventory" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueInventory
+    },
     "boutique-suggestions" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BoutiqueSuggestions
     },
@@ -48,6 +51,9 @@ config :elixir_analyzer,
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
+    "high-school-sweetheart" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.HighSchoolSweetheart
+    },
     "high-score" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.HighScore
     },
@@ -56,6 +62,9 @@ config :elixir_analyzer,
     },
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
+    },
+    "library-fees" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.LibraryFees
     },
     "log-level" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.LogLevel
@@ -97,6 +106,9 @@ config :elixir_analyzer,
     },
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
+    },
+    "strain" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Strain
     },
     "square-root" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot
