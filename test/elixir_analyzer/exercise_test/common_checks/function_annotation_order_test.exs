@@ -570,5 +570,4 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       assert FunctionAnnotationOrder.run(unquote(Macro.escape(ast))) == []
     end
   end
-
 end
