@@ -204,6 +204,43 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
 
       assert PrivateHelperFunctions.run(code, @pacman_exemplar) == [{:fail, comment}]
     end
+
+    test "submodules are not included" do
+      code =
+        quote do
+          defmodule Rules do
+            defmodule BooleanLogic do
+              def do_or(left, right), do: left or right
+            end
+
+            def score?(touching_power_pellet, touching_dot) do
+              BooleanLogic.do_or(touching_power_pellet, touching_dot)
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == []
+    end
+
+    test "modules other than the main one are not included" do
+      code =
+        quote do
+          defmodule BooleanLogic do
+            def do_or(left, right), do: left or right
+          end
+
+          defmodule Rules do
+            defmodule EmptyModule do
+            end
+
+            def score?(touching_power_pellet, touching_dot) do
+              BooleanLogic.do_or(touching_power_pellet, touching_dot)
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @pacman_exemplar) == []
+    end
   end
 
   describe "practice exercise with square-root" do
