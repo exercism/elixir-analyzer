@@ -37,7 +37,6 @@ defmodule ElixirAnalyzer.Constants do
     solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
     solution_todo_comment: "elixir.solution.todo_comment",
 
-
     # Concept exercises
 
     # Bird Count Comments
