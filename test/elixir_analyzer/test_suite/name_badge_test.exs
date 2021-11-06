@@ -39,7 +39,7 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
     comments: [] do
     [
       defmodule NameBadge do
-        def totally_not_if(a, b, c), do: if(a, do: b, else: c)
+        defp totally_not_if(a, b, c), do: if(a, do: b, else: c)
 
         def print(id, name, department) do
           department = totally_not_if(department, department, "owner")
@@ -114,8 +114,8 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
           end
         end,
         defmodule NameBadge do
-          def totally_not_if(true, a, _b), do: a
-          def totally_not_if(false, _a, b), do: b
+          defp totally_not_if(true, a, _b), do: a
+          defp totally_not_if(false, _a, b), do: b
 
           def print(id, name, department) do
             department = totally_not_if(department == nil, "owner", department)
@@ -124,8 +124,8 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
           end
         end,
         defmodule NameBadge do
-          def if(true, a, _b), do: a
-          def if(false, _a, b), do: b
+          defp if(true, a, _b), do: a
+          defp if(false, _a, b), do: b
 
           def print(id, name, department) do
             department = if(department == nil, "owner", department)

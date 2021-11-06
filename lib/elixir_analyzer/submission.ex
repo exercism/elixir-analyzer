@@ -20,18 +20,14 @@ defmodule ElixirAnalyzer.Submission do
   """
 
   alias ElixirAnalyzer.Comment
+  alias ElixirAnalyzer.Source
 
-  @enforce_keys [:code_file, :code_path, :path, :analysis_module]
+  @enforce_keys [:source, :analysis_module]
   defstruct halted: false,
             halt_reason: nil,
             analyzed: false,
             comments: [],
-            path: nil,
-            code_path: nil,
-            code_file: nil,
-            exemplar_path: nil,
-            exemplar_code: nil,
-            code: nil,
+            source: %Source{},
             analysis_module: nil
 
   @type t() :: %__MODULE__{
@@ -39,12 +35,7 @@ defmodule ElixirAnalyzer.Submission do
           halt_reason: String.t() | nil,
           analyzed: boolean,
           comments: list([Comment.t()]),
-          path: String.t(),
-          code_path: String.t(),
-          code_file: String.t(),
-          exemplar_path: String.t() | nil,
-          exemplar_code: Macro.t() | nil,
-          code: String.t(),
+          source: Source.t(),
           analysis_module: atom()
         }
 
