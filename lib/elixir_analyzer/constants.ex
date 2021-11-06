@@ -4,7 +4,7 @@ defmodule ElixirAnalyzer.Constants do
   ```
   elixir.[directory].[filename]
   ```
-  
+
   `[directory]` must correspond to a directory in https://github.com/exercism/website-copy/tree/main/analyzer-comments/elixir
   and `[filename].md` must be a file in that directory.
   """
