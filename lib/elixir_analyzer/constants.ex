@@ -121,6 +121,10 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_send_newsletter_reuses_functions:
       "elixir.newsletter.send_newsletter_reuses_functions",
 
+    # New Passport Comments
+    new_passport_use_with: "elixir.new-passport.use_with",
+    new_passport_do_not_modify_code: "elixir.new-passport.do_not_modify_code",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
