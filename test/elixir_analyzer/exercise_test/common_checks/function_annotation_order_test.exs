@@ -142,6 +142,21 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     assert FunctionAnnotationOrder.run(ast) == []
   end
 
+  test "another non related definition will not make crash" do
+    ast =
+      quote do
+        defmodule Test do
+          @spec x
+          def x
+
+          @doc ""
+          def y
+        end
+      end
+
+    assert FunctionAnnotationOrder.run(ast) == []
+  end
+
   test "multiple functions before attributes will not crash" do
     ast =
       quote do
@@ -566,7 +581,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
   ]
 
   for {ast, n} <- Enum.with_index(asts) do
-    test "neenjaw -- false positive test ##{n}" do
+    test "##{n}: sub-modules should not raise false positive error" do
       assert FunctionAnnotationOrder.run(unquote(Macro.escape(ast))) == []
     end
   end
