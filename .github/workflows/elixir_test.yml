@@ -10,9 +10,19 @@ jobs:
       image: hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install -y git
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
+
+      - name: Update submodules
+        run: |
+          git submodule update --recursive --remote
 
       - name: Install Dependencies
         run: |

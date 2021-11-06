@@ -1,4 +1,4 @@
 [submodule "elixir"]
-	path = elixir
-	url = https://github.com/exercism/elixir.git
-        branch = main
+    path = elixir
+    branch = main
+    url = https://github.com/exercism/elixir.git
