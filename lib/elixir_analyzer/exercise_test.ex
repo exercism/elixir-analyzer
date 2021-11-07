@@ -39,7 +39,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     # placeholders for submission code
     code_ast = quote do: code_ast
-    code_string = quote do: code_string
+    source = quote do: source
 
     # compile each feature to a test
     feature_tests = Enum.map(feature_test_data, &FeatureCompiler.compile(&1, code_ast))
@@ -48,8 +48,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
     # compile each check_source to a test
-    check_source_tests =
-      Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, code_string))
+    check_source_tests = Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, source))
 
     quote do
       @spec analyze(Submission.t(), Source.t()) :: Submission.t()
@@ -64,13 +63,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
         end
       end
 
-      defp do_analyze(
-             %Submission{} = submission,
-             %Source{
-               code_string: code_string,
-               code_ast: code_ast
-             } = source
-           ) do
+      defp do_analyze(%Submission{} = submission, %Source{code_ast: code_ast} = source) do
         results =
           Enum.concat([
             unquote(feature_tests),
