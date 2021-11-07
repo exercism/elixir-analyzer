@@ -19,4 +19,14 @@ defmodule ElixirAnalyzer.TestSuite.TopSecret do
     called_fn module: TopSecret, name: :decode_secret_message_part
     comment Constants.top_secret_function_reuse()
   end
+
+  feature "references decode_secret_message_part/2 by capturing it" do
+    find :any
+    type :actionable
+    comment Constants.top_secret_function_capture()
+
+    form do
+      &decode_secret_message_part/2
+    end
+  end
 end

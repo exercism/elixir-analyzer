@@ -160,4 +160,34 @@ defmodule ElixirAnalyzer.TestSuite.TopSecretTest do
       ]
     end
   end
+
+  describe "function capture" do
+    test_exercise_analysis "reports instances of creating a new function",
+                           comments_include: [Constants.top_secret_function_capture()] do
+      [
+        defmodule TopSecret do
+          def decode_secret_message(string) do
+            ast = to_ast(string)
+            {_, acc} = Macro.prewalk(ast, [], &decode_secret_message_part(&1, &2))
+
+            acc
+            |> Enum.reverse()
+            |> Enum.join("")
+          end
+        end,
+        defmodule TopSecret do
+          def decode_secret_message(string) do
+            ast = to_ast(string)
+
+            {_, acc} =
+              Macro.prewalk(ast, [], fn ast, acc -> decode_secret_message_part(ast, acc) end)
+
+            acc
+            |> Enum.reverse()
+            |> Enum.join("")
+          end
+        end
+      ]
+    end
+  end
 end
