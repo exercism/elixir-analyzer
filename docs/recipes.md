@@ -131,3 +131,19 @@ feature "description" do
   end
 end
 ```
+
+## Check that a solution contains comments
+
+The `check_source` type of check can access the data in the `%Source{}` struct (submission code as string or AST, exercise slug and type, exemplar/example as string or AST, and more), which can be used for advanced checks. The function `check` must return a boolean. `check_source` is powerful but primitive, `feature` or `assert_call` should be preferred if they can be used as they have more refined features (such as imports tracking). 
+
+```elixir
+check_source "code contains comments" do
+
+  check(%Source{code_string: code_string}) do
+    code_string
+      |> String.split("\n")
+      |> Enum.any?(&String.starts_with?(&1, "#"))
+  end 
+end 
+```
+
