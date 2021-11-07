@@ -153,6 +153,10 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Top Secret Comments
+    top_secret_function_reuse: "elixir.top-secret.function_reuse",
+    top_secret_function_capture: "elixir.top-secret.function_capture",
+
     # Wine Cellar Comments
     wine_cellar_use_keyword_get_values: "elixir.wine-cellar.use_keyword_get_values",
 

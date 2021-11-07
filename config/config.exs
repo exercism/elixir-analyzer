@@ -96,6 +96,9 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "top-secret" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TopSecret
+    },
     "wine-cellar" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.WineCellar
     },
