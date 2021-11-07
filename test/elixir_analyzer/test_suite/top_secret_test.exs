@@ -110,15 +110,33 @@ defmodule ElixirAnalyzer.TestSuite.TopSecretTest do
 
     test_exercise_analysis "TopSecret.decode_secret_message/1 must call decode_secret_message_part/2",
       comments_include: [Constants.top_secret_function_reuse()] do
-      defmodule TopSecret do
-        def decode_secret_message(string) do
-          ast = Code.string_to_quoted!(string)
-          {_, acc} = Macro.prewalk(ast, [], &decode_secret_message_part/2)
+      def decode_secret_message(string) do
+        ast = to_ast(string)
 
-          acc
-          |> Enum.reverse()
-          |> Enum.join("")
-        end
+        {_, acc} =
+          Macro.prewalk(ast, [], fn ast, acc ->
+            case {ast, acc} do
+              {{keyword, _, children} = ast, acc}
+              when keyword in [:def, :defp] ->
+                {function_name, arguments} = get_function_name_and_arguments(children)
+
+                arity = if arguments, do: length(arguments), else: 0
+
+                message_part =
+                  function_name
+                  |> to_string()
+                  |> String.slice(0, arity)
+
+                {ast, [message_part | acc]}
+
+              _ ->
+                {ast, acc}
+            end
+          end)
+
+        acc
+        |> Enum.reverse()
+        |> Enum.join("")
       end
     end
 
@@ -163,7 +181,7 @@ defmodule ElixirAnalyzer.TestSuite.TopSecretTest do
 
   describe "function capture" do
     test_exercise_analysis "reports instances of creating a new function",
-                           comments_include: [Constants.top_secret_function_capture()] do
+      comments_include: [Constants.top_secret_function_capture()] do
       [
         defmodule TopSecret do
           def decode_secret_message(string) do
