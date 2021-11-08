@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Refactor.UnlessWithElse
 defmodule ElixirAnalyzer.Support.AnalyzerVerification.UnlessWithElse do
   use ElixirAnalyzer.ExerciseTest
 end
