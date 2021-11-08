@@ -37,6 +37,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_todo_comment: "elixir.solution.todo_comment",
     solution_private_helper_functions: "elixir.solution.private_helper_functions",
     solution_unless_with_else: "elixir.solution.unless_with_else",
+    solution_use_function_capture: "elixir.solution.use_function_capture",
 
     # Concept exercises
 
