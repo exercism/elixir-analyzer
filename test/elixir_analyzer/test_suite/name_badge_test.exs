@@ -59,6 +59,33 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
     ]
   end
 
+  describe "forbids solutions with unless/else" do
+    test_exercise_analysis "use unless/else",
+      comments: [
+        Constants.name_badge_use_if(),
+        Constants.solution_unless_with_else()
+      ] do
+      [
+        defmodule NameBadge do
+          def print(id, name, department) do
+            department = unless department, do: "owner", else: department
+            if = unless id, do: "", else: "[#{id}] - "
+
+            if <> "#{name} - #{String.upcase(department)}"
+          end
+        end,
+        defmodule NameBadge do
+          def print(id, name, department) do
+            department = unless department, do: "owner", else: department
+            prefix = unless id, do: "", else: "[#{id}] - "
+
+            prefix <> "#{name} - #{String.upcase(department)}"
+          end
+        end
+      ]
+    end
+  end
+
   describe "forbids solutions without if" do
     test_exercise_analysis "use other conditionals",
       comments: [Constants.name_badge_use_if()] do
@@ -93,22 +120,6 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
                 is_nil(prefix) -> ""
                 true -> "[#{id}] - "
               end
-
-            prefix <> "#{name} - #{String.upcase(department)}"
-          end
-        end,
-        defmodule NameBadge do
-          def print(id, name, department) do
-            department = unless department, do: "owner", else: department
-            if = unless id, do: "", else: "[#{id}] - "
-
-            if <> "#{name} - #{String.upcase(department)}"
-          end
-        end,
-        defmodule NameBadge do
-          def print(id, name, department) do
-            department = unless department, do: "owner", else: department
-            prefix = unless id, do: "", else: "[#{id}] - "
 
             prefix <> "#{name} - #{String.upcase(department)}"
           end
