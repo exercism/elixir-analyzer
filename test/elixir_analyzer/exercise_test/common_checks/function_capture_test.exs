@@ -33,8 +33,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCaptureTest do
             |> Enum.reduce([], &div(&2, &1))
             |> Enum.reduce([], fn n, acc -> String.pad_leading(n, acc, "42") end)
             |> Enum.reduce([], &String.pad_leading(&1, &2, "42"))
-            |> Enum.map(fn x -> IO.inspect(x, charlists: :as_lists) end)
-            |> Enum.map(&IO.inspect(&1, charlists: :as_lists))
+            |> Enum.map(fn x -> String.split(x, ";") end)
+            |> Enum.map(&String.split(&1, ";"))
           end
 
           def exceptions(input) do
