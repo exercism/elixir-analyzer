@@ -31,7 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
     end
   end
 
-  @exceptions [:<<>>, :{}, :|]
+  @exceptions [:<<>>, :{}]
   defp traverse({:&, _, [{name, _, args}]} = node, functions) when name not in @exceptions do
     wrong_use? =
       args

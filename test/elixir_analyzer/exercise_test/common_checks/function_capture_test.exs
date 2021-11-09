@@ -41,10 +41,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCaptureTest do
             input
             |> Enum.map(&<<&1>>)
             |> Enum.map(fn x -> <<x>> end)
-            |> Enum.reduce([], fn a, b -> {a, b} end)
-            |> Enum.reduce([], &{&1, &2})
-            |> Enum.reduce([], fn a, b -> [a | b] end)
-            |> Enum.reduce([], &[&1 | &2])
+            |> Enum.reduce([], fn a, b, c -> {a, b, c} end)
+            |> Enum.reduce([], &{&1, &2, &2})
           end
 
           # https://github.com/exercism/elixir/blob/main/exercises/practice/sgf-parsing/.meta/example.ex
