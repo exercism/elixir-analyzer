@@ -192,6 +192,48 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCaptureTest do
 
       assert FunctionCapture.run(code) == [{:fail, comment}]
     end
+
+    test "Function of arity 0, with parentheses" do
+      code =
+        quote do
+          defmodule Capture do
+            def capture(input) do
+              Enum.map(input, fn -> exports() end)
+            end
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{
+            actual: "fn -> exports() end",
+            expected: "&exports/0"
+          }
+      }
+
+      assert FunctionCapture.run(code) == [{:fail, comment}]
+    end
+
+    test "Function of arity 0, no parentheses" do
+      code =
+        quote do
+          defmodule Capture do
+            def capture(input) do
+              Enum.map(input, fn -> exports end)
+            end
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{
+            actual: "fn -> exports end",
+            expected: "&exports/0"
+          }
+      }
+
+      assert FunctionCapture.run(code) == [{:fail, comment}]
+    end
   end
 
   describe "catches & notation" do

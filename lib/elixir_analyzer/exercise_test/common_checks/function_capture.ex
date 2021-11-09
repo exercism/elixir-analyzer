@@ -45,6 +45,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
     end
   end
 
+  # fn -> foo end
+  defp traverse({:fn, _, [{:->, _, [[], {name, _, atom}]}]} = node, functions)
+       when is_atom(atom) do
+    {node, [{:fn, name, nil} | functions]}
+  end
+
   defp traverse({:fn, _, [{:->, _, [args, {name, _, args}]}]} = node, functions)
        when name not in @exceptions do
     args = Enum.map(args, fn {var, _, _} -> var end)
@@ -81,11 +87,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
     {wrong, correct}
   end
 
+  defp format_function({:fn, name, nil}) do
+    correct = "&#{name}/0"
+    wrong = "fn -> #{name} end"
+    {wrong, correct}
+  end
+
   defp format_function({:fn, name, args}) do
     name = format_function_name(name)
     correct = "&#{name}/#{length(args)}"
+    space = if Enum.empty?(args), do: "", else: " "
     args = Enum.join(args, ", ")
-    wrong = "fn #{args} -> #{name}(#{args}) end"
+    wrong = "fn #{args}#{space}-> #{name}(#{args}) end"
     {wrong, correct}
   end
 
