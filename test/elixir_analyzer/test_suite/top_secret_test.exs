@@ -181,7 +181,8 @@ defmodule ElixirAnalyzer.TestSuite.TopSecretTest do
 
   describe "function capture" do
     test_exercise_analysis "reports instances of creating a new function",
-      comments_include: [Constants.top_secret_function_capture()] do
+      comments_include: [Constants.top_secret_function_capture()],
+      comments_exclude: [Constants.solution_use_function_capture()] do
       [
         defmodule TopSecret do
           def decode_secret_message(string) do
