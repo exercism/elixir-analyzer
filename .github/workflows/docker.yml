@@ -40,7 +40,7 @@ jobs:
           password: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@0db984c1826869dcd0740ff26ff75ff543238fd9 # 2.2.2
+        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229 # 2.2.2
         with:
           context: .
           file: ./Dockerfile
