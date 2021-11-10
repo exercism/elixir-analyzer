@@ -51,6 +51,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCaptureTest do
               fn string -> unquote(parser).(string) end
             end
           end
+
+          def nested_capture(input) do
+            Enum.map(slices, &Enum.reduce(&1, fn x, acc -> x * acc end))
+          end
         end
       end
 

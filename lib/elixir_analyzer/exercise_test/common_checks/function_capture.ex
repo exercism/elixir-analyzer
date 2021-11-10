@@ -8,10 +8,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
 
   @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
   def run(code_ast) do
-    {_, functions} =
-      Macro.prewalk(code_ast, [], fn ast, functions -> traverse(ast, functions) end)
+    acc = %{capture_depth: 0, functions: []}
 
-    case functions |> Enum.map(&format_function(&1)) |> Enum.reverse() do
+    {_, %{functions: functions}} =
+      Macro.traverse(code_ast, acc, &annotate(&1, &2), fn ast, acc ->
+        find_anonymous(ast, acc)
+      end)
+
+    case functions |> Enum.map(&format_function/1) |> Enum.reverse() do
       [] ->
         []
 
@@ -31,39 +35,59 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
     end
   end
 
+  defp annotate({:&, _, [{_name, _, _args}]} = node, %{capture_depth: depth} = acc) do
+    {node, %{acc | capture_depth: depth + 1}}
+  end
+
+  defp annotate(node, acc), do: {node, acc}
+
   @exceptions [:<<>>, :{}]
-  defp traverse({:&, _, [{name, _, args}]} = node, functions) when name not in @exceptions do
+  defp find_anonymous(
+         {:&, _, [{name, _, args}]} = node,
+         %{capture_depth: depth, functions: functions}
+       ) do
     wrong_use? =
       args
       |> Enum.with_index(1)
       |> Enum.all?(&match?({{:&, _, [index]}, index}, &1))
 
-    if wrong_use? and actual_function?(name) do
-      {node, [{:&, name, length(args)} | functions]}
-    else
-      {node, functions}
-    end
+    depth = depth - 1
+
+    functions =
+      if depth == 0 and wrong_use? and actual_function?(name) and name not in @exceptions do
+        [{:&, name, length(args)} | functions]
+      else
+        functions
+      end
+
+    {node, %{capture_depth: depth - 1, functions: functions}}
   end
 
   # fn -> foo end
-  defp traverse({:fn, _, [{:->, _, [[], {name, _, atom}]}]} = node, functions)
+  defp find_anonymous(
+         {:fn, _, [{:->, _, [[], {name, _, atom}]}]} = node,
+         %{capture_depth: 0, functions: functions} = acc
+       )
        when is_atom(atom) do
-    {node, [{:fn, name, nil} | functions]}
+    {node, %{acc | functions: [{:fn, name, nil} | functions]}}
   end
 
-  defp traverse({:fn, _, [{:->, _, [args, {name, _, args}]}]} = node, functions)
+  defp find_anonymous(
+         {:fn, _, [{:->, _, [args, {name, _, args}]}]} = node,
+         %{capture_depth: 0, functions: functions} = acc
+       )
        when name not in @exceptions do
     args = Enum.map(args, fn {var, _, _} -> var end)
 
     if actual_function?(name) do
-      {node, [{:fn, name, args} | functions]}
+      {node, %{acc | functions: [{:fn, name, args} | functions]}}
     else
-      {node, functions}
+      {node, acc}
     end
   end
 
-  defp traverse(node, functions) do
-    {node, functions}
+  defp find_anonymous(node, acc) do
+    {node, acc}
   end
 
   defp actual_function?(name) when is_atom(name), do: true
