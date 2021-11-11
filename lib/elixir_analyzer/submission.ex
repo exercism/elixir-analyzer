@@ -111,21 +111,23 @@ defmodule ElixirAnalyzer.Submission do
     |> summary_response()
   end
 
+  @nbsp <<0xC2, 0xA0>>
+
   # Essential
   defp summary_response(%{essential: count}) when count > 0,
-    do: "Check the comments for things to fix. 🛠"
+    do: "Check the comments for things to fix.#{@nbsp}🛠"
 
   # Actionable
   defp summary_response(%{actionable: count}) when count > 0,
-    do: "Check the comments for some code suggestions. 📣"
+    do: "Check the comments for some suggestions.#{@nbsp}📣"
 
   # Informative
   defp summary_response(%{informative: count}) when count > 0,
-    do: "Check the comments for some things to learn. 📖"
+    do: "Check the comments for some things to learn.#{@nbsp}📖"
 
   # Celebratory
   defp summary_response(%{celebratory: count}) when count > 0,
-    do: "You're doing something right. 🎉"
+    do: "You're doing something right.#{@nbsp}🎉"
 
   defp summary_response(_),
     do: "Submission analyzed. No automated suggestions found."
