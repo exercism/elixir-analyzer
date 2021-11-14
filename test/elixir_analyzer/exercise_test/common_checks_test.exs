@@ -290,4 +290,68 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
   end
+
+  describe "boolean functions" do
+    test_exercise_analysis "reports function with wrong name",
+      comments: [Constants.solution_def_with_is()] do
+      [
+        defmodule MyModule do
+          def is_active_user?(user), do: user.active
+        end,
+        defmodule MyModule do
+          defp is_active_user?(user), do: user.active
+        end,
+        defmodule MyModule do
+          def is_active_user(user), do: user.active
+        end,
+        defmodule MyModule do
+          defp is_active_user(user), do: user.active
+        end
+      ]
+    end
+
+    test_exercise_analysis "reports guard with wrong name",
+      comments: [Constants.solution_defguard_with_question_mark()] do
+      [
+        defmodule MyModule do
+          defguard(is_active_user?(user), do: true)
+        end,
+        defmodule MyModule do
+          defguardp(is_active_user?(user), do: true)
+        end,
+        defmodule MyModule do
+          defguard(active_user?(user), do: true)
+        end,
+        defmodule MyModule do
+          defguardp(active_user?(user), do: true)
+        end
+      ]
+    end
+
+    test_exercise_analysis "reports macro with wrong name",
+      comments: [Constants.solution_defmacro_with_is_and_question_mark()] do
+      [
+        defmodule MyModule do
+          defmacro is_active_user?(user), do: user.active
+        end,
+        defmodule MyModule do
+          defmacrop is_active_user?(user), do: user.active
+        end
+      ]
+    end
+  end
+
+  describe "function capture" do
+    test_exercise_analysis "reports creating anonymous function rather then function capture",
+      comments: [Constants.solution_use_function_capture()] do
+      [
+        defmodule MyModule do
+          def do_nothing(list), do: Enum.map(list, fn x -> Function.identity(x) end)
+        end,
+        defmodule MyModule do
+          def do_nothing(list), do: Enum.map(list, &Function.identity(&1))
+        end
+      ]
+    end
+  end
 end
