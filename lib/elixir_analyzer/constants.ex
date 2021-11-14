@@ -89,6 +89,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # High School Sweetheart Comments
     high_school_sweetheart_function_reuse: "elixir.high-school-sweetheart.function_reuse",
+    high_school_sweetheart_multiline_string: "elixir.high-school-sweetheart.multiline_string",
 
     # Language List Comments
     language_list_do_not_use_enum: "elixir.language-list.do_not_use_enum",
