@@ -35,6 +35,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCaptureTest do
             |> Enum.reduce([], &String.pad_leading(&1, &2, "42"))
             |> Enum.map(fn x -> String.split(x, ";") end)
             |> Enum.map(&String.split(&1, ";"))
+            # behavior modified by using guards
+            |> Enum.map(fn x when is_binary(x) -> String.downcase(x) end)
+            # behavior modified by using pattern-matching
+            |> Enum.map(fn {a, b} = x -> inspect(x) end)
+            |> Enum.map(fn x = {a, b} -> inspect(x) end)
           end
 
           def exceptions(input) do
