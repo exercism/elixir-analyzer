@@ -167,6 +167,9 @@ defmodule ElixirAnalyzer.Constants do
     # Accumulate Comments
     accumulate_use_recursion: "elixir.accumulate.use_recursion",
 
+    # Flatten Array Comments
+    flatten_array_use_recursion: "elixir.flatten-array.use_recursion",
+
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
 

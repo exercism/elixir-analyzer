@@ -107,6 +107,9 @@ config :elixir_analyzer,
     "accumulate" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Accumulate
     },
+    "flatten-array" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.FlattenArray
+    },
     "leap" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Leap
     },
