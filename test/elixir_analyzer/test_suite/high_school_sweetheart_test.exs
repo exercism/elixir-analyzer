@@ -327,9 +327,17 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
       ]
     end
 
-    test_exercise_analysis "doesn't get fooled by documentation",
-      comments_include: [Constants.high_school_sweetheart_multiline_string()] do
+    test_exercise_analysis "gets fooled by documentation",
+      comments_exclude: [Constants.high_school_sweetheart_multiline_string()] do
       ~S'''
+      @moduledoc """
+      Exercism exercise solution
+      """
+      @typedoc """
+      I am a rebel and I don't want to accept that the string() type is not a string
+      so I am defining my own string type!
+      """
+      @type str :: binary()
       @doc """
       draws a heart
       """
