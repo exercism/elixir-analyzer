@@ -3,8 +3,8 @@ defmodule ElixirAnalyzer.TestSuite.TopSecret do
   This is an exercise analyzer extension module for the concept exercise Top Secret
   """
 
-  use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
+  use ElixirAnalyzer.ExerciseTest
 
   assert_call "decode_secret_message/1 uses to_ast/1" do
     type :essential
@@ -18,15 +18,5 @@ defmodule ElixirAnalyzer.TestSuite.TopSecret do
     calling_fn module: TopSecret, name: :decode_secret_message
     called_fn module: TopSecret, name: :decode_secret_message_part
     comment Constants.top_secret_function_reuse()
-  end
-
-  feature "references decode_secret_message_part/2 by capturing it" do
-    find :any
-    type :actionable
-    comment Constants.top_secret_function_capture()
-
-    form do
-      &decode_secret_message_part/2
-    end
   end
 end

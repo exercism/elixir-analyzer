@@ -13,6 +13,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
     ExemplarComparison,
     Indentation,
     PrivateHelperFunctions,
+    FunctionCapture,
     Comments
   }
 
@@ -48,6 +49,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       ExemplarComparison.run(code_ast, type, exemploid_ast),
       Indentation.run(code_ast, code_string),
       PrivateHelperFunctions.run(code_ast, exemploid_ast),
+      FunctionCapture.run(code_ast),
       Comments.run(code_ast, code_string)
     ]
     |> List.flatten()

@@ -60,10 +60,10 @@ defmodule ElixirAnalyzer.ExerciseTest.BirdCountTest do
           def today(list), do: List.first(list)
         end,
         defmodule BirdCount do
-          def total(list), do: List.foldl(list, 0, fn a, b -> a + b end)
+          def total(list), do: List.foldl(list, 0, &+/2)
         end,
         defmodule BirdCount do
-          def total(list), do: List.foldr(list, 0, fn a, b -> a + b end)
+          def total(list), do: List.foldr(list, 0, &+/2)
         end,
         defmodule BirdCount do
           import List
