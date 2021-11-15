@@ -4,6 +4,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder
 
+  @order_error {:fail,
+                %Comment{
+                  type: :informative,
+                  name: Constants.solution_function_annotation_order(),
+                  comment: Constants.solution_function_annotation_order()
+                }}
+
+  @errors [@order_error]
+
   test "wrong order crashes" do
     ast =
       quote do
@@ -19,47 +28,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
               %Comment{
                 type: :informative,
                 name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec x
-                  def x
-                  """,
-                  actual: """
-                  @spec x
-                  @doc
-                  def x
-                  """
-                }
+                comment: Constants.solution_function_annotation_order()
               }}
            ]
   end
 
   test "works for def, defp, defmacro, defmacrop, defguard, and defguardp" do
-    order_error = fn op, name ->
-      [
-        {:fail,
-         %Comment{
-           type: :informative,
-           name: Constants.solution_function_annotation_order(),
-           comment: Constants.solution_function_annotation_order(),
-           params: %{
-             expected: """
-             @doc
-             @spec #{name}
-             #{op} #{name}
-             """,
-             actual: """
-             @spec #{name}
-             @doc
-             #{op} #{name}
-             """
-           }
-         }}
-      ]
-    end
-
     ast =
       quote do
         defmodule Test do
@@ -69,7 +43,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("def", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -80,7 +54,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("defp", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -91,7 +65,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("defmacro", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -102,7 +76,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("defmacrop", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -113,7 +87,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("defguard", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -124,7 +98,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == order_error.("defguardp", "x")
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "non related definitions will not make crash" do
@@ -184,26 +158,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec c
-                  def c
-                  """,
-                  actual: """
-                  @spec c
-                  @doc
-                  def c
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "other modules attributes will not make it crash" do
@@ -250,26 +205,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec empty?
-                  def empty?
-                  """,
-                  actual: """
-                  @spec empty?
-                  @doc
-                  def empty?
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "one spec for multiple function works" do
@@ -316,26 +252,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec a
-                  def a
-                  """,
-                  actual: """
-                  @spec a
-                  @doc
-                  def a
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
 
     ast =
       quote do
@@ -354,29 +271,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec b
-                  def b
-                  """,
-                  actual: """
-                  @spec b
-                  @doc
-                  def b
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
-  test "returns multiple errors if it checks multiple times" do
+  test "returns a single error even if it checks multiple times" do
     ast =
       quote do
         defmodule Test do
@@ -390,44 +288,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec sum
-                  def sum
-                  """,
-                  actual: """
-                  @spec sum
-                  @doc
-                  def sum
-                  """
-                }
-              }},
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec subtract
-                  def subtract
-                  """,
-                  actual: """
-                  @spec subtract
-                  @doc
-                  def subtract
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "spec between function definitions crashes" do
@@ -440,26 +301,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec test
-                  def test
-                  """,
-                  actual: """
-                  @spec test
-                  @doc
-                  def test
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "doc between function definitions crashes" do
@@ -472,26 +314,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec test
-                  def test
-                  """,
-                  actual: """
-                  @spec test
-                  @doc
-                  def test
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "spec after function definitions crashes" do
@@ -503,26 +326,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec test
-                  def test
-                  """,
-                  actual: """
-                  @spec test
-                  @doc
-                  def test
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   test "doc after function definitions crashes" do
@@ -534,26 +338,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         end
       end
 
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order(),
-                params: %{
-                  expected: """
-                  @doc
-                  @spec test
-                  def test
-                  """,
-                  actual: """
-                  @spec test
-                  @doc
-                  def test
-                  """
-                }
-              }}
-           ]
+    assert FunctionAnnotationOrder.run(ast) == @errors
   end
 
   asts = [
