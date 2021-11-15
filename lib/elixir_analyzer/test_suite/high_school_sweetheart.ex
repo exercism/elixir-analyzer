@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheart do
   """
 
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
 
   use ElixirAnalyzer.ExerciseTest
 
@@ -26,5 +27,15 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheart do
     calling_fn module: HighSchoolSweetheart, name: :pair
     called_fn name: :initials
     comment Constants.high_school_sweetheart_function_reuse()
+  end
+
+  check_source "uses a multiline string in pair/2" do
+    type :actionable
+    comment Constants.high_school_sweetheart_multiline_string()
+
+    check(%Source{code_string: code_string}) do
+      String.contains?(code_string, ~s(""")) ||
+        String.contains?(code_string, ~s('''))
+    end
   end
 end
