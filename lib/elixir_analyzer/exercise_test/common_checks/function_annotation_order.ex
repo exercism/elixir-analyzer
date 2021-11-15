@@ -53,20 +53,17 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   end
 
   defp check_errors(attrs) do
-    Enum.reduce(attrs, [], fn attr, acc ->
-      check_wrong_order(acc, attr)
-    end)
-    |> Enum.reverse()
+    Enum.reduce(attrs, [], &check_wrong_order/2)
   end
 
-  defp check_wrong_order(acc, attr) do
+  defp check_wrong_order(attr, acc) do
     case attr.operations do
       [:spec, :doc | _] ->
-        [order_error_msg(attr) | acc]
+        [order_error_msg()]
 
       [hd | tl] when hd in @def_ops ->
         if :spec in tl or :doc in tl do
-          [order_error_msg(attr) | acc]
+          [order_error_msg()]
         else
           acc
         end
@@ -138,32 +135,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     Enum.reverse(acc)
   end
 
-  defp order_error_msg(attr) do
-    fn_name = attr.name
-
-    fn_op = Enum.find(attr.operations, &Enum.member?(@def_ops, &1))
-
-    actual = """
-    @spec #{fn_name}
-    @doc
-    #{fn_op} #{fn_name}
-    """
-
-    expected = """
-    @doc
-    @spec #{fn_name}
-    #{fn_op} #{fn_name}
-    """
-
+  defp order_error_msg() do
     {:fail,
      %Comment{
        type: :informative,
        name: Constants.solution_function_annotation_order(),
-       comment: Constants.solution_function_annotation_order(),
-       params: %{
-         actual: actual,
-         expected: expected
-       }
+       comment: Constants.solution_function_annotation_order()
      }}
   end
 end
