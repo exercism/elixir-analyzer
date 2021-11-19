@@ -6,3 +6,4 @@ elixir_analyzer
 .appends
 .github
 .gitignore
+.gitattributes
