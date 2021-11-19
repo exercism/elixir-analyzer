@@ -3,3 +3,4 @@ deps
 _build
 bin/elixir_analyzer
 elixir_analyzer
+.appends
