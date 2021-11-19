@@ -5,3 +5,4 @@ bin/elixir_analyzer
 elixir_analyzer
 .appends
 .github
+.gitignore
