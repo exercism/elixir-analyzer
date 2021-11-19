@@ -7,3 +7,4 @@ elixir_analyzer
 .github
 .gitignore
 .gitattributes
+.dockerignore
