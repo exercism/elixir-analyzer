@@ -8,3 +8,4 @@ elixir_analyzer
 .gitignore
 .gitattributes
 .dockerignore
+Dockerfile
