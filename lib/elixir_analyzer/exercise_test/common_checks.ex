@@ -28,6 +28,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       use ElixirAnalyzer.ExerciseTest.CommonChecks.ListPrependHead
       use ElixirAnalyzer.ExerciseTest.CommonChecks.UncommonErrors
       use ElixirAnalyzer.ExerciseTest.CommonChecks.UnlessWithElse
+      use ElixirAnalyzer.ExerciseTest.CommonChecks.DeprecatedRandomModule
     end
   end
 

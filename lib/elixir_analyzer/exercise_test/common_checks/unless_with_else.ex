@@ -1,7 +1,7 @@
 # credo:disable-for-this-file Credo.Check.Refactor.UnlessWithElse
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.UnlessWithElse do
   @moduledoc """
-  Reports the first occurence of unless/2 macro used with else.
+  Reports the first occurrence of unless/2 macro used with else.
   """
   alias ElixirAnalyzer.Constants
 
