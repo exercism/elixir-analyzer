@@ -57,11 +57,23 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
     end
   end
 
-  test_exercise_analysis "random_stardate uses :rand.uniform",
-    comments_include: [Constants.captains_log_use_rand_uniform()] do
-    defmodule CaptainsLog do
-      def random_stardate do
-        Enum.random(4_100_000..4_200_000) |> Kernel./(100)
+  describe "random_stardate uses :rand.uniform" do
+    test_exercise_analysis "when using Enum.random instead",
+      comments_include: [Constants.captains_log_use_rand_uniform()] do
+      defmodule CaptainsLog do
+        def random_stardate do
+          Enum.random(4_100_000..4_200_000) |> Kernel./(100)
+        end
+      end
+    end
+
+    test_exercise_analysis "when using deprecated :random module",
+      comments_include: [Constants.solution_deprecated_random_module()],
+      comments_exclude: [Constants.captains_log_use_rand_uniform()] do
+      defmodule CaptainsLog do
+        def random_stardate() do
+          :random.uniform() * 1000 + 41_000
+        end
       end
     end
   end
