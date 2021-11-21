@@ -31,7 +31,7 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     calling_fn module: CaptainsLog, name: :random_stardate
     called_fn module: :rand, name: :uniform
     comment Constants.captains_log_use_rand_uniform()
-    suppress_if Constants.solution_deprecated_random_module()
+    suppress_if Constants.solution_deprecated_random_module(), :fail
   end
 
   assert_call "format_stardate uses :io_lib" do
