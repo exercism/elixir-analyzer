@@ -12,8 +12,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
     warnings =
       capture_io(:stderr, fn ->
         try do
-          Code.compile_quoted(code_ast, Path.basename(code_path))
-          |> Enum.each(fn {module, _binary} ->
+          :elixir_compiler.quoted(code_ast, code_path, fn _, _ -> :ok end)
+          |> Enum.each(fn {module, map, binary} ->
+            Module.ParallelChecker.verify([{map, binary}], [])
+
             :code.delete(module)
             :code.purge(module)
           end)
