@@ -1,4 +1,3 @@
-# credo:disable-for-this-file Credo.Check.Refactor.UnlessWithElse
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DeprecatedRandomModule do
   @moduledoc """
   Asserts the deprecated Erlang module :random is not used
