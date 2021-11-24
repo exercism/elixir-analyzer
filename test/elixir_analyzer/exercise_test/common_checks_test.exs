@@ -354,4 +354,30 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
   end
+
+  describe "deprecated Erlang :random module" do
+    test_exercise_analysis "reports using any of the :random functions",
+      comments: [Constants.solution_deprecated_random_module()] do
+      [
+        defmodule Lottery do
+          def draw(), do: :random.uniform()
+        end,
+        defmodule Lottery do
+          def cheat(), do: :random.seed({1, 2, 3})
+        end
+      ]
+    end
+
+    test_exercise_analysis "doesn't report using modern :rand",
+      comments: [] do
+      [
+        defmodule Lottery do
+          def draw(), do: :rand.uniform()
+        end,
+        defmodule Lottery do
+          def cheat(), do: :rand.seed(:default, {1, 2, 3})
+        end
+      ]
+    end
+  end
 end

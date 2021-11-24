@@ -5,14 +5,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  def run(code_path, code_ast) do
+  def run(code_path, _code_ast) do
     import ExUnit.CaptureIO
     Application.put_env(:elixir, :ansi_enabled, false)
 
     warnings =
       capture_io(:stderr, fn ->
         try do
-          Code.compile_quoted(code_ast, Path.basename(code_path))
+          Code.compile_file(code_path)
           |> Enum.each(fn {module, _binary} ->
             :code.delete(module)
             :code.purge(module)
