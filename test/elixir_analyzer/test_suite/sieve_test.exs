@@ -54,16 +54,24 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
 
     test_exercise_analysis "detects Kernel.//2",
       comments: [Constants.sieve_do_not_use_div_rem()] do
-      defmodule Sieve do
-        defp sieve([prime | candidates], primes) do
-          new_candidates = Enum.reject(candidates, &(&1 - prime * floor(&1 / prime) == 0))
-          sieve(new_candidates, [prime | primes])
+      [
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &(&1 - prime * floor(&1 / prime) == 0))
+            sieve(new_candidates, [prime | primes])
+          end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates =
+              Enum.reject(candidates, &(&1 - prime * floor(Kernel./(&1, prime) == 0)))
+
+            sieve(new_candidates, [prime | primes])
+          end
         end
-      end
+      ]
     end
   end
-
-  # here be dragons
 
   describe "forbids math-related modules" do
     test_exercise_analysis "detects Integer module",
@@ -86,7 +94,7 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
         defp sieve([prime | candidates], primes) do
           new_candidates =
             Enum.reject(candidates, fn candidate ->
-              candidate - prime * floor(Float.floor(candidate * 1.0 / (prime * 1.0))) == 0
+              candidate - prime * floor(candidate * Float.pow(prime * 1.0, -1)) == 0
             end)
 
           sieve(new_candidates, [prime | primes])
@@ -98,10 +106,7 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
       comments: [Constants.sieve_do_not_use_div_rem()] do
       defmodule Sieve do
         defp sieve([prime | candidates], primes) do
-          new_candidates =
-            Enum.reject(candidates, fn candidate ->
-              candidate - prime * floor(:math.floor(candidate * 1.0 / (prime * 1.0))) == 0
-            end)
+          new_candidates = Enum.reject(candidates, &(:math.fmod(&1, prime) == 0))
 
           sieve(new_candidates, [prime | primes])
         end

@@ -18,6 +18,12 @@ defmodule ElixirAnalyzer.TestSuite.Sieve do
     called_fn name: :div
   end
 
+  assert_no_call "does not call Kernel.//2" do
+    type :essential
+    comment Constants.sieve_do_not_use_div_rem()
+    called_fn name: :/
+  end
+
   assert_no_call "does not call Integer module" do
     type :essential
     comment Constants.sieve_do_not_use_div_rem()
