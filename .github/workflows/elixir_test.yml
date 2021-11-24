@@ -10,9 +10,19 @@ jobs:
       image: hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install -y git
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
         with:
-          submodules: true
+          submodules: recursive
+
+      - name: Update submodules
+        run: |
+          git submodule update --recursive --remote
 
       - name: Install Dependencies
         run: |
@@ -31,7 +41,7 @@ jobs:
 
       - name: Retrieve PLT Cache
 
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         id: plt-cache
         with:
           path: priv/plts

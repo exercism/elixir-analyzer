@@ -5,11 +5,11 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
   test_exercise_analysis "example solution",
     comments: [] do
     defmodule ListOps do
-      @spec length(list) :: non_neg_integer
-      def length(l), do: do_length(l, 0)
+      @spec count(list) :: non_neg_integer
+      def count(l), do: do_count(l, 0)
 
-      defp do_length([], acc), do: acc
-      defp do_length([_ | t], acc), do: do_length(t, acc + 1)
+      defp do_count([], acc), do: acc
+      defp do_count([_ | t], acc), do: do_count(t, acc + 1)
 
       @spec reverse(list) :: list
       def reverse(l), do: do_reverse(l, [])
@@ -52,7 +52,7 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
       defp do_append([h | t], b), do: do_append(t, [h | b])
 
       @spec concat([[any]]) :: [any]
-      def concat(ll), do: reverse(ll) |> foldl([], &append(&1, &2))
+      def concat(ll), do: reverse(ll) |> foldl([], &append/2)
     end
   end
 
@@ -80,19 +80,19 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
       end,
       defmodule ListOps do
         import Stream
-        def filter(l, a, f), do: Stream.filter(l, a, f) |> Enum.to_list()
+        def filter(l, f), do: filter(l, f) |> Enum.to_list()
       end,
       defmodule ListOps do
         def append(l1, l2), do: l1 ++ l2
       end,
       defmodule ListOps do
-        def map(l) do
+        def map(l, f) do
           try do
             hd(l)
           rescue
             _ -> []
           else
-            h -> [h | map(tl(l))]
+            h -> [f.(h) | map(tl(l), f)]
           end
         end
       end,
@@ -114,7 +114,7 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
         end
       end,
       defmodule ListOps do
-        def length(l), do: Kernel.length(l)
+        def count(l), do: Kernel.length(l)
       end
     ]
   end

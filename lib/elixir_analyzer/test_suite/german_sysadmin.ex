@@ -5,6 +5,7 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
 
   use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
 
   assert_no_call "doesn't convert anything to a string" do
     type :essential
@@ -40,9 +41,9 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
     type :actionable
     comment Constants.solution_no_integer_literal()
 
-    check(source) do
+    check(%Source{code_string: code_string}) do
       integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
-      Enum.all?(integers, &String.contains?(source, &1))
+      Enum.all?(integers, &String.contains?(code_string, &1))
     end
   end
 end

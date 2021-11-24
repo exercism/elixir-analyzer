@@ -39,7 +39,7 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
     comments: [] do
     [
       defmodule NameBadge do
-        def totally_not_if(a, b, c), do: if(a, do: b, else: c)
+        defp totally_not_if(a, b, c), do: if(a, do: b, else: c)
 
         def print(id, name, department) do
           department = totally_not_if(department, department, "owner")
@@ -57,6 +57,33 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
         end
       end
     ]
+  end
+
+  describe "forbids solutions with unless/else" do
+    test_exercise_analysis "use unless/else",
+      comments: [
+        Constants.name_badge_use_if(),
+        Constants.solution_unless_with_else()
+      ] do
+      [
+        defmodule NameBadge do
+          def print(id, name, department) do
+            department = unless department, do: "owner", else: department
+            if = unless id, do: "", else: "[#{id}] - "
+
+            if <> "#{name} - #{String.upcase(department)}"
+          end
+        end,
+        defmodule NameBadge do
+          def print(id, name, department) do
+            department = unless department, do: "owner", else: department
+            prefix = unless id, do: "", else: "[#{id}] - "
+
+            prefix <> "#{name} - #{String.upcase(department)}"
+          end
+        end
+      ]
+    end
   end
 
   describe "forbids solutions without if" do
@@ -98,24 +125,8 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
           end
         end,
         defmodule NameBadge do
-          def print(id, name, department) do
-            department = unless department, do: "owner", else: department
-            if = unless id, do: "", else: "[#{id}] - "
-
-            if <> "#{name} - #{String.upcase(department)}"
-          end
-        end,
-        defmodule NameBadge do
-          def print(id, name, department) do
-            department = unless department, do: "owner", else: department
-            prefix = unless id, do: "", else: "[#{id}] - "
-
-            prefix <> "#{name} - #{String.upcase(department)}"
-          end
-        end,
-        defmodule NameBadge do
-          def totally_not_if(true, a, _b), do: a
-          def totally_not_if(false, _a, b), do: b
+          defp totally_not_if(true, a, _b), do: a
+          defp totally_not_if(false, _a, b), do: b
 
           def print(id, name, department) do
             department = totally_not_if(department == nil, "owner", department)
@@ -124,8 +135,8 @@ defmodule ElixirAnalyzer.ExerciseTest.NameBadgeTest do
           end
         end,
         defmodule NameBadge do
-          def if(true, a, _b), do: a
-          def if(false, _a, b), do: b
+          defp if(true, a, _b), do: a
+          defp if(false, _a, b), do: b
 
           def print(id, name, department) do
             department = if(department == nil, "owner", department)

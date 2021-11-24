@@ -9,6 +9,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
   alias ElixirAnalyzer.Submission
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
+  alias ElixirAnalyzer.Source
 
   @doc false
   defmacro __using__(opts) do
@@ -21,7 +22,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @dialyzer no_match: {:do_analyze, 4}
+      @dialyzer no_match: {:do_analyze, 2}
     end
   end
 
@@ -38,7 +39,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
     # placeholders for submission code
     code_ast = quote do: code_ast
-    code_as_string = quote do: code_as_string
+    source = quote do: source
 
     # compile each feature to a test
     feature_tests = Enum.map(feature_test_data, &FeatureCompiler.compile(&1, code_ast))
@@ -47,29 +48,28 @@ defmodule ElixirAnalyzer.ExerciseTest do
     assert_call_tests = Enum.map(assert_call_data, &AssertCallCompiler.compile(&1, code_ast))
 
     # compile each check_source to a test
-    check_source_tests =
-      Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, code_as_string))
+    check_source_tests = Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, source))
 
     quote do
-      @spec analyze(Submission.t(), String.t(), nil | Macro.t()) :: Submission.t()
-      def analyze(%Submission{} = submission, code_as_string, exemplar_ast) do
-        case Code.string_to_quoted(code_as_string) do
+      @spec analyze(Submission.t(), Source.t()) :: Submission.t()
+      def analyze(%Submission{} = submission, %Source{code_string: code_string} = source) do
+        case Code.string_to_quoted(code_string) do
           {:ok, code_ast} ->
-            do_analyze(submission, code_ast, code_as_string, exemplar_ast)
+            source = %{source | code_ast: code_ast}
+            do_analyze(submission, source)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
         end
       end
 
-      defp do_analyze(%Submission{} = submission, code_ast, code_as_string, exemplar_ast)
-           when is_binary(code_as_string) do
+      defp do_analyze(%Submission{} = submission, %Source{code_ast: code_ast} = source) do
         results =
           Enum.concat([
             unquote(feature_tests),
             unquote(assert_call_tests),
             unquote(check_source_tests),
-            CommonChecks.run(code_ast, code_as_string, exemplar_ast)
+            CommonChecks.run(source)
           ])
           |> filter_suppressed_results()
 

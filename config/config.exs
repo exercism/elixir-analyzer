@@ -63,6 +63,9 @@ config :elixir_analyzer,
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
+    "library-fees" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.LibraryFees
+    },
     "log-level" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.LogLevel
     },
@@ -74,6 +77,9 @@ config :elixir_analyzer,
     },
     "newsletter" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Newsletter
+    },
+    "new-passport" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NewPassport
     },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
@@ -89,6 +95,9 @@ config :elixir_analyzer,
     },
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
+    },
+    "top-secret" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TopSecret
     },
     "wine-cellar" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.WineCellar
@@ -106,6 +115,9 @@ config :elixir_analyzer,
     },
     "sieve" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Sieve
+    },
+    "strain" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Strain
     },
     "square-root" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot

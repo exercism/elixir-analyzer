@@ -2,8 +2,9 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
   @moduledoc """
   This is an exercise analyzer extension module to test the check_soucre macro
   """
-
   use ElixirAnalyzer.ExerciseTest
+
+  alias ElixirAnalyzer.Source
 
   check_source "always true" do
     type :actionable
@@ -27,10 +28,10 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     type :actionable
     comment "used integer literal from ?a to ?z"
 
-    check(source) do
+    check(%Source{code_string: code_string}) do
       integers = Enum.map(?a..?z, &to_string/1)
 
-      not Enum.any?(integers, &String.contains?(source, &1))
+      not Enum.any?(integers, &String.contains?(code_string, &1))
     end
   end
 
@@ -38,8 +39,8 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     type :actionable
     comment "didn't use multiline"
 
-    check(source) do
-      String.contains?(source, ["\"\"\"", "\'\'\'"])
+    check(%Source{code_string: code_string}) do
+      String.contains?(code_string, ["\"\"\"", "\'\'\'"])
     end
   end
 
@@ -47,8 +48,8 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     type :actionable
     comment "module is too short"
 
-    check(source) do
-      String.length(source) > 20
+    check(%Source{code_string: code_string}) do
+      String.length(code_string) > 20
     end
   end
 
@@ -56,8 +57,8 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     type :actionable
     comment "module is not formatted"
 
-    check(source) do
-      String.trim(source) == Code.format_string!(source) |> Enum.join()
+    check(%Source{code_string: code_string}) do
+      String.trim(code_string) == Code.format_string!(code_string) |> Enum.join()
     end
   end
 end
