@@ -16,10 +16,10 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
         do_primes(limit, Enum.to_list(2..limit), [])
       end
 
-      def do_primes(_limit, [], primes), do: Enum.reverse(primes)
-      def do_primes(limit, [nil | sieve], primes), do: do_primes(limit, sieve, primes)
+      defp do_primes(_limit, [], primes), do: Enum.reverse(primes)
+      defp do_primes(limit, [nil | sieve], primes), do: do_primes(limit, sieve, primes)
 
-      def do_primes(limit, [prime | _] = sieve, primes) do
+      defp do_primes(limit, [prime | _] = sieve, primes) do
         sieve =
           sieve
           |> Enum.chunk_every(prime)
@@ -34,12 +34,20 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
   describe "forbids division and remainder operations" do
     test_exercise_analysis "detects Kernel.rem/2",
       comments: [Constants.sieve_do_not_use_div_rem()] do
-      defmodule Sieve do
-        defp sieve([prime | candidates], primes) do
-          new_candidates = Enum.reject(candidates, &(rem(&1, prime) == 0))
-          sieve(new_candidates, [prime | primes])
+      [
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &(rem(&1, prime) == 0))
+            sieve(new_candidates, [prime | primes])
+          end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &(Kernel.rem(&1, prime) == 0))
+            sieve(new_candidates, [prime | primes])
+          end
         end
-      end
+      ]
     end
 
     test_exercise_analysis "detects Kernel.div/2",
@@ -64,7 +72,9 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
         defmodule Sieve do
           defp sieve([prime | candidates], primes) do
             new_candidates =
-              Enum.reject(candidates, &(&1 - prime * floor(Kernel./(&1, prime) == 0)))
+              Enum.reject(candidates, fn candidate ->
+                candidate - prime * floor(Kernel./(candidate, prime)) == 0
+              end)
 
             sieve(new_candidates, [prime | primes])
           end
