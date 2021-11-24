@@ -82,4 +82,52 @@ defmodule ElixirAnalyzer.ExerciseTest.SuppressIfTest do
       end
     end
   end
+
+  describe "Error is triggered when wrong arguments are passed to suppress_if" do
+    @suppress_if_error "Invalid :suppress_if arguments. Arguments must have the form\n  suppress_if \"some check name\", (:pass | :fail)\n"
+    test "works with assert_call" do
+      assert_raise RuntimeError, @suppress_if_error, fn ->
+        defmodule SuppressIf do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "assert_call" do
+            suppress_if "some other check"
+            called_fn module: Keyword, name: :get_values
+          end
+        end
+      end
+    end
+
+    test "works with feature" do
+      assert_raise RuntimeError, @suppress_if_error, fn ->
+        defmodule SuppressIf do
+          use ElixirAnalyzer.ExerciseTest
+
+          feature "feature" do
+            suppress_if {"some other check", :fail}
+
+            form do
+              _ignore
+            end
+          end
+        end
+      end
+    end
+
+    test "works with check_source" do
+      assert_raise RuntimeError, @suppress_if_error, fn ->
+        defmodule SuppressIf do
+          use ElixirAnalyzer.ExerciseTest
+
+          check_source "check_source" do
+            suppress_if "some other check", false
+
+            check(_source) do
+              true
+            end
+          end
+        end
+      end
+    end
+  end
 end
