@@ -22,7 +22,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       import unquote(__MODULE__)
       @before_compile unquote(__MODULE__)
-      @dialyzer no_match: {:do_analyze, 2}
+      @dialyzer no_match: {:do_analyze, 1}
     end
   end
 
@@ -51,19 +51,20 @@ defmodule ElixirAnalyzer.ExerciseTest do
     check_source_tests = Enum.map(check_source_data, &CheckSourceCompiler.compile(&1, source))
 
     quote do
-      @spec analyze(Submission.t(), Source.t()) :: Submission.t()
-      def analyze(%Submission{} = submission, %Source{code_string: code_string} = source) do
+      @spec analyze(Submission.t()) :: Submission.t()
+      def analyze(%Submission{source: %Source{code_string: code_string} = source} = submission) do
         case Code.string_to_quoted(code_string) do
           {:ok, code_ast} ->
             source = %{source | code_ast: code_ast}
-            do_analyze(submission, source)
+            submission = %{submission | source: source}
+            do_analyze(submission)
 
           {:error, e} ->
             append_analysis_failure(submission, e)
         end
       end
 
-      defp do_analyze(%Submission{} = submission, %Source{code_ast: code_ast} = source) do
+      defp do_analyze(%Submission{source: %Source{code_ast: code_ast} = source} = submission) do
         results =
           Enum.concat([
             unquote(feature_tests),

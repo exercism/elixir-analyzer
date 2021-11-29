@@ -97,7 +97,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
             analysis_module: ""
           }
 
-          result = @exercise_test_module.analyze(empty_submission, source)
+          result = @exercise_test_module.analyze(empty_submission)
 
           comments =
             result.comments
