@@ -141,14 +141,14 @@ defmodule ElixirAnalyzer do
       }
     rescue
       e in File.Error ->
-        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+        Logger.warning("Unable to read config file #{e.path}", error_message: e.reason)
 
         submission
         |> Submission.halt()
         |> Submission.set_halt_reason("Analysis skipped, not able to read solution config.")
 
       e in Jason.DecodeError ->
-        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+        Logger.warning("Unable to decode 'config.json'", data: e.data)
 
         submission
         |> Submission.halt()

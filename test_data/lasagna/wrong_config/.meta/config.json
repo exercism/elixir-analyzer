@@ -1,0 +1,11 @@
+{
+  "blurb": "Learn about the basics of Elixir by following a lasagna recipe.",
+  "authors": [
+    "neenjaw"
+  ],
+  "contributors": [
+    "angelikatyborska"
+  ],
+  "files": {
+    "solution": [
+      "lib/lasagna.ex"

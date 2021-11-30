@@ -91,6 +91,14 @@ defmodule ElixirAnalyzerTest do
     test "perfect solution" do
       exercise = "lasagna"
       path = "./test_data/lasagna/perfect_solution/"
+
+      Logger.configure(level: :debug)
+
+      assert capture_log(fn -> ElixirAnalyzer.analyze_exercise(exercise, path, path, @options) end) =~
+               "Initialization successful"
+
+      Logger.configure(level: :warn)
+
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
@@ -147,6 +155,74 @@ defmodule ElixirAnalyzerTest do
 
                assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
              end) =~ "Exemploid file could not be parsed."
+    end
+  end
+
+  describe "different failures" do
+    test "solution with wrong analysis module" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/perfect_solution/"
+
+      option =
+        Keyword.put(@options, :exercise_config, %{"lasagna" => %{analyzer_module: NonSense}})
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, option)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
+                      } = analyzed_exercise
+             end) =~ "[error] Loading exercise test suite 'Elixir.NonSense' failed"
+    end
+
+    test "solution with missing config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/missing_config"
+
+      log =
+        capture_log(fn ->
+          analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+          assert %Submission{
+                   halted: true,
+                   halt_reason: "Analysis skipped, not able to read solution config."
+                 } = analyzed_exercise
+        end)
+
+      assert log =~
+               "[error_message: :enoent] [warn] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
+
+      assert log =~ "[warn] Check not performed, halted previously"
+    end
+
+    test "solution with wrong config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_config"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, not able to decode solution config."
+                      } = analyzed_exercise
+             end) =~ "[warn] Unable to decode 'config.json'"
+    end
+
+    test "solution with no solution in config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_config2"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
+                      } = analyzed_exercise
+             end) =~
+               "[error_message: \"errors were found at the given arguments:\\n\\n  * 1st argument: not a nonempty list\\n\"] [warn] TestSuite halted, Elixir.ArgumentError"
     end
   end
 
