@@ -64,30 +64,50 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
     ]
   end
 
-  test_exercise_analysis "requires add_player to have a default argument that's a module attribute",
-    comments_include: [Constants.high_score_use_default_argument_with_module_attribute()] do
-    [
-      defmodule HighScore do
-        def add_player(scores, name) do
-          Map.put(scores, name, @any_name)
+  describe "add_player and default argument" do
+    test_exercise_analysis "requires add_player to have a default argument that's a module attribute",
+      comments_include: [Constants.high_score_use_default_argument_with_module_attribute()] do
+      [
+        defmodule HighScore do
+          def add_player(scores, name) do
+            Map.put(scores, name, @any_name)
+          end
+
+          def add_player(scores, name, score) do
+            Map.put(scores, name, score)
+          end
+        end,
+        defmodule HighScore do
+          def add_player(scores, name, score \\ nil) do
+            score = score || @initial_score
+            Map.put(scores, name, score)
+          end
+        end,
+        defmodule HighScore do
+          def add_player(scores, name, score \\ 0) do
+            Map.put(scores, name, score)
+          end
         end
+      ]
+    end
+
+    test_exercise_analysis "accepts an empty function head",
+      comments_exclude: [Constants.high_score_use_default_argument_with_module_attribute()] do
+      defmodule HighScore do
+        def new(), do: %{}
+
+        @score 0
+        def add_player(scores, name, score \\ @score)
 
         def add_player(scores, name, score) do
           Map.put(scores, name, score)
         end
-      end,
-      defmodule HighScore do
-        def add_player(scores, name, score \\ nil) do
-          score = score || @initial_score
-          Map.put(scores, name, score)
-        end
-      end,
-      defmodule HighScore do
-        def add_player(scores, name, score \\ 0) do
-          Map.put(scores, name, score)
+
+        def reset_score(scores, name) do
+          Map.put(scores, name, @score)
         end
       end
-    ]
+    end
   end
 
   describe "looks for a module attribute with the initial score of 0" do

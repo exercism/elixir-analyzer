@@ -86,8 +86,17 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource do
     {node, Map.put(test_data, :type, type)}
   end
 
-  defp do_walk_check_source_block({:suppress_if, _, [name, condition]} = node, test_data) do
-    {node, Map.put(test_data, :suppress_if, {name, condition})}
+  defp do_walk_check_source_block({:suppress_if, _, args} = node, test_data) do
+    case args do
+      [name, condition] when condition in [:pass, :fail] ->
+        {node, Map.put(test_data, :suppress_if, {name, condition})}
+
+      _ ->
+        raise """
+        Invalid :suppress_if arguments. Arguments must have the form
+          suppress_if "some check name", (:pass | :fail)
+        """
+    end
   end
 
   defp do_walk_check_source_block({:check, _, [source, [do: function]]} = node, test_data) do

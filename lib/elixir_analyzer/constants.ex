@@ -36,6 +36,10 @@ defmodule ElixirAnalyzer.Constants do
     solution_no_integer_literal: "elixir.solution.no_integer_literal",
     solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
     solution_todo_comment: "elixir.solution.todo_comment",
+    solution_private_helper_functions: "elixir.solution.private_helper_functions",
+    solution_unless_with_else: "elixir.solution.unless_with_else",
+    solution_use_function_capture: "elixir.solution.use_function_capture",
+    solution_deprecated_random_module: "elixir.solution.deprecated_random_module",
 
     # Concept exercises
 
@@ -87,6 +91,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # High School Sweetheart Comments
     high_school_sweetheart_function_reuse: "elixir.high-school-sweetheart.function_reuse",
+    high_school_sweetheart_multiline_string: "elixir.high-school-sweetheart.multiline_string",
 
     # Language List Comments
     language_list_do_not_use_enum: "elixir.language-list.do_not_use_enum",
@@ -122,6 +127,10 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_send_newsletter_reuses_functions:
       "elixir.newsletter.send_newsletter_reuses_functions",
 
+    # New Passport Comments
+    new_passport_use_with: "elixir.new-passport.use_with",
+    new_passport_do_not_modify_code: "elixir.new-passport.do_not_modify_code",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
@@ -149,6 +158,9 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Top Secret Comments
+    top_secret_function_reuse: "elixir.top-secret.function_reuse",
+
     # Wine Cellar Comments
     wine_cellar_use_keyword_get_values: "elixir.wine-cellar.use_keyword_get_values",
 
@@ -160,6 +172,9 @@ defmodule ElixirAnalyzer.Constants do
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
 
+    # Sieve Comments
+    sieve_do_not_use_div_rem: "elixir.sieve.do_not_use_div_rem",
+    #
     # Strain Comments
     strain_use_recursion: "elixir.strain.use_recursion",
 

@@ -101,8 +101,17 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     {node, put_in(acc, [field], f)}
   end
 
-  defp gather_feature_data({:suppress_if, _, [name, condition]} = node, acc) do
-    {node, put_in(acc, [:suppress_if], {name, condition})}
+  defp gather_feature_data({:suppress_if, _, args} = node, acc) do
+    case args do
+      [name, condition] when condition in [:pass, :fail] ->
+        {node, put_in(acc, [:suppress_if], {name, condition})}
+
+      _ ->
+        raise """
+        Invalid :suppress_if arguments. Arguments must have the form
+          suppress_if "some check name", (:pass | :fail)
+        """
+    end
   end
 
   defp gather_feature_data({:depth, _, [f]} = node, acc) when is_integer(f) do
