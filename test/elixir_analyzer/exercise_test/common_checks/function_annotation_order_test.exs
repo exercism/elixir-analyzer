@@ -1,139 +1,88 @@
+defmodule ElixirAnalyzer.Support.AnalyzerVerification.FunctionAnnotationOrder do
+  use ElixirAnalyzer.ExerciseTest
+end
+
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest do
-  use ExUnit.Case
-  alias ElixirAnalyzer.Comment
+  use ElixirAnalyzer.ExerciseTestCase,
+    exercise_test_module: ElixirAnalyzer.Support.AnalyzerVerification.FunctionAnnotationOrder
+
   alias ElixirAnalyzer.Constants
-  alias ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder
 
-  @order_error {:fail,
-                %Comment{
-                  type: :informative,
-                  name: Constants.solution_function_annotation_order(),
-                  comment: Constants.solution_function_annotation_order()
-                }}
-
-  @errors [@order_error]
-
-  test "wrong order crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          def x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == [
-             {:fail,
-              %Comment{
-                type: :informative,
-                name: Constants.solution_function_annotation_order(),
-                comment: Constants.solution_function_annotation_order()
-              }}
-           ]
+  test_exercise_analysis "wrong order crashes",
+    comments: [Constants.solution_function_annotation_order()] do
+    defmodule Test do
+      @spec x()
+      @doc ""
+      def x()
+    end
   end
 
-  test "works for def, defp, defmacro, defmacrop, defguard, and defguardp" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          def x()
-        end
+  test_exercise_analysis "works for def, defp, defmacro, defmacrop, defguard, and defguardp",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec x()
+        @doc ""
+        def x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defp x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defmacro x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defmacrop x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defguard x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defguardp x()
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          defp x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          defmacro x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          defmacrop x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          defguard x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec x()
-          @doc ""
-          defguardp x()
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "non related definitions will not make crash" do
-    ast =
-      quote do
-        defmodule Test do
-          @doc ""
-          def x
+  test_exercise_analysis "non related definitions will not fail",
+    comments: [] do
+    [
+      defmodule Test do
+        @doc ""
+        def x
 
-          @spec y
-          def y
-        end
+        @spec y
+        def y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "another non related definition will not make crash" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec x
-          def x
+  test_exercise_analysis "another non related definition will not fail",
+    comments: [] do
+    [
+      defmodule Test do
+        @spec x
+        def x
 
-          @doc ""
-          def y
-        end
+        @doc ""
+        def y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "multiple functions before attributes will not crash" do
-    ast =
-      quote do
+  test_exercise_analysis "multiple functions before attributes will not fail",
+    comments: [] do
+    [
+      defmodule Test do
         def a
         def b
 
@@ -141,208 +90,178 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         @spec c
         def c
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "function definition order doesnt impact" do
-    ast =
-      quote do
-        defmodule Test do
-          def a
-          def b
+  test_exercise_analysis "function definition order does not impact order detection",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def a
+        def b
 
-          @spec c
-          @doc ""
-          def c
-        end
+        @spec c
+        @doc ""
+        def c
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "other modules attributes will not make it crash" do
-    ast =
-      quote do
-        defmodule Test do
-          @const "Const"
+  test_exercise_analysis "other modules attributes will not make it crash",
+    comments: [] do
+    [
+      defmodule Test do
+        @const "Const"
 
-          @doc ""
-          @spec x
-          def x
+        @doc ""
+        @spec x
+        def x
 
-          @answer 42
+        @answer 42
 
-          @doc ""
-          @spec y
-          def y
-        end
+        @doc ""
+        @spec y
+        def y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "function using when clause works" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec empty?(list()) :: boolean()
-          def empty?(list) when list == [], do: true
-          def empty?(_), do: false
-        end
+  test_exercise_analysis "function using when clause works",
+    comments: [] do
+    [
+      defmodule Test do
+        @spec empty?(list()) :: boolean()
+        def empty?(list) when list == [], do: true
+        def empty?(_), do: false
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "@spec defined after function crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def empty?(list) when list == [], do: true
-          @spec empty?(list()) :: boolean()
-          def empty?(_), do: false
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+  test_exercise_analysis "@spec defined after function crashes",
+    comments: [Constants.solution_function_annotation_order()] do
+    defmodule Test do
+      def empty?(list) when list == [], do: true
+      @spec empty?(list()) :: boolean()
+      def empty?(_), do: false
+    end
   end
 
-  test "one spec for multiple function works" do
-    ast =
-      quote do
+  test_exercise_analysis "one spec for multiple function works",
+    comments: [] do
+    [
+      defmodule Test do
         @spec is_one(integer()) :: integer()
-        def is_one(1), do: true
-        def is_one(2), do: false
-        def is_one(3), do: false
-        def is_one(4), do: false
-        def is_one(_), do: false
+        def one?(1), do: true
+        def one?(2), do: false
+        def one?(3), do: false
+        def one?(4), do: false
+        def one?(_), do: false
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "spec with parameter works" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec is_one(number)
-          def is_one(number), do: number == 1
-        end
+  test_exercise_analysis "spec with parameter works",
+    comments: [] do
+    [
+      defmodule Test do
+        @spec is_one(number)
+        def one?(number), do: number == 1
       end
-
-    assert FunctionAnnotationOrder.run(ast) == []
+    ]
   end
 
-  test "@doc and @spec between two definitions crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def a(x \\ [])
-          @doc ""
-          @spec a(list()) :: atom()
-          def a([]), do: :empty
-          def a(_), do: :full
+  test_exercise_analysis "@doc and @spec between two definitions crashes",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def a(x \\ [])
+        @doc ""
+        @spec a(list()) :: atom()
+        def a([]), do: :empty
+        def a(_), do: :full
 
-          @spec b
-          def b
+        @spec b
+        def b
 
-          @spec c
-          def c
-        end
+        @spec c
+        def c
+      end,
+      defmodule Test do
+        @spec a
+        def a
+
+        def b(x \\ [])
+        @doc ""
+        @spec b(list()) :: atom()
+        def b([]), do: :empty
+        def b(_), do: :full
+
+        @spec c
+        def c
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
-
-    ast =
-      quote do
-        defmodule Test do
-          @spec a
-          def a
-
-          def b(x \\ [])
-          @doc ""
-          @spec b(list()) :: atom()
-          def b([]), do: :empty
-          def b(_), do: :full
-
-          @spec c
-          def c
-        end
-      end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "returns a single error even if it checks multiple times" do
-    ast =
-      quote do
-        defmodule Test do
-          @spec sum(number(), number()) :: number()
-          @doc "sum two numbers"
-          def sum(x, y), do: x + y
+  test_exercise_analysis "returns a single error even if it checks multiple times",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec sum(number(), number()) :: number()
+        @doc "sum two numbers"
+        def sum(x, y), do: x + y
 
-          @spec subtract(number(), number()) :: number()
-          @doc "subtract two number"
-          def subtract(x, y), do: x - y
-        end
+        @spec subtract(number(), number()) :: number()
+        @doc "subtract two number"
+        def subtract(x, y), do: x - y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "spec between function definitions crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def test(x), do: x
-          @spec test(any()) :: any()
-          def test(x, y), do: x || y
-        end
+  test_exercise_analysis "spec between function definitions crashes",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def test(x), do: x
+        @spec test(any()) :: any()
+        def test(x, y), do: x || y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "doc between function definitions crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def test(x), do: x
-          @doc "just a test function"
-          def test(x, y), do: x || y
-        end
+  test_exercise_analysis "doc between function definitions fails",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def test(x), do: x
+        @doc "just a test function"
+        def test(x, y), do: x || y
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "spec after function definitions crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def test(x), do: x
-          @spec test(any()) :: any()
-        end
+  test_exercise_analysis "spec after function definitions fails",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def test(x), do: x
+        @spec test(any()) :: any()
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  test "doc after function definitions crashes" do
-    ast =
-      quote do
-        defmodule Test do
-          def test(x), do: x
-          @doc "just a test function"
-        end
+  test_exercise_analysis "doc after function definitions fails",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        def test(x), do: x
+        @doc "just a test function"
       end
-
-    assert FunctionAnnotationOrder.run(ast) == @errors
+    ]
   end
 
-  asts = [
-    quote do
+  test_exercise_analysis "sub-modules should not raise false positive error",
+    comments: [] do
+    [
       defmodule Test do
         def x(), do: 1
 
@@ -350,9 +269,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           @spec x() :: integer()
           def x(), do: 1
         end
-      end
-    end,
-    quote do
+      end,
       defmodule Test do
         alias Blah.Bluh
         def x(), do: 1
@@ -362,12 +279,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           def x(), do: 1
         end
       end
-    end
-  ]
-
-  for {ast, n} <- Enum.with_index(asts) do
-    test "##{n}: sub-modules should not raise false positive error" do
-      assert FunctionAnnotationOrder.run(unquote(Macro.escape(ast))) == []
-    end
+    ]
   end
 end
