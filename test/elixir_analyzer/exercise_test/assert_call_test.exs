@@ -250,4 +250,125 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
       end
     end
   end
+
+  describe "test errors" do
+    test "undefined comment" do
+      assert_raise RuntimeError, "Comment must be defined for each assert_call test", fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+          end
+        end
+      end
+    end
+
+    test "unsupported expression" do
+      message =
+        "Unsupported expression `unsupported`.\nThe macro `assert_call` supports expressions: comment, type, calling_fn, called_fn, suppress_if.\n"
+
+      assert_raise RuntimeError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            unsupported(true)
+          end
+        end
+      end
+    end
+
+    test "unsupported type" do
+      message =
+        "Unsupported type `unsupported`.\nThe macro `assert_call` supports the following types: essential, actionable, informative, celebratory.\n"
+
+      assert_raise RuntimeError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            type :unsupported
+          end
+        end
+      end
+    end
+
+    test "non-atomic called function module" do
+      message = "calling function signature requires :module to be nil or a module atom, got: 42"
+
+      assert_raise ArgumentError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            called_fn module: 42, name: :floor
+          end
+        end
+      end
+    end
+
+    test "non-atomic calling function module" do
+      message = "calling function signature requires :module to be nil or a module atom, got: 42"
+
+      assert_raise ArgumentError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            called_fn name: :floor
+            calling_fn module: 42, name: :fourty_two
+          end
+        end
+      end
+    end
+
+    test "non-atomic called function name" do
+      message = "calling function signature requires :name to be an atom, got: 42"
+
+      assert_raise ArgumentError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            called_fn module: Enum, name: 42
+          end
+        end
+      end
+    end
+
+    test "non-atomic calling function name" do
+      message = "calling function signature requires :name to be an atom, got: 42"
+
+      assert_raise ArgumentError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            calling_fn module: Enum, name: 42
+          end
+        end
+      end
+    end
+
+    test "nil  calling function name" do
+      message = "calling function signature requires :module to be an atom"
+
+      assert_raise ArgumentError, message, fn ->
+        defmodule AssertFail do
+          use ElixirAnalyzer.ExerciseTest
+
+          assert_call "some assert_call" do
+            comment "some comment"
+            calling_fn name: nil
+          end
+        end
+      end
+    end
+  end
 end

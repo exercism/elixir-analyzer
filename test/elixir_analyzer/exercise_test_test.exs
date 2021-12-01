@@ -3,8 +3,10 @@ defmodule ElixirAnalyzer.ExerciseTestTest.SameComment do
 
   assert_no_call "essential comment for helper1_essential" do
     type :essential
+    calling_fn module: SomeModule, name: :function
     called_fn name: :helper1_essential
     comment "the same comment"
+    suppress_if "some other check", :pass
   end
 
   assert_no_call "essential comment for helper2_essential" do
