@@ -113,6 +113,9 @@ config :elixir_analyzer,
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
     },
+    "sieve" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Sieve
+    },
     "strain" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Strain
     },

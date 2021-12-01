@@ -171,6 +171,9 @@ defmodule ElixirAnalyzer.Constants do
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
 
+    # Sieve Comments
+    sieve_do_not_use_div_rem: "elixir.sieve.do_not_use_div_rem",
+    #
     # Strain Comments
     strain_use_recursion: "elixir.strain.use_recursion",
 

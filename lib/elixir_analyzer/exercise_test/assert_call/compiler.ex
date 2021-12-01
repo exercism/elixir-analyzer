@@ -54,7 +54,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       in_module: nil,
       in_function_def: nil,
       in_function_modules: %{},
-      modules_in_scope: %{},
+      modules_in_scope: %{[:Kernel] => Kernel.module_info(:exports)},
       found_called: false,
       called_fn: called_fn,
       calling_fn: calling_fn,
