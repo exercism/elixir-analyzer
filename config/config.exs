@@ -84,6 +84,9 @@ config :elixir_analyzer,
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
     },
+    "remote-control-car" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RemoteControlCar
+    },
     "rpg-character-sheet" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpgCharacterSheet
     },

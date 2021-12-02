@@ -135,6 +135,9 @@ defmodule ElixirAnalyzer.Constants do
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
 
+    # Remote Control Car Comments
+    remote_control_car_use_default_argument: "elixir.remote-control-car.use_default_argument",
+
     # RPG Character Sheet
     rpg_character_sheet_welcome_ends_with_IO_puts:
       "elixir.rpg-character-sheet.welcome_ends_with_IO_puts",
