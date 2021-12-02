@@ -13,6 +13,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
                 |> File.read!()
                 |> Code.string_to_quoted()
 
+  @remote_control_car_exemplar "elixir/exercises/concept/remote-control-car/.meta/exemplar.ex"
+                               |> File.read!()
+                               |> Code.string_to_quoted()
+
   @comment %Comment{
     type: :informative,
     comment: Constants.solution_private_helper_functions(),
@@ -484,6 +488,98 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
       }
 
       assert PrivateHelperFunctions.run(code, @sqrt_example) == [{:fail, comment}]
+    end
+  end
+
+  describe "concept exercise with remote-control-car" do
+    # This exemplar has a default argument: def new(nickname \\ "none")
+    test "new with no argument" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(), do: %RemoteControlCar{nickname: "none"}
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == []
+    end
+
+    test "new with one argument" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(name), do: %RemoteControlCar{nickname: name}
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == []
+    end
+
+    test "new with zero and one argument" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(), do: %RemoteControlCar{nickname: "none"}
+            def new(name), do: %RemoteControlCar{nickname: name}
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == []
+    end
+
+    test "new with default argument" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(name \\ "none"), do: %RemoteControlCar{nickname: name}
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == []
+    end
+
+    test "new with default argument head" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(name \\ "none")
+            def new(name), do: %RemoteControlCar{nickname: name}
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == []
+    end
+
+    test "new with two arguments" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(arg, name)
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{actual: "def new(_, _)", expected: "defp new(_, _)"}
+      }
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == [{:fail, comment}]
+    end
+
+    test "new with three default arguments gives a comment on arity 2" do
+      code =
+        quote do
+          defmodule RemoteControlCar do
+            def new(arg \\ 0, name \\ "none", extra \\ 1)
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{actual: "def new(_, _)", expected: "defp new(_, _)"}
+      }
+
+      assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == [{:fail, comment}]
     end
   end
 end
