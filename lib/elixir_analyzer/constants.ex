@@ -66,6 +66,9 @@ defmodule ElixirAnalyzer.Constants do
     captains_log_use_rand_uniform: "elixir.captains-log.use_rand_uniform",
     captains_log_use_io_lib: "elixir.captains-log.use_io_lib",
 
+    # DNA Encoding Comments
+    dna_encoding_use_recursion: "elixir.dna-encoding.use_recursion",
+
     # File Sniffer Comments
     file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
 
