@@ -13,10 +13,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
                 |> File.read!()
                 |> Code.string_to_quoted()
 
-  @remote_control_car_exemplar "elixir/exercises/concept/remote-control-car/.meta/exemplar.ex"
-                               |> File.read!()
-                               |> Code.string_to_quoted()
-
   @comment %Comment{
     type: :informative,
     comment: Constants.solution_private_helper_functions(),
@@ -491,8 +487,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
     end
   end
 
+  @remote_control_car_exemplar (quote do
+                                  defmodule RemoteControlCar do
+                                    def new(nickname \\ "none") do
+                                      %RemoteControlCar{nickname: nickname}
+                                    end
+                                  end
+                                end)
+
   describe "concept exercise with remote-control-car" do
-    # This exemplar has a default argument: def new(nickname \\ "none")
     test "new with no argument" do
       code =
         quote do
