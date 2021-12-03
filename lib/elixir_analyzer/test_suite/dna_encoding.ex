@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.TestSuite.DNA do
   use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
 
-  assert_no_call "does not call Enum.reduce/{2,3}" do
+  assert_no_call "does not call Enum.reduce" do
     type :essential
     called_fn module: Enum, name: :reduce
     comment Constants.dna_encoding_use_recursion()
