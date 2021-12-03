@@ -55,24 +55,43 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
       end
 
     case public_definition(node, modules) do
-      {:ok, definition} -> {node, %{acc | definitions: [definition | definitions]}}
+      {:ok, new_definitions} -> {node, %{acc | definitions: new_definitions ++ definitions}}
       :not_public_definition -> {node, acc}
     end
   end
 
-  def module_name({:defmodule, _, [{:__aliases__, _, module}, _]}), do: {:ok, module}
-  def module_name(_node), do: :not_defmodule
+  defp module_name({:defmodule, _, [{:__aliases__, _, module}, _]}), do: {:ok, module}
+  defp module_name(_node), do: :not_defmodule
 
   defp public_definition({op, _meta, [{:when, _, [{name, _, args} | _]} | _]}, module)
        when op in @public_ops do
-    {:ok, {module, op, name, if(is_atom(args), do: 0, else: length(args))}}
+    definitions =
+      args
+      |> get_arities
+      |> Enum.map(fn arity -> {module, op, name, arity} end)
+
+    {:ok, definitions}
   end
 
   defp public_definition({op, _meta, [{name, _, args} | _]}, module) when op in @public_ops do
-    {:ok, {module, op, name, if(is_atom(args), do: 0, else: length(args))}}
+    definitions =
+      args
+      |> get_arities
+      |> Enum.map(fn arity -> {module, op, name, arity} end)
+
+    {:ok, definitions}
   end
 
   defp public_definition(_node, _module), do: :not_public_definition
+
+  defp get_arities(args) when is_atom(args), do: [0]
+
+  defp get_arities(args) when is_list(args) do
+    length_args = length(args)
+    default_values = Enum.count(args, &match?({:\\, _, _}, &1))
+
+    length_args..(length_args - default_values)//-1
+  end
 
   defp find_public_helpers(code_definitions, exemploid_definitions) do
     exemploid_modules =
