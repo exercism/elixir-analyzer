@@ -1,6 +1,6 @@
-defmodule ElixirAnalyzer.ExerciseTest.DNATest do
+defmodule ElixirAnalyzer.ExerciseTest.DNAEncodingTest do
   use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.TestSuite.DNA
+    exercise_test_module: ElixirAnalyzer.TestSuite.DNAEncoding
 
   test_exercise_analysis "example solution",
     comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do

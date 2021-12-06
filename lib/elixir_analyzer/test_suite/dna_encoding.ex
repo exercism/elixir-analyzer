@@ -1,4 +1,4 @@
-defmodule ElixirAnalyzer.TestSuite.DNA do
+defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
   @moduledoc """
   This is an exercise analyzer extension module for the DNA Encoding concept exercise
   """
