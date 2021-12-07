@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
   @moduledoc """
-  Report the first defined module names that is not in PascalCase 
+  Report the first defined module names that is not in PascalCase
 
   Doesn't report more if there are more.
   A single comment should be enough for the student to know what to fix.
@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModulePascalCase do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  @spec run(Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
     wrong_name = List.last(names)

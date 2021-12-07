@@ -8,7 +8,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
 
   @public_ops [:def, :defmacro, :defguard]
 
-  @spec run(Macro.t(), nil | Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  @spec run(Macro.t(), nil | Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
   def run(_ast, nil), do: []
 
   def run(code_ast, exemploid_ast) do

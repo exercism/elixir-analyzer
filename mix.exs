@@ -38,7 +38,7 @@ defmodule ElixirAnalyzer.MixProject do
   defp deps do
     [
       {:jason, "~> 1.2"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end

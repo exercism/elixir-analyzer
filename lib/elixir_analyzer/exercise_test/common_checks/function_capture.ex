@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  @spec run(Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
   def run(code_ast) do
     acc = %{capture_depth: 0, functions: []}
 
