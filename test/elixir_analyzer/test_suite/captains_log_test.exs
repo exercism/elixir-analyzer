@@ -1,93 +1,28 @@
-defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
-  use ElixirAnalyzer.ExerciseTestCase,
-    exercise_test_module: ElixirAnalyzer.TestSuite.CaptainsLog
-
-  alias ElixirAnalyzer.Constants
-
-  test_exercise_analysis "example solution",
-    comments: [Constants.solution_same_as_exemplar()] do
-    defmodule CaptainsLog do
-      @planetary_classes ["D", "H", "J", "K", "L", "M", "N", "R", "T", "Y"]
-
-      def random_planet_class() do
-        Enum.random(@planetary_classes)
-      end
-
-      def random_ship_registry_number() do
-        number = Enum.random(1000..9999)
-        "NCC-#{number}"
-      end
-
-      def random_stardate() do
-        :rand.uniform() * 1000 + 41_000
-      end
-
-      def format_stardate(stardate) do
-        to_string(:io_lib.format("~.1f", [stardate]))
-      end
-    end
+defmodule BoutiqueInventory do
+  def sort_by_price(inventory) do
+    Enum.sort_by(inventory, fn item -> Map.get(item, :price) end)
   end
 
-  describe "Expects random_planet_class and random_ship_registry_number to use Enum.random" do
-    test_exercise_analysis "random_planet_class does not use Enum.random",
-      comments_include: [Constants.captains_log_use_enum_random()] do
-      defmodule CaptainsLog do
-        @planetary_classes ["D", "H", "J", "K", "L", "M", "N", "R", "T", "Y"]
-
-        def random_planet_class() do
-          @planetary_classes
-          |> Enum.shuffle()
-          |> hd
-        end
-      end
-    end
-
-    test_exercise_analysis "random_ship_registry_number does not use Enum.random",
-      comments_include: [Constants.captains_log_use_enum_random()] do
-      defmodule CaptainsLog do
-        def random_ship_registry_number() do
-          number =
-            1000..9999
-            |> Enum.shuffle()
-            |> hd
-
-          "NCC-#{number}"
-        end
-      end
-    end
+  def with_missing_price(inventory) do
+    Enum.filter(inventory, fn item -> Map.get(item, :price) == nil end)
   end
 
-  describe "random_stardate uses :rand.uniform" do
-    test_exercise_analysis "when using Enum.random instead",
-      comments_include: [Constants.captains_log_use_rand_uniform()] do
-      defmodule CaptainsLog do
-        def random_stardate do
-          Enum.random(4_100_000..4_200_000) |> Kernel./(100)
-        end
-      end
-    end
-
-    test_exercise_analysis "when using deprecated :random module",
-      comments_include: [Constants.solution_deprecated_random_module()],
-      comments_exclude: [Constants.captains_log_use_rand_uniform()] do
-      defmodule CaptainsLog do
-        def random_stardate() do
-          :random.uniform() * 1000 + 41_000
-        end
-      end
-    end
+  def increase_quantity(item, count) do
+    Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+      quantity_by_size
+      |> Enum.map(fn {size, quantity} -> {size, quantity + count} end)
+      |> Enum.into(%{})
+    end)
   end
 
-  test_exercise_analysis "format_stardate uses Float.round",
-    comments_include: [Constants.captains_log_use_io_lib()] do
-    defmodule CaptainsLog do
-      def format_stardate(stardate) do
-        if is_float(stardate) do
-          Float.round(stardate, 1) |> to_string()
-        else
-          raise ArgumentError
-        end
-      end
-    end
+  def total_quantity(item) do
+    Enum.reduce(
+      Map.get(
+        item,
+        :quantity_by_size
+      ),
+      0,
+      fn {_size, quantity}, acc -> acc + quantity end
+    )
   end
 end
