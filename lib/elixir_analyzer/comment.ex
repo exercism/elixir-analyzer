@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer.Comment do
           type: :essential | :actionable | :informative | :celebratory,
           status: :skip | :test,
           suppress_if: false | {String.t(), :pass | :fail},
-          params: map()
+          params: map() | nil
         }
 
   @supported_types ~w(essential actionable informative celebratory)a
