@@ -23,11 +23,22 @@ defmodule ElixirAnalyzer.ConstantsTest do
         request_path = String.replace(@comment, ".", "/")
         request_url = "#{@website_copy_url}#{request_path}#{@file_ext}" |> to_charlist()
 
-        {:ok, {{'HTTP/1.1', status, status_msg}, _headers, _body}} =
-          :httpc.request(:head, {request_url, []}, [], [])
+        {status, status_msg} = get_comment_with_retry_on_rate_limit_error(request_url)
 
         assert {status, status_msg, @comment} == {200, 'OK', @comment}
       end
+    end
+  end
+
+  defp get_comment_with_retry_on_rate_limit_error(request_url) do
+    {:ok, {{'HTTP/1.1', status, status_msg}, _headers, _body}} =
+      :httpc.request(:head, {request_url, []}, [], [])
+
+    if status == 429 do
+      :timer.sleep(300)
+      get_comment_with_retry_on_rate_limit_error(request_url)
+    else
+      {status, status_msg}
     end
   end
 end
