@@ -7,10 +7,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ExemplarComparison do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t(), atom, Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  @spec run(Macro.t(), atom, Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
 
   def run(code_ast, :concept, exemplar_ast) do
-    if Macro.to_string(code_ast) == Macro.to_string(exemplar_ast) do
+    if format(code_ast) == format(exemplar_ast) do
       [
         {:pass,
          %Comment{
@@ -25,4 +25,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ExemplarComparison do
   end
 
   def run(_, _, _), do: []
+
+  defp format(ast) do
+    ast
+    |> Macro.to_string()
+    |> Code.format_string!(line_length: 120, force_do_end_blocks: true)
+    |> IO.iodata_to_binary()
+  end
 end
