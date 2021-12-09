@@ -191,9 +191,9 @@ defmodule ElixirAnalyzerTest do
         end)
 
       assert log =~
-               "[error_message: :enoent] [warn] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
+               "[error_message: :enoent] [warning] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
 
-      assert log =~ "[warn] Check not performed, halted previously"
+      assert log =~ "[warning] Check not performed, halted previously"
     end
 
     test "solution with wrong config" do
@@ -207,7 +207,7 @@ defmodule ElixirAnalyzerTest do
                         halted: true,
                         halt_reason: "Analysis skipped, not able to decode solution config."
                       } = analyzed_exercise
-             end) =~ "[warn] Unable to decode 'config.json'"
+             end) =~ "[warning] Unable to decode 'config.json'"
     end
 
     test "solution with no solution in config" do
@@ -222,7 +222,7 @@ defmodule ElixirAnalyzerTest do
                         halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
                       } = analyzed_exercise
              end) =~
-               "[error_message: \"errors were found at the given arguments:\\n\\n  * 1st argument: not a nonempty list\\n\"] [warn] TestSuite halted, Elixir.ArgumentError"
+               "[error_message: \"errors were found at the given arguments:\\n\\n  * 1st argument: not a nonempty list\\n\"] [warning] TestSuite halted, Elixir.ArgumentError"
     end
   end
 
