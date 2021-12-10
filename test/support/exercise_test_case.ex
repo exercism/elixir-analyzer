@@ -216,7 +216,12 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   defp find_source_exemploid(%Source{exemploid_path: exemploid_path} = source)
        when is_binary(exemploid_path) do
     exemploid_string = File.read!(exemploid_path)
-    exemploid_ast = Code.string_to_quoted!(exemploid_string)
+
+    exemploid_ast =
+      exemploid_string
+      |> Code.format_string!(line_length: 120, force_do_end_blocks: true)
+      |> IO.iodata_to_binary()
+      |> Code.string_to_quoted!()
 
     %{source | exemploid_string: exemploid_string, exemploid_ast: exemploid_ast}
   end
