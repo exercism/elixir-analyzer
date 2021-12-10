@@ -39,6 +39,9 @@ config :elixir_analyzer,
     "chessboard" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
     },
+    "dna-encoding" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.DNAEncoding
+    },
     "file-sniffer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FileSniffer
     },
