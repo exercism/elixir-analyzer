@@ -121,4 +121,82 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
       """
     ]
   end
+
+  test "full check_source definition in a test file for coverage" do
+    defmodule Coverage do
+      use ElixirAnalyzer.ExerciseTest
+
+      check_source "check" do
+        comment "this is a comment"
+        type :celebratory
+        suppress_if "some other check", :fail
+
+        check(_) do
+          true
+        end
+      end
+    end
+
+    defmodule CoverageTest do
+      use ElixirAnalyzer.ExerciseTestCase,
+        exercise_test_module: Coverage
+
+      test_exercise_analysis "test check",
+        comments: ["this is a comment"] do
+        defmodule Module do
+        end
+      end
+    end
+  end
+
+  describe "incorrect use raises errors" do
+    unsupported =
+      "Unsupported expression `unsupported`.\nThe macro `check_source` supports expressions: comment, type, suppress_if, check.\n"
+
+    assert_raise RuntimeError, unsupported, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        check_source "check" do
+          comment "this will fail"
+          unsupported(:woops)
+
+          check(_) do
+            true
+          end
+        end
+      end
+    end
+
+    assert_raise RuntimeError, "Comment must be defined for each check_source test", fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        check_source "check" do
+          type :informative
+
+          check(_) do
+            true
+          end
+        end
+      end
+    end
+
+    wrong_type =
+      "Unsupported type `unsupported`.\nThe macro `check_source` supports the following types: essential, actionable, informative, celebratory.\n"
+
+    assert_raise RuntimeError, wrong_type, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        check_source "check" do
+          type :unsupported
+
+          check(_) do
+            true
+          end
+        end
+      end
+    end
+  end
 end
