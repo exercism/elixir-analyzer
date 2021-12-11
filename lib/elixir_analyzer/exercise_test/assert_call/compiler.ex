@@ -150,10 +150,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec matching_function_call?(
           Macro.t(),
-          nil | AssertCall.function_signature(),
+          AssertCall.function_signature(),
           %{[atom] => [atom] | keyword()}
         ) :: boolean()
-  def matching_function_call?(_node, nil, _), do: false
 
   # For erlang libraries: :math._ or :math.pow
   def matching_function_call?(
@@ -210,22 +209,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_call?(_, _, _), do: false
 
   @doc """
-  compare a node to the function_signature, looking for a match for a called function
-  """
-  @spec matching_function_def?(Macro.t(), AssertCall.function_signature()) :: boolean()
-  def matching_function_def?(_node, nil), do: false
-
-  def matching_function_def?(
-        {def_type, _, [{name, _, _args}, [do: {:__block__, _, [_ | _]}]]},
-        {_module_path, name}
-      )
-      when def_type in ~w[def defp]a do
-    true
-  end
-
-  def matching_function_def?(_, _), do: false
-
-  @doc """
   node is a module definition
   """
   def module_def?({:defmodule, _, [{:__aliases__, _, _}, [do: _]]}), do: true
@@ -237,13 +220,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_module_name({:defmodule, _, [{:__aliases__, _, name}, [do: _]]}),
     do: name
 
-  def extract_module_name(_), do: nil
-
   @doc """
   node is a function definition
   """
-  def function_def?({def_type, _, [{name, _, _}, [do: _]]})
-      when is_atom(name) and def_type in ~w[def defp]a do
+  def function_def?({def_type, _, [_, [do: _]]}) when def_type in ~w[def defp]a do
     true
   end
 
@@ -259,8 +239,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_function_name({def_type, _, [{name, _, _}, [do: _]]})
       when is_atom(name) and def_type in ~w[def defp]a,
       do: name
-
-  def extract_function_name(_), do: nil
 
   @doc """
   compare the name of the function to the function signature, if they match return true
