@@ -64,11 +64,12 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     assertions_key_diff = assertions_keys -- supported_assertions_keys
 
     if assertions_keys == [] do
-      raise "Expected to receive at least one of the supported assertions: #{Enum.join(supported_assertions_keys)}"
+      supported = Enum.join(supported_assertions_keys, ", ")
+      raise "Expected to receive at least one of the supported assertions: #{supported}"
     end
 
     if assertions_key_diff != [] do
-      raise "Unsupported assertion received: #{Enum.join(assertions_key_diff)}"
+      raise "Unsupported assertions received: #{Enum.join(assertions_key_diff, ", ")}"
     end
 
     test_cases = List.wrap(test_cases)
@@ -149,10 +150,6 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
         refute comment in comments
       end)
     end
-  end
-
-  def assert_comments(_, _, _) do
-    :noop
   end
 
   # Return as much of the source data as can be found
