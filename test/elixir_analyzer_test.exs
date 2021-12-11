@@ -33,6 +33,18 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
 
+    test "solution with informative comments only" do
+      exercise = "two-fer"
+      path = "./test_data/two_fer/informative_comments/"
+
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
+
+      assert Submission.to_json(analyzed_exercise) == expected_output
+    end
+
     test "error solution" do
       exercise = "two-fer"
       path = "./test_data/two_fer/error_solution/"
@@ -172,6 +184,12 @@ defmodule ElixirAnalyzerTest do
                Status: Analysis Incomplete
                Output written to ... a/b
                """
+
+      assert Submission.to_json(submission) ==
+               "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+      assert Submission.to_json(%{submission | halted: true}) ==
+               "{\"comments\":[],\"summary\":\"Analysis was halted.\"}"
     end
 
     test "solution with wrong analysis module" do
@@ -201,6 +219,9 @@ defmodule ElixirAnalyzerTest do
                       Status: Halted
                       Output written to ... a/b
                       """
+
+               assert Submission.to_json(analyzed_exercise) ==
+                        "{\"comments\":[],\"summary\":\"Analysis was halted. Analysis skipped, unexpected error Elixir.ArgumentError\"}"
              end) =~ "[error] Loading exercise test suite 'Elixir.NonSense' failed"
     end
 
