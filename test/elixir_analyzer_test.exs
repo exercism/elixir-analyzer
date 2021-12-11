@@ -4,7 +4,7 @@ defmodule ElixirAnalyzerTest do
 
   import ExUnit.CaptureLog
 
-  alias ElixirAnalyzer.Submission
+  alias ElixirAnalyzer.{Submission, Source, Summary}
 
   describe "ElixirAnalyzer for practice exercise" do
     @options [puts_summary: false, write_results: false]
@@ -159,6 +159,21 @@ defmodule ElixirAnalyzerTest do
   end
 
   describe "different failures" do
+    test "summary for a submission that did not run" do
+      submission = %Submission{source: %Source{}, analysis_module: nil}
+      params = %{exercise: "lasagna", output_path: "a", output_file: "b"}
+
+      assert Summary.summary(submission, params) ==
+               """
+               ElixirAnalyzer Report
+               ---------------------
+
+               Exercise: lasagna
+               Status: Analysis Incomplete
+               Output written to ... a/b
+               """
+    end
+
     test "solution with wrong analysis module" do
       exercise = "lasagna"
       path = "./test_data/lasagna/perfect_solution/"
@@ -173,6 +188,19 @@ defmodule ElixirAnalyzerTest do
                         halted: true,
                         halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
                       } = analyzed_exercise
+
+               assert Summary.summary(analyzed_exercise, %{
+                        exercise: exercise,
+                        output_path: "a",
+                        output_file: "b"
+                      }) == """
+                      ElixirAnalyzer Report
+                      ---------------------
+
+                      Exercise: lasagna
+                      Status: Halted
+                      Output written to ... a/b
+                      """
              end) =~ "[error] Loading exercise test suite 'Elixir.NonSense' failed"
     end
 
