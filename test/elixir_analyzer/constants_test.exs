@@ -3,12 +3,17 @@ defmodule ElixirAnalyzer.ConstantsTest do
   doctest ElixirAnalyzer
 
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Support
 
   setup_all do
     Application.ensure_all_started(:inets)
     Application.ensure_all_started(:ssl)
 
     :ok
+  end
+
+  test "check mock constant" do
+    assert Support.Constants.mock_constant() == "mock.constant"
   end
 
   describe "if comment exists at exercism/website-copy" do
