@@ -53,6 +53,10 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     feature_data = %{feature_data | meta: Map.to_list(feature_data.meta)}
     feature_data = Map.to_list(feature_data)
 
+    unless Keyword.has_key?(feature_data, :comment) do
+      raise "Comment must be defined for each feature test"
+    end
+
     quote do
       # Check if the feature is unique
       case Enum.filter(@feature_tests, fn {_data, forms} ->

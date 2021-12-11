@@ -382,4 +382,104 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
       ]
     end
   end
+
+  test "full feature definition in a test file for coverage" do
+    defmodule Coverage do
+      use ElixirAnalyzer.ExerciseTest
+
+      feature "check" do
+        comment "this is a comment"
+        type :celebratory
+        find :any
+        status :skip
+        suppress_if "some other check", :fail
+        depth 2
+        meta(keep_meta(true))
+
+        form do
+          true
+        end
+
+        form do
+          !true
+        end
+
+        form do
+          true
+          false
+        end
+      end
+
+      feature "check" do
+        comment "this is a comment"
+        find :all
+
+        form do
+          true
+        end
+      end
+    end
+
+    defmodule CoverageTest do
+      use ElixirAnalyzer.ExerciseTestCase,
+        exercise_test_module: Coverage
+
+      test_exercise_analysis "test check",
+        comments: ["this is a comment"] do
+        defmodule Module do
+        end
+      end
+    end
+  end
+
+  describe "incorrect use raises errors" do
+    unsupported =
+      "Unsupported expression `unsupported`.\nThe macro `feature` supports expressions: comment, type, find, status, suppress_if, depth, meta, form.\n"
+
+    assert_raise RuntimeError, unsupported, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          comment "this will fail"
+          unsupported(:woops)
+
+          form do
+            _ignore
+          end
+        end
+      end
+    end
+
+    assert_raise RuntimeError, "Comment must be defined for each feature test", fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          type :informative
+
+          form do
+            true
+          end
+        end
+      end
+    end
+
+    wrong_type =
+      "Unsupported type `unsupported`.\nThe macro `feature` supports the following types: essential, actionable, informative, celebratory.\n"
+
+    assert_raise RuntimeError, wrong_type, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          type :unsupported
+
+          form do
+            true
+          end
+        end
+      end
+    end
+  end
 end
