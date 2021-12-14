@@ -60,7 +60,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
         functions
       end
 
-    {node, %{capture_depth: depth - 1, functions: functions}}
+    {node, %{capture_depth: depth, functions: functions}}
   end
 
   # fn -> foo end
