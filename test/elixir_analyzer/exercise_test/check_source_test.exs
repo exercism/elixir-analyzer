@@ -128,11 +128,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
 
       check_source "check" do
         comment "this is a comment"
-        type :celebratory
-        suppress_if "some other check", :fail
 
         check(_) do
           true
+        end
+      end
+
+      check_source "some other check" do
+        comment "this is another comment"
+        suppress_if "check", :pass
+
+        check(_) do
+          false
         end
       end
     end
