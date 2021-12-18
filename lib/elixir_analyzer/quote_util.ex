@@ -69,15 +69,6 @@ defmodule ElixirAnalyzer.QuoteUtil do
   end
 
   @doc """
-  Performs a depth-first, pre-order traversal of quoted expressions.
-  With depth provided to a function
-  """
-  @spec prewalk(Macro.t(), (Macro.t(), non_neg_integer -> Macro.t())) :: Macro.t()
-  def prewalk(ast, fun) when is_function(fun, 2) do
-    elem(prewalk(ast, nil, fn x, nil, d -> {fun.(x, d), nil} end), 0)
-  end
-
-  @doc """
   Performs a depth-first, pre-order traversal of quoted expressions
   using an accumulator.
   """
@@ -85,23 +76,5 @@ defmodule ElixirAnalyzer.QuoteUtil do
           {Macro.t(), any}
   def prewalk(ast, acc, fun) when is_function(fun, 3) do
     traverse_with_depth(ast, acc, fun, fn x, a, _d -> {x, a} end)
-  end
-
-  @doc """
-  Performs a depth-first, post-order traversal of quoted expressions.
-  """
-  @spec postwalk(Macro.t(), (Macro.t(), non_neg_integer -> Macro.t())) :: Macro.t()
-  def postwalk(ast, fun) when is_function(fun, 2) do
-    elem(postwalk(ast, nil, fn x, nil, d -> {fun.(x, d), nil} end), 0)
-  end
-
-  @doc """
-  Performs a depth-first, post-order traversal of quoted expressions
-  using an accumulator.
-  """
-  @spec postwalk(Macro.t(), any, (Macro.t(), any, non_neg_integer -> {Macro.t(), any})) ::
-          {Macro.t(), any}
-  def postwalk(ast, acc, fun) when is_function(fun, 3) do
-    traverse_with_depth(ast, acc, fn x, a, _d -> {x, a} end, fun)
   end
 end
