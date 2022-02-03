@@ -8,6 +8,8 @@ defmodule ElixirAnalyzer.MixProject do
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      # Turn off protocol consolidation to avoid warning in analyzed code
+      consolidate_protocols: false,
       deps: deps(),
       escript: escript(),
       preferred_cli_env: [
