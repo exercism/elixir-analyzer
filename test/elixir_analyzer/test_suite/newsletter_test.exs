@@ -83,27 +83,6 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
         end,
         defmodule Newsletter do
           def log_sent_email(pid, email) do
-            x = :ok
-            IO.write(pid, email <> "\n")
-            x
-          end
-        end,
-        defmodule Newsletter do
-          def log_sent_email(pid, email) do
-            x = IO.write(pid, email)
-            x = IO.write(pid, "\n")
-            x
-          end
-        end,
-        defmodule Newsletter do
-          def log_sent_email(pid, email) do
-            x = IO.write(pid, email)
-            x = IO.puts(pid, "")
-            x
-          end
-        end,
-        defmodule Newsletter do
-          def log_sent_email(pid, email) do
             IO.write(pid, email)
             IO.puts(pid, "")
             :ok
@@ -122,12 +101,6 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
             File.close(pid)
             :ok
           end
-        end,
-        defmodule Newsletter do
-          def close_log(pid) do
-            x = File.close(pid)
-            x
-          end
         end
       ]
     end
@@ -139,12 +112,6 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
           def log_sent_email(pid, email) do
             IO.puts(pid, email)
             :ok
-          end
-        end,
-        defmodule Newsletter do
-          def log_sent_email(pid, email) do
-            x = IO.puts(pid, email)
-            x
           end
         end
       ]
