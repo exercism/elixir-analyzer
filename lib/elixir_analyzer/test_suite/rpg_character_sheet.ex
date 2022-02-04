@@ -10,22 +10,14 @@ defmodule ElixirAnalyzer.TestSuite.RpgCharacterSheet do
 
   feature "welcome ends with IO.puts" do
     type :actionable
-    find :any
+    find :none
     depth 1
     comment Constants.rpg_character_sheet_welcome_ends_with_IO_puts()
 
     form do
       def welcome() do
         _block_ends_with do
-          IO.puts(_ignore)
-        end
-      end
-    end
-
-    form do
-      def welcome() do
-        _block_ends_with do
-          IO.write(_ignore)
+          :ok
         end
       end
     end
