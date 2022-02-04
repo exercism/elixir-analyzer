@@ -39,6 +39,46 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
     end
   end
 
+  test_exercise_analysis "other solution",
+    comments: [] do
+    defmodule Newsletter do
+      import File
+      import IO
+
+      def read_emails(path) do
+        path
+        |> read!()
+        |> String.split()
+      end
+
+      def open_log(path) do
+        open!(path, [:write])
+      end
+
+      def log_sent_email(pid, email) do
+        puts(pid, email)
+      end
+
+      def close_log(pid) do
+        close(pid)
+      end
+
+      def send_newsletter(emails_path, log_path, send_fun) do
+        log_pid = open_log(log_path)
+        emails = read_emails(emails_path)
+
+        Enum.each(emails, fn email ->
+          case send_fun.(email) do
+            :ok -> log_sent_email(log_pid, email)
+            _ -> nil
+          end
+        end)
+
+        close_log(log_pid)
+      end
+    end
+  end
+
   describe "using IO.write in log_sent_email" do
     test_exercise_analysis "recommends IO.puts over IO.write",
       comments_include: [Constants.newsletter_log_sent_email_prefer_io_puts()],

@@ -90,6 +90,22 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
         end
       end
     end
+
+    form do
+      def open_log(_ignore) do
+        _block_includes do
+          open(_ignore, [:write])
+        end
+      end
+    end
+
+    form do
+      def open_log(_ignore) do
+        _block_includes do
+          open!(_ignore, [:write])
+        end
+      end
+    end
   end
 
   assert_call "send_newsletter/3 calls open_log/1" do
