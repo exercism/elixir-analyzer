@@ -123,4 +123,16 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
       end
     end
   end
+
+  test_exercise_analysis "doesn't mistake function references for division",
+    comments_exclude: [Constants.sieve_do_not_use_div_rem()] do
+    defmodule Sieve do
+      defp do_primes_to([head | _] = list, accum) do
+        list
+        |> Enum.map_every(head, fn _ -> nil end)
+        |> Enum.drop_while(&is_nil/1)
+        |> do_primes_to([head | accum])
+      end
+    end
+  end
 end
