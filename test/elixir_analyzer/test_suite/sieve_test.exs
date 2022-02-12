@@ -78,6 +78,29 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
 
             sieve(new_candidates, [prime | primes])
           end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &do_reject/1)
+
+            sieve(new_candidates, [prime | primes])
+          end
+
+          defp do_reject(candidate) do
+            candidate - prime * floor(Kernel./(candidate, prime)) == 0
+          end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &do_reject/1)
+
+            sieve(new_candidates, [prime | primes])
+          end
+
+          defp do_reject(candidate) do
+            forbidden_function = &Kernel.//2
+            candidate - prime * floor(forbidden_function.(candidate, prime)) == 0
+          end
         end
       ]
     end
