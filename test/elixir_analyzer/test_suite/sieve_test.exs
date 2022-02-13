@@ -78,6 +78,29 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
 
             sieve(new_candidates, [prime | primes])
           end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &do_reject/1)
+
+            sieve(new_candidates, [prime | primes])
+          end
+
+          defp do_reject(candidate) do
+            candidate - prime * floor(Kernel./(candidate, prime)) == 0
+          end
+        end,
+        defmodule Sieve do
+          defp sieve([prime | candidates], primes) do
+            new_candidates = Enum.reject(candidates, &do_reject/1)
+
+            sieve(new_candidates, [prime | primes])
+          end
+
+          defp do_reject(candidate) do
+            forbidden_function = &Kernel.//2
+            candidate - prime * floor(forbidden_function.(candidate, prime)) == 0
+          end
         end
       ]
     end
@@ -120,6 +143,18 @@ defmodule ElixirAnalyzer.ExerciseTest.SieveTest do
 
           sieve(new_candidates, [prime | primes])
         end
+      end
+    end
+  end
+
+  test_exercise_analysis "doesn't mistake function references for division",
+    comments_exclude: [Constants.sieve_do_not_use_div_rem()] do
+    defmodule Sieve do
+      defp do_primes_to([head | _] = list, accum) do
+        list
+        |> Enum.map_every(head, fn _ -> nil end)
+        |> Enum.drop_while(&is_nil/1)
+        |> do_primes_to([head | accum])
       end
     end
   end
