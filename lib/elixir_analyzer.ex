@@ -29,17 +29,13 @@ defmodule ElixirAnalyzer do
 
   * `exercise` is which exercise is submitted to determine proper analysis
 
-  * `path` is the path (ending with a '/') to the submitted solution
+  * `input_path` is the path to the submitted solution
+
+  * `output_path` is the path to the output folder
 
   * `opts` is a Keyword List of options, see **options**
 
   ## Options
-
-  * `:exercise` - name of the exercise, defaults to the `exercise` parameter
-
-  * `:path` - path to the submitted solution, defaults to the `path` parameter
-
-  * `:output_path` - path to write file output, defaults to the `path` parameter
 
   * `:output_file`, - specifies the name of the output_file, defaults to
     `@output_file` (`analysis.json`)
@@ -52,8 +48,6 @@ defmodule ElixirAnalyzer do
 
   * `:puts_summary` - boolean flag if an analysis should print the summary of the
     analysis to stdio, defaults to `true`
-
-  Any arbitrary keyword-value pair can be passed to `analyze_exercise/3` and these options may be used the other consuming code.
   """
   @spec analyze_exercise(String.t(), String.t(), String.t(), keyword()) :: Submission.t()
   def analyze_exercise(exercise, input_path, output_path, opts \\ []) do
@@ -147,14 +141,14 @@ defmodule ElixirAnalyzer do
       }
     rescue
       e in File.Error ->
-        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+        Logger.warning("Unable to read config file #{e.path}", error_message: e.reason)
 
         submission
         |> Submission.halt()
         |> Submission.set_halt_reason("Analysis skipped, not able to read solution config.")
 
       e in Jason.DecodeError ->
-        Logger.warning("Unable to decode 'config.json'", error_message: e.message)
+        Logger.warning("Unable to decode 'config.json'", data: e.data)
 
         submission
         |> Submission.halt()
@@ -256,7 +250,7 @@ defmodule ElixirAnalyzer do
 
     submission =
       submission
-      |> submission.analysis_module.analyze(submission.source)
+      |> submission.analysis_module.analyze()
       |> Submission.set_analyzed(true)
 
     Logger.info("Analyzing code complete")

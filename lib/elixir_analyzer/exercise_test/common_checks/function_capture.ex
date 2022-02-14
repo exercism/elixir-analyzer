@@ -54,13 +54,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
     depth = depth - 1
 
     functions =
-      if depth == 0 and wrong_use? and actual_function?(name) and name not in @exceptions do
+      if depth <= 0 and wrong_use? and actual_function?(name) and name not in @exceptions do
         [{:&, name, length(args)} | functions]
       else
         functions
       end
 
-    {node, %{capture_depth: depth - 1, functions: functions}}
+    {node, %{capture_depth: depth, functions: functions}}
   end
 
   # fn -> foo end

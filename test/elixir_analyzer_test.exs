@@ -4,7 +4,7 @@ defmodule ElixirAnalyzerTest do
 
   import ExUnit.CaptureLog
 
-  alias ElixirAnalyzer.Submission
+  alias ElixirAnalyzer.{Submission, Source, Summary}
 
   describe "ElixirAnalyzer for practice exercise" do
     @options [puts_summary: false, write_results: false]
@@ -29,6 +29,18 @@ defmodule ElixirAnalyzerTest do
 
       expected_output =
         "{\"comments\":[{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  test_data/two_fer/imperfect_solution/lib/two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.private_helper_functions\",\"params\":{\"actual\":\"def public_helper(_)\",\"expected\":\"defp public_helper(_)\"},\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
+
+      assert Submission.to_json(analyzed_exercise) == expected_output
+    end
+
+    test "solution with informative comments only" do
+      exercise = "two-fer"
+      path = "./test_data/two_fer/informative_comments/"
+
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some things to learn. 📖\"}"
 
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
@@ -91,6 +103,14 @@ defmodule ElixirAnalyzerTest do
     test "perfect solution" do
       exercise = "lasagna"
       path = "./test_data/lasagna/perfect_solution/"
+
+      Logger.configure(level: :debug)
+
+      assert capture_log(fn -> ElixirAnalyzer.analyze_exercise(exercise, path, path, @options) end) =~
+               "Initialization successful"
+
+      Logger.configure(level: :warn)
+
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
@@ -147,6 +167,111 @@ defmodule ElixirAnalyzerTest do
 
                assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
              end) =~ "Exemploid file could not be parsed."
+    end
+  end
+
+  describe "different failures" do
+    test "summary for a submission that did not run" do
+      submission = %Submission{source: %Source{}, analysis_module: nil}
+      params = %{exercise: "lasagna", output_path: "a", output_file: "b"}
+
+      assert Summary.summary(submission, params) ==
+               """
+               ElixirAnalyzer Report
+               ---------------------
+
+               Exercise: lasagna
+               Status: Analysis Incomplete
+               Output written to ... a/b
+               """
+
+      assert Submission.to_json(submission) ==
+               "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+      assert Submission.to_json(%{submission | halted: true}) ==
+               "{\"comments\":[],\"summary\":\"Analysis was halted.\"}"
+    end
+
+    test "solution with wrong analysis module" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/perfect_solution/"
+
+      option =
+        Keyword.put(@options, :exercise_config, %{"lasagna" => %{analyzer_module: NonSense}})
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, option)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
+                      } = analyzed_exercise
+
+               assert Summary.summary(analyzed_exercise, %{
+                        exercise: exercise,
+                        output_path: "a",
+                        output_file: "b"
+                      }) == """
+                      ElixirAnalyzer Report
+                      ---------------------
+
+                      Exercise: lasagna
+                      Status: Halted
+                      Output written to ... a/b
+                      """
+
+               assert Submission.to_json(analyzed_exercise) ==
+                        "{\"comments\":[],\"summary\":\"Analysis was halted. Analysis skipped, unexpected error Elixir.ArgumentError\"}"
+             end) =~ "[error] Loading exercise test suite 'Elixir.NonSense' failed"
+    end
+
+    test "solution with missing config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/missing_config"
+
+      log =
+        capture_log(fn ->
+          analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+          assert %Submission{
+                   halted: true,
+                   halt_reason: "Analysis skipped, not able to read solution config."
+                 } = analyzed_exercise
+        end)
+
+      assert log =~
+               "[error_message: :enoent] [warning] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
+
+      assert log =~ "[warning] Check not performed, halted previously"
+    end
+
+    test "solution with wrong config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_config"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, not able to decode solution config."
+                      } = analyzed_exercise
+             end) =~ "[warning] Unable to decode 'config.json'"
+    end
+
+    test "solution with no solution in config" do
+      exercise = "lasagna"
+      path = "./test_data/lasagna/wrong_config2"
+
+      assert capture_log(fn ->
+               analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+               assert %Submission{
+                        halted: true,
+                        halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
+                      } = analyzed_exercise
+             end) =~
+               "[error_message: \"errors were found at the given arguments:\\n\\n  * 1st argument: not a nonempty list\\n\"] [warning] TestSuite halted, Elixir.ArgumentError"
     end
   end
 

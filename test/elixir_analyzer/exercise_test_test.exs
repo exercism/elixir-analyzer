@@ -3,8 +3,10 @@ defmodule ElixirAnalyzer.ExerciseTestTest.SameComment do
 
   assert_no_call "essential comment for helper1_essential" do
     type :essential
+    calling_fn module: SomeModule, name: :function
     called_fn name: :helper1_essential
     comment "the same comment"
+    suppress_if "some other check", :pass
   end
 
   assert_no_call "essential comment for helper2_essential" do
@@ -123,6 +125,43 @@ defmodule ElixirAnalyzer.ExerciseTestTest do
           end
         end
       ]
+    end
+  end
+
+  describe "test_exercise_analysis exceptions" do
+    assert_raise RuntimeError,
+                 "Expected to receive at least one of the supported assertions: comments, comments_include, comments_exclude",
+                 fn ->
+                   defmodule Failing do
+                     use ElixirAnalyzer.ExerciseTestCase,
+                       exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
+
+                     test_exercise_analysis "doesn't have any extra key", [] do
+                       []
+                     end
+                   end
+                 end
+
+    assert_raise RuntimeError, "Unsupported assertions received: whoops", fn ->
+      defmodule Failing do
+        use ElixirAnalyzer.ExerciseTestCase,
+          exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
+
+        test_exercise_analysis "doesn't have a comment key", whoops: nil do
+          []
+        end
+      end
+    end
+
+    assert_raise RuntimeError, "Unsupported assertions received: whoops, again", fn ->
+      defmodule Failing do
+        use ElixirAnalyzer.ExerciseTestCase,
+          exercise_test_module: ElixirAnalyzer.ExerciseTestTest.SameComment
+
+        test_exercise_analysis "doesn't have a comment key", whoops: nil, again: nil do
+          []
+        end
+      end
     end
   end
 end

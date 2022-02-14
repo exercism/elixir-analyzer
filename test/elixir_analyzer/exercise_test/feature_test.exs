@@ -382,4 +382,227 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
       ]
     end
   end
+
+  describe "types of blocks" do
+    defmodule Blocks do
+      use ElixirAnalyzer.ExerciseTest
+
+      feature "single line" do
+        comment "single line"
+
+        form do
+          :a
+        end
+      end
+
+      feature "two lines" do
+        comment "two lines"
+
+        form do
+          :a
+          :b
+        end
+      end
+
+      feature "single line block" do
+        comment "single line block"
+
+        form do
+          !:a
+        end
+      end
+    end
+
+    defmodule BlocksTest do
+      use ElixirAnalyzer.ExerciseTestCase,
+        exercise_test_module: Blocks
+
+      test_exercise_analysis "empty",
+        comments: ["single line block", "two lines", "single line"] do
+        defmodule Module do
+        end
+      end
+
+      test_exercise_analysis "two lines",
+        comments: ["single line block"],
+        comments_exclude: ["single line", "two lines"] do
+        defmodule Module do
+          def foo do
+            :a
+            :b
+          end
+        end
+      end
+
+      test_exercise_analysis "single line block",
+        comments: ["two lines"],
+        comments_exclude: ["single line", "single line block"] do
+        defmodule Module do
+          def foo do
+            !:a
+          end
+        end
+      end
+    end
+  end
+
+  describe "other features" do
+    defmodule Coverage do
+      use ElixirAnalyzer.ExerciseTest
+
+      feature "skip" do
+        comment "skip"
+        status :skip
+
+        form do
+          :ok
+        end
+      end
+
+      feature "any" do
+        comment "any"
+        find :any
+
+        form do
+          :ok
+        end
+
+        form do
+          :error
+        end
+      end
+
+      feature "all" do
+        comment "all"
+        find :all
+
+        form do
+          :ok
+        end
+
+        form do
+          :error
+        end
+      end
+
+      feature "suppress_if" do
+        comment "suppress_if"
+        suppress_if "all", :pass
+
+        form do
+          :error
+        end
+      end
+
+      feature "depth 2" do
+        comment "depth 2"
+        depth 2
+
+        form do
+          :ok
+        end
+      end
+
+      feature "depth 3" do
+        comment "depth 3"
+        depth 3
+
+        form do
+          :ok
+        end
+      end
+
+      feature "meta" do
+        comment "meta"
+        meta(keep_meta(true))
+
+        form do
+          def foo, do: :ok
+        end
+      end
+    end
+
+    defmodule CoverageTest do
+      use ElixirAnalyzer.ExerciseTestCase,
+        exercise_test_module: Coverage
+
+      test_exercise_analysis "has :ok at depth 2",
+        comments: ["meta", "depth 3", "all", "suppress_if"],
+        comments_exclude: ["any", "depth 2", "skip"] do
+        defmodule Module do
+          def foo, do: :ok
+        end
+      end
+
+      test_exercise_analysis "has :error, and :ok at depth 3",
+        comments: ["meta", "depth 2"],
+        comments_exclude: ["any", "all", "depth 3", "skip", "suppress_if"] do
+        defmodule Module do
+          defmodule SubModule do
+            def foo, do: :ok
+          end
+
+          def bar, do: :error
+        end
+      end
+
+      test_exercise_analysis "empty",
+        comments: ["meta", "depth 2", "depth 3", "any", "all", "suppress_if"],
+        comments_exclude: ["skip"] do
+        defmodule Module do
+        end
+      end
+    end
+  end
+
+  describe "incorrect use raises errors" do
+    unsupported =
+      "Unsupported expression `unsupported`.\nThe macro `feature` supports expressions: comment, type, find, status, suppress_if, depth, meta, form.\n"
+
+    assert_raise RuntimeError, unsupported, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          comment "this will fail"
+          unsupported(:woops)
+
+          form do
+            _ignore
+          end
+        end
+      end
+    end
+
+    assert_raise RuntimeError, "Comment must be defined for each feature test", fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          type :informative
+
+          form do
+            true
+          end
+        end
+      end
+    end
+
+    wrong_type =
+      "Unsupported type `unsupported`.\nThe macro `feature` supports the following types: essential, actionable, informative, celebratory.\n"
+
+    assert_raise RuntimeError, wrong_type, fn ->
+      defmodule Failure do
+        use ElixirAnalyzer.ExerciseTest
+
+        feature "check" do
+          type :unsupported
+
+          form do
+            true
+          end
+        end
+      end
+    end
+  end
 end
