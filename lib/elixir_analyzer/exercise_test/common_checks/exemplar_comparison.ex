@@ -7,7 +7,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ExemplarComparison do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t(), atom, Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t(), atom, Macro.t()) :: [{:pass | :fail, Comment.t()}]
 
   def run(code_ast, :concept, exemplar_ast) do
     if format(code_ast) == format(exemplar_ast) do

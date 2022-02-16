@@ -22,10 +22,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   defmacro feature(description, do: block) do
     feature_data = %{
       name: description,
-      forms: [],
-      meta: %{
-        keep_meta: false
-      }
+      forms: []
     }
 
     :ok = validate_feature_block(block)
@@ -50,7 +47,6 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     # made into a key-val list for better quoting
     feature_forms = Enum.sort(feature_data.forms)
     feature_data = Map.delete(feature_data, :forms)
-    feature_data = %{feature_data | meta: Map.to_list(feature_data.meta)}
     feature_data = Map.to_list(feature_data)
 
     unless Keyword.has_key?(feature_data, :comment) do
@@ -77,7 +73,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     end
   end
 
-  @supported_expressions [:comment, :type, :find, :status, :suppress_if, :depth, :meta, :form]
+  @supported_expressions [:comment, :type, :find, :suppress_if, :depth, :form]
   defp validate_feature_block({:__block__, _, args}) do
     Enum.each(args, fn {name, _, _} ->
       if name not in @supported_expressions do
@@ -103,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   end
 
   defp gather_feature_data({field, _, [f]} = node, acc)
-       when field in [:comment, :find, :status] do
+       when field in [:comment, :find] do
     {node, put_in(acc, [field], f)}
   end
 
@@ -124,20 +120,12 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
     {node, put_in(acc, [:depth], f)}
   end
 
-  defp gather_feature_data({:meta, _, [{key, _, [value]}]} = node, acc) do
-    {node, update_in(acc, [:meta], fn m -> Map.put(m, key, value) end)}
-  end
-
   defp gather_feature_data({:form, _, [[do: form]]} = node, acc) do
     ast =
-      if acc.meta.keep_meta do
-        form
-      else
-        Macro.prewalk(form, fn
-          {name, _, param} -> {name, [:_ignore], param}
-          node -> node
-        end)
-      end
+      Macro.prewalk(form, fn
+        {name, _, param} -> {name, [:_ignore], param}
+        node -> node
+      end)
 
     {ast, block_params} =
       case ast do

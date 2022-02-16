@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast) do
     {_, %{variable_names: variable_names, false_positives: false_positives}} =
       Macro.prewalk(ast, %{variable_names: [], false_positives: []}, &traverse/2)

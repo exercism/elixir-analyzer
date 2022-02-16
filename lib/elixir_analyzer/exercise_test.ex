@@ -102,9 +102,6 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       defp append_test_comments(%Submission{} = submission, results) do
         Enum.reduce(results, submission, fn
-          {:skip, _description}, submission ->
-            submission
-
           {:pass, %Comment{} = comment}, submission ->
             if Map.get(comment, :type, false) == :celebratory do
               Submission.append_comment(submission, comment)

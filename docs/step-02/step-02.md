@@ -46,17 +46,17 @@ Then we can run the elixir analyzer:
 Compiling 2 files (.ex)
 Generated escript elixir_analyzer with MIX_ENV=dev
 
-> ./elixir_analyzer --analyze-file "<path>/02-example-module.ex:Example"
+> ./elixir_analyzer example-slug path/to/example/folder path/to/output 
 undefined analysis ... Completed!
 
 Analysis ... Analysis Complete
-Output written to ... <path>/analysis.json
+Output written to ... path/to/output/analysis.json
 ```
 
 We can then find `analysis.json` at the path specified with the contents:
 
 ```json
-{ "comments": [], "status": "approve" }
+{"comments": [],"summary":"Submission analyzed. No automated suggestions found."}
 ```
 
 ---
