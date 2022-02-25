@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctions do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast) do
     {_, function_names} =
       Macro.prewalk(ast, %{defs: [], defguards: [], defmacros: []}, &traverse/2)

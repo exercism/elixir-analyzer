@@ -450,15 +450,6 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
     defmodule Coverage do
       use ElixirAnalyzer.ExerciseTest
 
-      feature "skip" do
-        comment "skip"
-        status :skip
-
-        form do
-          :ok
-        end
-      end
-
       feature "any" do
         comment "any"
         find :any
@@ -511,15 +502,6 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
           :ok
         end
       end
-
-      feature "meta" do
-        comment "meta"
-        meta(keep_meta(true))
-
-        form do
-          def foo, do: :ok
-        end
-      end
     end
 
     defmodule CoverageTest do
@@ -527,16 +509,16 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
         exercise_test_module: Coverage
 
       test_exercise_analysis "has :ok at depth 2",
-        comments: ["meta", "depth 3", "all", "suppress_if"],
-        comments_exclude: ["any", "depth 2", "skip"] do
+        comments: ["depth 3", "all", "suppress_if"],
+        comments_exclude: ["any", "depth 2"] do
         defmodule Module do
           def foo, do: :ok
         end
       end
 
       test_exercise_analysis "has :error, and :ok at depth 3",
-        comments: ["meta", "depth 2"],
-        comments_exclude: ["any", "all", "depth 3", "skip", "suppress_if"] do
+        comments: ["depth 2"],
+        comments_exclude: ["any", "all", "depth 3", "suppress_if"] do
         defmodule Module do
           defmodule SubModule do
             def foo, do: :ok
@@ -547,8 +529,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
       end
 
       test_exercise_analysis "empty",
-        comments: ["meta", "depth 2", "depth 3", "any", "all", "suppress_if"],
-        comments_exclude: ["skip"] do
+        comments: ["depth 2", "depth 3", "any", "all", "suppress_if"] do
         defmodule Module do
         end
       end
@@ -557,7 +538,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FeatureTest do
 
   describe "incorrect use raises errors" do
     unsupported =
-      "Unsupported expression `unsupported`.\nThe macro `feature` supports expressions: comment, type, find, status, suppress_if, depth, meta, form.\n"
+      "Unsupported expression `unsupported`.\nThe macro `feature` supports expressions: comment, type, find, suppress_if, depth, form.\n"
 
     assert_raise RuntimeError, unsupported, fn ->
       defmodule Failure do

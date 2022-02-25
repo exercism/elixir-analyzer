@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.Indentation do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t(), String.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t(), String.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast, string) do
     if uses_tabs_for_indentation?(ast, string) do
       [

@@ -3,7 +3,6 @@ defmodule ElixirAnalyzer.TestSuite.ExampleTest do
       exercise_test_module: ElixirAnalyzer.TestSuite.Example
 
   test_exercise_analysis "perfect solution",
-    status: :approve,
     comments: [] do
     defmodule Example do
       @moduledoc """

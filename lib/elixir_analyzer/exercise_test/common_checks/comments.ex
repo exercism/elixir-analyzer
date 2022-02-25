@@ -6,7 +6,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.Comments do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t(), String.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t(), String.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast, string) do
     boilerplate_comment_check =
       if has_comment_matching_pattern?(

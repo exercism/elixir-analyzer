@@ -13,7 +13,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionNames do
 
   @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, Comment.t()}]
+  @spec run(Macro.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
     wrong_name = List.last(names)
