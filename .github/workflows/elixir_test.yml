@@ -52,7 +52,7 @@ jobs:
         id: plt-cache
         with:
           path: priv/plts
-          key: elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
+          key: elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
 
       - name: Create PLTs
         if: steps.plt-cache.outputs.cache-hit != 'true'
