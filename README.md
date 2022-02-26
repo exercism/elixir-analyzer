@@ -1,4 +1,4 @@
-# ElixirAnalyzer [![Coverage Status](https://coveralls.io/repos/github/jiegillet/elixir-analyzer/badge.svg)](https://coveralls.io/github/jiegillet/elixir-analyzer)
+# ElixirAnalyzer [![Coverage Status](https://coveralls.io/repos/github/exercism/elixir-analyzer/badge.svg)](https://coveralls.io/github/exercism/elixir-analyzer)
 
 This is an Elixir application to follow the specification of the Exercism automated mentor support project.
 
