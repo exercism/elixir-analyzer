@@ -25,6 +25,13 @@ defmodule ElixirAnalyzer.MixProject do
         # When using ElixirLS with VSCode reporting dialyzer warnings, obscuring code feedback.
         # So to ensure the best experience for devs using VSCode, try to disable dialyzer
         # warnings using the `@dialyzer` module attribute
+      ],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
       ]
     ]
   end
@@ -41,7 +48,8 @@ defmodule ElixirAnalyzer.MixProject do
     [
       {:jason, "~> 1.2"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.14", only: :test}
     ]
   end
 
