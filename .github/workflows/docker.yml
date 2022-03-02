@@ -27,13 +27,13 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Login to DockerHub
-        uses: docker/login-action@bb984efc561711aaa26e433c32c3521176eae55b
+        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to ECR
-        uses: docker/login-action@bb984efc561711aaa26e433c32c3521176eae55b
+        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
         with:
           registry: ${{ env.ECR_REGISTRY }}
           username: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
