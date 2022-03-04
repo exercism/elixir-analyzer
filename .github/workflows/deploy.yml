@@ -1,54 +1,21 @@
-name: Push Docker images to DockerHub and ECR
+name: Deploy
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  multiple-registries:
-    runs-on: ubuntu-latest
-
-    env:
-      ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@94ab11c41e45d028884a99163086648e898eed25
-
-      - name: Cache Docker layers
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed # 2.1.3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Login to DockerHub
-        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Login to ECR
-        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
-        with:
-          registry: ${{ env.ECR_REGISTRY }}
-          username: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
-          password: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@7f9d37fa544684fb73bfe4835ed7214c255ce02b
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ${{ github.event.repository.full_name }}:latest
-            ${{ github.event.repository.full_name }}:${{ github.sha }}
-            ${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:production
-            ${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+  build-and-push-image:
+    uses: exercism/github-actions/.github/workflows/docker-build-push-image.yml@main
+    secrets:
+      AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+      AWS_REGION: ${{secrets.AWS_REGION}}
+      AWS_ECR_ACCESS_KEY_ID: ${{secrets.AWS_ECR_ACCESS_KEY_ID}}
+      AWS_ECR_SECRET_ACCESS_KEY: ${{secrets.AWS_ECR_SECRET_ACCESS_KEY}}
+      DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+      DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
