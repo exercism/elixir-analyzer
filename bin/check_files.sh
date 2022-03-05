@@ -17,17 +17,17 @@ function die {
 }
 
 function main {
-  expected_files=(analysis.json expected_analysis.json)
+  expected_files=(/tmp/${exercise}/analysis.json ${exercise}/expected_analysis.json)
 
   for file in ${expected_files[@]}; do
-    if [[ ! -f "${exercise}/${file}" ]]; then
+    if [[ ! -f "${file}" ]]; then
       echo "🔥 ${exercise}: expected ${file} to exist on successful run 🔥"
       exit 1
     fi
   done
 
-  if ! diff <(jq -S . ${exercise}/expected_analysis.json) <(jq -S . ${exercise}/analysis.json); then
-    echo "🔥 ${exercise}: expected ${exercise}/analysis.json to equal ${exercise}/expected_analysis.json on successful run 🔥"
+  if ! diff <(jq -S . ${exercise}/expected_analysis.json) <(jq -S . /tmp/${exercise}/analysis.json); then
+    echo "🔥 ${exercise}: expected /tmp/${exercise}/analysis.json to equal ${exercise}/expected_analysis.json on successful run 🔥"
     exit 1
   fi
 
