@@ -23,7 +23,6 @@ docker build -t elixir-analyzer .
 # run image passing the arguments
 docker run \
     --network none \
-    --read-only \
     --mount type=bind,src=$(realpath test_data),dst=/opt/analyzer/test_data \
     --entrypoint /opt/analyzer/bin/smoke_test.sh \
     elixir-analyzer
