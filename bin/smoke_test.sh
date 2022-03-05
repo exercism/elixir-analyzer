@@ -7,13 +7,8 @@ set -o pipefail # Catch failures in pipes.
 
 for solution in test_data/*/* ; do
   slug=$(basename $(dirname $solution))
-
   # run analysis
-  # let analyzer send warnings, only compare final solution
-  set +e
   bin/run.sh $slug $solution $solution
-  set -e
-
   # check result
   bin/check_files.sh $solution
 done
