@@ -5,7 +5,7 @@ set -u # Exit on usage of undeclared variable.
 # set -x # Trace what gets executed.
 set -o pipefail # Catch failures in pipes.
 
-for solution in test_data/*/* ; do
+for solution in $(realpath test_data/*/*) ; do
   slug=$(basename $(dirname $solution))
   # run analysis
   bin/run.sh $slug $solution $solution
