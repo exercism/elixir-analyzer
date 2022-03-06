@@ -18,7 +18,7 @@ COPY --from=builder /etc/passwd /etc/passwd
 
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
 RUN apt-get update && \
-  apt-get install bash -y
+  apt-get install bash jq -y
 
 USER appuser
 WORKDIR /opt/analyzer
