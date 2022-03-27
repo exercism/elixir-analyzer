@@ -128,7 +128,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     modules = Map.merge(modules_in_scope, in_function_modules)
 
     match_called_fn? =
-      matching_function_call?(node, called_fn, modules) and
+      matching_function_call?(node, called_fn, modules, module) and
         not in_function?({module, name}, called_fn)
 
     match_calling_fn? = in_function?({module, name}, calling_fn) or is_nil(calling_fn)
@@ -151,30 +151,52 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @spec matching_function_call?(
           Macro.t(),
           AssertCall.function_signature(),
-          %{[atom] => [atom] | keyword()}
+          %{[atom] => [atom] | keyword()},
+          module()
         ) :: boolean()
 
   # For erlang libraries: :math._ or :math.pow
   def matching_function_call?(
         {{:., _, [module_path, name]}, _, _args},
         {module_path, search_name},
-        _modules
+        _modules,
+        _in_module
       )
       when search_name in [:_, name] do
     true
   end
 
   # No module path in search
-  def matching_function_call?({_, _, args} = function, {nil, name}, _modules)
+  def matching_function_call?({_, _, args} = function, {nil, search_name}, modules, in_module)
       when is_list(args) do
     case function do
       # function call without parentheses in a pipe
-      {:|>, _, [_arg, {^name, _, atom}]} when is_atom(atom) -> true
+      {:|>, _, [_arg, {^search_name, _, atom}]} when is_atom(atom) ->
+        true
+
       # function call with captured notation
-      {:/, _, [{^name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) -> true
+      {:/, _, [{^search_name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) ->
+        true
+
       # with parentheses
-      {^name, _, _args} -> true
-      _ -> false
+      {^search_name, _, _args} ->
+        true
+
+      # local calls that unnecessarily reference the module by name
+      {{:., _, [{:__aliases__, _, _}, ^search_name]}, _, _args} ->
+        matching_function_call?(function, {in_module, search_name}, modules, in_module)
+
+      # local calls that unnecessarily reference the module via __MODULE__
+      {{:., meta1, [{:__MODULE__, _, _}, name]}, meta2, args} ->
+        matching_function_call?(
+          {{:., meta1, [{:__aliases__, [], in_module}, name]}, meta2, args},
+          {in_module, search_name},
+          modules,
+          in_module
+        )
+
+      _ ->
+        false
     end
   end
 
@@ -182,7 +204,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_call?(
         {{:., _, [{:__aliases__, _, [head | tail] = ast_path}, name]}, _, _args},
         {module_path, search_name},
-        modules
+        modules,
+        _in_module
       )
       when search_name in [:_, name] do
     # Searching for A.B.C.function()
@@ -198,7 +221,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # No module path in AST
-  def matching_function_call?({name, _, args}, {module_path, search_name}, modules)
+  def matching_function_call?({name, _, args}, {module_path, search_name}, modules, _in_module)
       when is_list(args) and search_name in [:_, name] do
     case modules[List.wrap(module_path)] do
       nil -> false
@@ -206,7 +229,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     end
   end
 
-  def matching_function_call?(_, _, _), do: false
+  def matching_function_call?(_, _, _, _), do: false
 
   @doc """
   node is a module definition

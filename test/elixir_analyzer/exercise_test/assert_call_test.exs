@@ -89,7 +89,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
   end
 
   test_exercise_analysis "finds local calls if they use the module name to reference the function",
-                         comments: [] do
+    comments: [] do
     [
       defmodule AssertCallVerification do
         def function() do
@@ -147,12 +147,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         defp private_helper do
           :privately_helped
         end
-      end,
+      end
     ]
   end
 
   test_exercise_analysis "finds local calls if they use __MODULE__ to reference the function",
-                         comments: [] do
+    comments: [] do
     [
       defmodule AssertCallVerification do
         def function() do
@@ -190,6 +190,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         end
       end,
       # indirect call
+      # TODO: move to other test file
       defmodule AssertCallVerification do
         def function() do
           x = List.first([1, 2, 3])
@@ -210,17 +211,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         defp private_helper do
           :privately_helped
         end
-      end,
+      end
     ]
   end
 
   test_exercise_analysis "doesn't find local calls if they're same-named functions from a different module",
-                         comments: [
-                           "didn't find a local call to helper/0",
-                           "didn't find a local call to helper/0 within function/0",
-                           "didn't find a local call to private_helper/0",
-                           "didn't find a local call to private_helper/0 within function/0"
-                         ] do
+    comments: [
+      "didn't find a local call to helper/0",
+      "didn't find a local call to helper/0 within function/0",
+      "didn't find a local call to private_helper/0",
+      "didn't find a local call to private_helper/0 within function/0"
+    ] do
     [
       defmodule AssertCallVerification do
         def function() do
