@@ -68,6 +68,23 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueInventoryTest do
       end
     end
 
+    test_exercise_analysis "update_names should use Enum.map",
+      comments_include: [
+        ElixirAnalyzer.Constants.boutique_inventory_use_enum_map()
+      ] do
+      defmodule BoutiqueInventory do
+        def update_names(inventory, old_word, new_word) do
+          Enum.reduce(inventory, [], fn item, acc ->
+            item =
+              Map.update!(item, :name, fn name -> String.replace(name, old_word, new_word) end)
+
+            [item | acc]
+          end)
+          |> Enum.reverse()
+        end
+      end
+    end
+
     test_exercise_analysis "increase_quantity should use either Enum.into or Map.new",
       comments_exclude: [
         ElixirAnalyzer.Constants.boutique_inventory_increase_quantity_best_function_choice()

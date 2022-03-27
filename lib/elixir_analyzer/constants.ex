@@ -50,9 +50,10 @@ defmodule ElixirAnalyzer.Constants do
     boutique_inventory_use_enum_sort_by: "elixir.boutique-inventory.use_enum_sort_by",
     boutique_inventory_use_enum_filter_or_enum_reject:
       "elixir.boutique-inventory.use_enum_filter_or_enum_reject",
+    boutique_inventory_use_enum_map: "elixir.boutique-inventory.use_enum_map",
     boutique_inventory_use_enum_reduce: "elixir.boutique-inventory.use_enum_reduce",
     boutique_inventory_increase_quantity_best_function_choice:
-      "elixir.boutique-inventory.boutique_inventory_increase_quantity_best_function_choice",
+      "elixir.boutique-inventory.increase_quantity_best_function_choice",
 
     # Boutique Suggestions Comments
     boutique_suggestions_use_list_comprehensions:
