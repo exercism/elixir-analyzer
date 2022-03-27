@@ -30,17 +30,26 @@ defmodule ElixirAnalyzer.TestSuite.BoutiqueInventory do
   end
 
   assert_call "increase_quantity uses Enum.into" do
+    suppress_if "increase_quantity uses Map.new", :pass
     type :essential
     calling_fn module: BoutiqueInventory, name: :increase_quantity
     called_fn module: Enum, name: :into
-    comment Constants.boutique_inventory_use_enum_into()
+    comment Constants.boutique_inventory_increase_quantity_best_function_choice()
+  end
+
+  assert_call "increase_quantity uses Map.new" do
+    suppress_if "increase_quantity uses Enum.into", :pass
+    type :essential
+    calling_fn module: BoutiqueInventory, name: :increase_quantity
+    called_fn module: Map, name: :new
+    comment Constants.boutique_inventory_increase_quantity_best_function_choice()
   end
 
   assert_no_call "increase_quantity does not call Enum.map" do
     type :essential
     calling_fn module: BoutiqueInventory, name: :increase_quantity
     called_fn module: Enum, name: :map
-    comment Constants.boutique_inventory_use_enum_into_instead_enum_map()
+    comment Constants.boutique_inventory_increase_quantity_best_function_choice()
   end
 
   assert_call "total_quantity uses Enum.reduce" do
