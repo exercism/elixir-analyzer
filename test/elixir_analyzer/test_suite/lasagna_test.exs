@@ -31,27 +31,50 @@ defmodule ElixirAnalyzer.TestSuite.LasagnaTest do
 
   test_exercise_analysis "other reasonable solution",
     comments: [] do
-    defmodule Lasagna do
-      def expected_minutes_in_oven() do
-        40
-      end
+    [
+      defmodule Lasagna do
+        def expected_minutes_in_oven() do
+          40
+        end
 
-      def remaining_minutes_in_oven(actual) do
-        expected_minutes_in_oven() - actual
-      end
+        def remaining_minutes_in_oven(actual) do
+          expected_minutes_in_oven() - actual
+        end
 
-      def preparation_time_in_minutes(layers) do
-        2 * layers
-      end
+        def preparation_time_in_minutes(layers) do
+          2 * layers
+        end
 
-      def total_time_in_minutes(layers, actual) do
-        actual + preparation_time_in_minutes(layers)
-      end
+        def total_time_in_minutes(layers, actual) do
+          actual + preparation_time_in_minutes(layers)
+        end
 
-      def alarm() do
-        "Ding!"
+        def alarm() do
+          "Ding!"
+        end
+      end,
+      defmodule Lasagna do
+        def expected_minutes_in_oven() do
+          40
+        end
+
+        def remaining_minutes_in_oven(actual) do
+          Lasagna.expected_minutes_in_oven() - actual
+        end
+
+        def preparation_time_in_minutes(layers) do
+          2 * layers
+        end
+
+        def total_time_in_minutes(layers, actual) do
+          actual + __MODULE__.preparation_time_in_minutes(layers)
+        end
+
+        def alarm() do
+          "Ding!"
+        end
       end
-    end
+    ]
   end
 
   describe "function reuse" do
