@@ -22,20 +22,50 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertNoCallTest do
 
   test_exercise_analysis "found a local call to helper function",
     comments: ["found a local call to helper/0"] do
-    defmodule AssertNoCallVerification do
-      def function() do
-        helper() |> IO.puts()
-        private_helper()
-      end
+    [
+      defmodule AssertNoCallVerification do
+        def function() do
+          helper() |> IO.puts()
+          private_helper()
+        end
 
-      def helper do
-        :helped
-      end
+        def helper do
+          :helped
+        end
 
-      defp private_helper do
-        :privately_helped
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      defmodule AssertNoCallVerification do
+        def function() do
+          helper() |> IO.puts()
+          AssertNoCallVerification.private_helper()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      defmodule AssertNoCallVerification do
+        def function() do
+          helper() |> IO.puts()
+          __MODULE__.private_helper()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
       end
-    end
+    ]
   end
 
   test_exercise_analysis "found a local call to from specific function",

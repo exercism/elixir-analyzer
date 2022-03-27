@@ -190,7 +190,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         end
       end,
       # indirect call
-      # TODO: move to other test file
       defmodule AssertCallVerification do
         def function() do
           x = List.first([1, 2, 3])
