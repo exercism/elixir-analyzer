@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325 as builder
+FROM hexpm/elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325 as builder
 
 RUN apt-get update && \
   apt-get install bash -y
@@ -13,12 +13,12 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN ./bin/build.sh
 
-FROM hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325
+FROM hexpm/elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325
 COPY --from=builder /etc/passwd /etc/passwd
 
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
 RUN apt-get update && \
-  apt-get install bash -y
+  apt-get install bash jq -y
 
 USER appuser
 WORKDIR /opt/analyzer

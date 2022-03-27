@@ -54,7 +54,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       in_module: nil,
       in_function_def: nil,
       in_function_modules: %{},
-      modules_in_scope: %{},
+      modules_in_scope: %{[:Kernel] => Kernel.module_info(:exports)},
       found_called: false,
       called_fn: called_fn,
       calling_fn: calling_fn,
@@ -150,10 +150,9 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec matching_function_call?(
           Macro.t(),
-          nil | AssertCall.function_signature(),
+          AssertCall.function_signature(),
           %{[atom] => [atom] | keyword()}
         ) :: boolean()
-  def matching_function_call?(_node, nil, _), do: false
 
   # For erlang libraries: :math._ or :math.pow
   def matching_function_call?(
@@ -166,8 +165,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # No module path in search
-  def matching_function_call?({name, _, _args}, {nil, name}, _modules) do
-    true
+  def matching_function_call?({_, _, args} = function, {nil, name}, _modules)
+      when is_list(args) do
+    case function do
+      # function call without parentheses in a pipe
+      {:|>, _, [_arg, {^name, _, atom}]} when is_atom(atom) -> true
+      # function call with captured notation
+      {:/, _, [{^name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) -> true
+      # with parentheses
+      {^name, _, _args} -> true
+      _ -> false
+    end
   end
 
   # Module path in AST
@@ -201,22 +209,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_call?(_, _, _), do: false
 
   @doc """
-  compare a node to the function_signature, looking for a match for a called function
-  """
-  @spec matching_function_def?(Macro.t(), AssertCall.function_signature()) :: boolean()
-  def matching_function_def?(_node, nil), do: false
-
-  def matching_function_def?(
-        {def_type, _, [{name, _, _args}, [do: {:__block__, _, [_ | _]}]]},
-        {_module_path, name}
-      )
-      when def_type in ~w[def defp]a do
-    true
-  end
-
-  def matching_function_def?(_, _), do: false
-
-  @doc """
   node is a module definition
   """
   def module_def?({:defmodule, _, [{:__aliases__, _, _}, [do: _]]}), do: true
@@ -228,13 +220,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_module_name({:defmodule, _, [{:__aliases__, _, name}, [do: _]]}),
     do: name
 
-  def extract_module_name(_), do: nil
-
   @doc """
   node is a function definition
   """
-  def function_def?({def_type, _, [{name, _, _}, [do: _]]})
-      when is_atom(name) and def_type in ~w[def defp]a do
+  def function_def?({def_type, _, [_, [do: _]]}) when def_type in ~w[def defp]a do
     true
   end
 
@@ -250,8 +239,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def extract_function_name({def_type, _, [{name, _, _}, [do: _]]})
       when is_atom(name) and def_type in ~w[def defp]a,
       do: name
-
-  def extract_function_name(_), do: nil
 
   @doc """
   compare the name of the function to the function signature, if they match return true
@@ -391,14 +378,25 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   # track all called functions
   def track_all_functions(
         %{function_call_tree: tree, in_module: module, in_function_def: name} = acc,
-        {_, _, _} = function
+        {_, _, args} = function
       )
-      when not is_nil(name) do
+      when not is_nil(name) and is_list(args) do
     called =
       case function do
-        {:., _, [{:__MODULE__, _, _}, fn_name]} -> {module, fn_name}
-        {:., _, [{:__aliases__, _, fn_module}, fn_name]} -> {fn_module, fn_name}
-        {fn_name, _, _} -> {module, fn_name}
+        {:., _, [{:__MODULE__, _, _}, fn_name]} ->
+          {module, fn_name}
+
+        {:., _, [{:__aliases__, _, fn_module}, fn_name]} ->
+          {fn_module, fn_name}
+
+        {:|>, _, [_arg, {fn_name, _, atom}]} when is_atom(atom) ->
+          {module, fn_name}
+
+        {:/, _, [{fn_name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) ->
+          {module, fn_name}
+
+        {fn_name, _, _} ->
+          {module, fn_name}
       end
 
     %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}

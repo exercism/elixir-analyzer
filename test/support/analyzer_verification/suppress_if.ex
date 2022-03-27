@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
   """
 
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
   use ElixirAnalyzer.ExerciseTest
 
   feature "feature 1: no foo() unless common check was found" do
@@ -25,7 +26,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
   check_source "check source 1: no foo() unless common check was found" do
     comment "check source 1: foo() was called"
     suppress_if Constants.solution_debug_functions(), :fail
-    check(source, do: not String.contains?(source, "foo"))
+    check(%Source{code_string: code_string}, do: not String.contains?(code_string, "foo"))
   end
 
   feature "feature 2: no bar() unless assert 1 found a foo() first" do
@@ -47,7 +48,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
   check_source "check source 2: no bar() unless assert 1 found a foo() first" do
     comment "check source 2: bar() was called"
     suppress_if "check source 1: no foo() unless common check was found", :fail
-    check(source, do: not String.contains?(source, "bar"))
+    check(%Source{code_string: code_string}, do: not String.contains?(code_string, "bar"))
   end
 
   feature "feature 3: no baz() unless feature 1 found a foo() first" do
@@ -69,6 +70,6 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
   check_source "check source 3: no baz() unless feature 1 found a foo() first" do
     comment "check source 3: baz() was called"
     suppress_if "feature 1: no foo() unless common check was found", :fail
-    check(source, do: not String.contains?(source, "baz"))
+    check(%Source{code_string: code_string}, do: not String.contains?(code_string, "baz"))
   end
 end

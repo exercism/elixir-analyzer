@@ -1,4 +1,4 @@
-# ElixirAnalyzer
+# ElixirAnalyzer [![Coverage Status](https://coveralls.io/repos/github/exercism/elixir-analyzer/badge.svg)](https://coveralls.io/github/exercism/elixir-analyzer)
 
 This is an Elixir application to follow the specification of the Exercism automated mentor support project.
 
@@ -29,14 +29,6 @@ Running `bin/elixir_analyzer` on a system with Elixir/Erlang/OTP installed
 ```text
   Usage:
     $ elixir_analyzer <exercise-slug> <path the folder containing the solution> <path to folder for output> [options]
-
-  You may also pass the following options:
-    --skip-analysis                       flag skips running the static analysis
-    --output-file <filename>
-
-  You may also test only individual files :
-    (assuming analyzer tests are compiled for the named module)
-    $ exercism_analyzer --analyze-file <full-path-to-.ex>:<module-name>
 ```
 
 ### via IEX

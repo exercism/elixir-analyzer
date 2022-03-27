@@ -32,9 +32,14 @@ defmodule ElixirAnalyzer.Constants do
       "elixir.solution.defmacro_with_is_and_question_mark",
     solution_same_as_exemplar: "elixir.solution.same_as_exemplar",
     solution_list_prepend_head: "elixir.solution.list_prepend_head",
+    solution_function_annotation_order: "elixir.solution.function_annotation_order",
     solution_no_integer_literal: "elixir.solution.no_integer_literal",
     solution_boilerplate_comment: "elixir.solution.boilerplate_comment",
     solution_todo_comment: "elixir.solution.todo_comment",
+    solution_private_helper_functions: "elixir.solution.private_helper_functions",
+    solution_unless_with_else: "elixir.solution.unless_with_else",
+    solution_use_function_capture: "elixir.solution.use_function_capture",
+    solution_deprecated_random_module: "elixir.solution.deprecated_random_module",
 
     # Concept exercises
 
@@ -64,6 +69,9 @@ defmodule ElixirAnalyzer.Constants do
     captains_log_use_rand_uniform: "elixir.captains-log.use_rand_uniform",
     captains_log_use_io_lib: "elixir.captains-log.use_io_lib",
 
+    # DNA Encoding Comments
+    dna_encoding_use_recursion: "elixir.dna-encoding.use_recursion",
+
     # File Sniffer Comments
     file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
 
@@ -89,6 +97,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # High School Sweetheart Comments
     high_school_sweetheart_function_reuse: "elixir.high-school-sweetheart.function_reuse",
+    high_school_sweetheart_multiline_string: "elixir.high-school-sweetheart.multiline_string",
 
     # Language List Comments
     language_list_do_not_use_enum: "elixir.language-list.do_not_use_enum",
@@ -98,6 +107,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Leap Comments
     leap_erlang_calendar: "elixir.leap.erlang_calendar",
+
+    # Library Fees Comments
+    library_fees_function_reuse: "elixir.library-fees.function_reuse",
 
     # Log Level Comments
     log_level_use_cond: "elixir.log-level.use_cond",
@@ -121,9 +133,16 @@ defmodule ElixirAnalyzer.Constants do
     newsletter_send_newsletter_reuses_functions:
       "elixir.newsletter.send_newsletter_reuses_functions",
 
+    # New Passport Comments
+    new_passport_use_with: "elixir.new-passport.use_with",
+    new_passport_do_not_modify_code: "elixir.new-passport.do_not_modify_code",
+
     # Pacman Rules Comments
     pacman_rules_use_strictly_boolean_operators:
       "elixir.pacman-rules.use_strictly_boolean_operators",
+
+    # Remote Control Car Comments
+    remote_control_car_use_default_argument: "elixir.remote-control-car.use_default_argument",
 
     # RPG Character Sheet
     rpg_character_sheet_welcome_ends_with_IO_puts:
@@ -148,6 +167,9 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Top Secret Comments
+    top_secret_function_reuse: "elixir.top-secret.function_reuse",
+
     # Wine Cellar Comments
     wine_cellar_use_keyword_get_values: "elixir.wine-cellar.use_keyword_get_values",
 
@@ -158,6 +180,12 @@ defmodule ElixirAnalyzer.Constants do
 
     # List Ops Comments
     list_ops_do_not_use_list_functions: "elixir.list-ops.do_not_use_list_functions",
+
+    # Sieve Comments
+    sieve_do_not_use_div_rem: "elixir.sieve.do_not_use_div_rem",
+    #
+    # Strain Comments
+    strain_use_recursion: "elixir.strain.use_recursion",
 
     # Square Root Comments
     square_root_do_not_use_built_in_sqrt: "elixir.square-root.do_not_use_built_in_sqrt",

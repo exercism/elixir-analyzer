@@ -8,7 +8,6 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
   def compile({feature_data, feature_forms}, code_ast) do
     name = Keyword.fetch!(feature_data, :name)
     comment = Keyword.fetch!(feature_data, :comment)
-    status = Keyword.get(feature_data, :status, :test)
     type = Keyword.get(feature_data, :type, :informative)
     find_type = Keyword.get(feature_data, :find, :all)
     find_at_depth = Keyword.get(feature_data, :depth, nil)
@@ -24,25 +23,16 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
       Macro.escape(%Comment{
         name: name,
         comment: comment,
-        status: status,
         type: type,
         suppress_if: suppress_if
       })
 
-    case status do
-      :test ->
-        quote do
-          if unquote(form_expr) do
-            {:pass, unquote(test_description)}
-          else
-            {:fail, unquote(test_description)}
-          end
-        end
-
-      :skip ->
-        quote do
-          {:skip, unquote(test_description)}
-        end
+    quote do
+      if unquote(form_expr) do
+        {:pass, unquote(test_description)}
+      else
+        {:fail, unquote(test_description)}
+      end
     end
   end
 

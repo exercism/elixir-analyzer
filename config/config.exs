@@ -1,6 +1,6 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
@@ -39,6 +39,9 @@ config :elixir_analyzer,
     "chessboard" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
     },
+    "dna-encoding" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.DNAEncoding
+    },
     "file-sniffer" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.FileSniffer
     },
@@ -63,6 +66,9 @@ config :elixir_analyzer,
     "lasagna" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Lasagna
     },
+    "library-fees" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.LibraryFees
+    },
     "log-level" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.LogLevel
     },
@@ -75,8 +81,14 @@ config :elixir_analyzer,
     "newsletter" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Newsletter
     },
+    "new-passport" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.NewPassport
+    },
     "pacman-rules" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.PacmanRules
+    },
+    "remote-control-car" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RemoteControlCar
     },
     "rpg-character-sheet" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpgCharacterSheet
@@ -89,6 +101,9 @@ config :elixir_analyzer,
     },
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
+    },
+    "top-secret" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TopSecret
     },
     "wine-cellar" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.WineCellar
@@ -103,6 +118,12 @@ config :elixir_analyzer,
     },
     "list-ops" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.ListOps
+    },
+    "sieve" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Sieve
+    },
+    "strain" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.Strain
     },
     "square-root" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.SquareRoot

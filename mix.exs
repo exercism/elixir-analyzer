@@ -5,9 +5,11 @@ defmodule ElixirAnalyzer.MixProject do
     [
       app: :elixir_analyzer,
       version: "0.1.0",
-      elixir: "~> 1.12",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      # Turn off protocol consolidation to avoid warning in analyzed code
+      consolidate_protocols: false,
       deps: deps(),
       escript: escript(),
       preferred_cli_env: [
@@ -23,6 +25,13 @@ defmodule ElixirAnalyzer.MixProject do
         # When using ElixirLS with VSCode reporting dialyzer warnings, obscuring code feedback.
         # So to ensure the best experience for devs using VSCode, try to disable dialyzer
         # warnings using the `@dialyzer` module attribute
+      ],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
       ]
     ]
   end
@@ -38,8 +47,9 @@ defmodule ElixirAnalyzer.MixProject do
   defp deps do
     [
       {:jason, "~> 1.2"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.14", only: :test}
     ]
   end
 

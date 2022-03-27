@@ -14,7 +14,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   #
 
   feature "has spec" do
-    # status :skip
     find :all
     type :actionable
     comment Constants.solution_use_specification()
@@ -25,7 +24,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "has wrong spec" do
-    # status      :skip
     find :all
     type :actionable
     suppress_if "has spec", :fail
@@ -37,7 +35,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "has default parameter" do
-    # status :skip
     find :any
     type :actionable
     comment Constants.two_fer_use_default_parameter()
@@ -63,7 +60,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "uses function header" do
-    # status   :skip
     find :none
     type :actionable
     comment Constants.two_fer_use_of_function_header()
@@ -74,7 +70,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "uses guards" do
-    # status :skip
     find :any
     type :actionable
     comment Constants.two_fer_use_guards()
@@ -89,7 +84,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "uses function level guard" do
-    # status      :skip
     find :any
     type :actionable
     suppress_if "uses guards", :fail
@@ -113,7 +107,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "uses auxiliary functions" do
-    # status   :skip
     find :none
     type :actionable
     comment Constants.two_fer_use_of_aux_functions()
@@ -124,7 +117,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "uses string interpolation" do
-    # status :skip
     find :any
     type :actionable
     comment Constants.two_fer_use_string_interpolation()
@@ -135,7 +127,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "first level @moduledoc recommended" do
-    # status :skip
     find :all
     type :informative
     comment Constants.solution_use_moduledoc()

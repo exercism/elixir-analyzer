@@ -8,4 +8,6 @@ defmodule Lasagna do
   # TODO: define the 'total_time_in_minutes/2' function
 
   # TODO: define the 'alarm/0' function
+
+  def public_helper(_pasta), do: :delicious
 end

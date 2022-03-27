@@ -6,22 +6,19 @@ defmodule ElixirAnalyzer.CLI do
   @usage """
   Usage:
 
-    $ elixir_analyzer <exercise-name> <input path> <output path>  [options]
+    $ elixir_analyzer <exercise-name> <input path> <output path> [options]
 
   You may also pass the following options:
-    --skip-analysis                       flag skips running the static analysis
-    --output-file <filename>
-
-  You may also test only individual files :
-    (assuming analyzer tests are compiled for the named module)
-
-    $ exercism_analyzer --analyze-file <full-path-to-.ex>:<module-name>
+    --help                          see this message
+    --output-file <filename>        output file name (default: analysis.json)
+    --no-write-results              doesn't write to JSON file
+    --no-puts-summary               doesn't print summary to stdio
   """
 
   @options [
-    {{:skip_analyze, :boolean}, false},
     {{:output_file, :string}, "analysis.json"},
-    {{:analyze_file, :string}, nil},
+    {{:write_results, :boolean}, true},
+    {{:puts_summary, :boolean}, true},
     {{:help, :boolean}, false}
   ]
 
@@ -30,45 +27,27 @@ defmodule ElixirAnalyzer.CLI do
     args |> parse_args() |> process()
   end
 
-  def parse_args(args) do
-    options = %{
-      :output_file => "analysis.json"
-    }
+  defp parse_args(args) do
+    default_ops = for({{key, _}, val} <- @options, do: {key, val}, into: %{})
 
-    cmd_opts =
-      OptionParser.parse(args,
-        strict: for({o, _} <- @options, do: o)
-      )
+    cmd_opts = OptionParser.parse(args, strict: for({o, _} <- @options, do: o))
 
     case cmd_opts do
       {[help: true], _, _} ->
         :help
 
-      {[analyze_file: target], _, _} ->
-        [full_path, module] = String.split(target, ":", trim: true)
-        path = Path.dirname(full_path)
-        file = Path.basename(full_path)
-        {Enum.into([module: module, file: file], options), "undefined", path}
-
       {opts, [exercise, input_path, output_path], _} ->
-        {Enum.into(opts, options), exercise, input_path, output_path}
+        {Enum.into(opts, default_ops), exercise, input_path, output_path}
     end
   rescue
     _ -> :help
   end
 
-  def process(:help), do: IO.puts(@usage)
+  defp process(:help), do: IO.puts(@usage)
 
-  def process({options, exercise, input_path, output_path}) do
-    opts = get_default_options(options)
+  defp process({options, exercise, input_path, output_path}) do
+    opts = Map.to_list(options)
+
     ElixirAnalyzer.analyze_exercise(exercise, input_path, output_path, opts)
-  end
-
-  defp get_default_options(options) do
-    @options
-    |> Enum.reduce(options, fn {{option, _}, default}, acc ->
-      Map.put_new(acc, option, default)
-    end)
-    |> Map.to_list()
   end
 end

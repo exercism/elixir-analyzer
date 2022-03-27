@@ -126,7 +126,7 @@ defmodule ElixirAnalyzer.ExerciseTest.FreelancerRatesTest do
           before_discount - before_discount * (discount / 100.0)
         end
 
-        def some_other_function() do
+        defp some_other_function() do
           apply_discount(100, 3)
         end
       end

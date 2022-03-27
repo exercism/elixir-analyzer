@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.ModuleAttributeNames do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  @spec run(Macro.t()) :: [{:pass | :fail | :skip, %Comment{}}]
+  @spec run(Macro.t()) :: [{:pass | :fail, Comment.t()}]
   def run(ast) do
     {_, names} = Macro.prewalk(ast, [], &traverse/2)
     wrong_name = List.last(names)

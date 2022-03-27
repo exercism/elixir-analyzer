@@ -10,17 +10,16 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   """
 
   use ExUnit.CaseTemplate
+  alias ElixirAnalyzer.Source
 
   @dialyzer no_match: {:assert_comments, 3}
   @exercise_config Application.compile_env(:elixir_analyzer, :exercise_config)
-  @concept_exercice_path "elixir/exercises/concept"
-  @meta_config ".meta/config.json"
 
   using opts do
     quote do
       @exercise_test_module unquote(opts)[:exercise_test_module]
       @unsorted_comments unquote(opts)[:unsorted_comments]
-      @exemplar_code ElixirAnalyzer.ExerciseTestCase.find_exemplar_code(@exercise_test_module)
+      @source ElixirAnalyzer.ExerciseTestCase.find_source(@exercise_test_module)
       require ElixirAnalyzer.ExerciseTestCase
       import ElixirAnalyzer.ExerciseTestCase
       alias ElixirAnalyzer.Constants
@@ -65,11 +64,12 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     assertions_key_diff = assertions_keys -- supported_assertions_keys
 
     if assertions_keys == [] do
-      raise "Expected to receive at least one of the supported assertions: #{Enum.join(supported_assertions_keys)}"
+      supported = Enum.join(supported_assertions_keys, ", ")
+      raise "Expected to receive at least one of the supported assertions: #{supported}"
     end
 
     if assertions_key_diff != [] do
-      raise "Unsupported assertion received: #{Enum.join(assertions_key_diff)}"
+      raise "Unsupported assertions received: #{Enum.join(assertions_key_diff, ", ")}"
     end
 
     test_cases = List.wrap(test_cases)
@@ -91,14 +91,14 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
       quote line: line do
         test "#{unquote(test_name)}" do
+          source = %{@source | code_string: unquote(code)}
+
           empty_submission = %ElixirAnalyzer.Submission{
-            code_file: "",
-            code_path: "",
-            path: "",
+            source: source,
             analysis_module: ""
           }
 
-          result = @exercise_test_module.analyze(empty_submission, unquote(code), @exemplar_code)
+          result = @exercise_test_module.analyze(empty_submission)
 
           comments =
             result.comments
@@ -152,27 +152,76 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     end
   end
 
-  def assert_comments(_, _, _) do
-    :noop
+  # Return as much of the source data as can be found
+
+  @concept_exercise_path "elixir/exercises/concept"
+  @practice_exercise_path "elixir/exercises/practice"
+  @meta_config ".meta/config.json"
+  def find_source(test_module) do
+    %Source{}
+    |> find_source_slug(test_module)
+    |> find_source_type
+    |> find_source_exemploid_path
+    |> find_source_exemploid
   end
 
-  # Return the exemplar AST for concept exercises, or nil for pracices exercises and other tests
-  def find_exemplar_code(test_module) do
-    with {slug, _test_module} <-
-           Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1)),
-         {:ok, config_file} <-
-           Path.join([@concept_exercice_path, slug, @meta_config]) |> File.read() do
-      get_exemplar_ast!(config_file, slug)
-    else
-      _ -> nil
+  defp find_source_slug(source, test_module) do
+    match_slug = Enum.find(@exercise_config, &match?({_, %{analyzer_module: ^test_module}}, &1))
+
+    case match_slug do
+      {slug, _test_module} -> %{source | slug: slug}
+      _ -> source
     end
   end
 
-  defp get_exemplar_ast!(config_file_path, slug) do
-    %{"files" => %{"exemplar" => [path]}} = Jason.decode!(config_file_path)
+  defp find_source_type(%Source{slug: slug} = source) do
+    concept_ex = File.ls!(@concept_exercise_path)
+    practice_ex = File.ls!(@practice_exercise_path)
 
-    Path.join([@concept_exercice_path, slug, path])
-    |> File.read!()
-    |> Code.string_to_quoted!()
+    cond do
+      slug in concept_ex -> %{source | exercise_type: :concept}
+      slug in practice_ex -> %{source | exercise_type: :practice}
+      true -> source
+    end
   end
+
+  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :concept} = source) do
+    %{"files" => %{"exemplar" => [exemploid_path | _]}} =
+      [@concept_exercise_path, slug, @meta_config]
+      |> Path.join()
+      |> File.read!()
+      |> Jason.decode!()
+
+    exemploid_path = Path.join([@concept_exercise_path, slug, exemploid_path])
+    %{source | exemploid_path: exemploid_path}
+  end
+
+  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :practice} = source) do
+    %{"files" => %{"example" => [exemploid_path | _]}} =
+      [@practice_exercise_path, slug, @meta_config]
+      |> Path.join()
+      |> File.read!()
+      |> Jason.decode!()
+
+    exemploid_path = Path.join([@practice_exercise_path, slug, exemploid_path])
+
+    %{source | exemploid_path: exemploid_path}
+  end
+
+  defp find_source_exemploid_path(source), do: source
+
+  defp find_source_exemploid(%Source{exemploid_path: exemploid_path} = source)
+       when is_binary(exemploid_path) do
+    exemploid_string = File.read!(exemploid_path)
+
+    exemploid_ast =
+      exemploid_string
+      |> Code.format_string!(line_length: 120, force_do_end_blocks: true)
+      |> IO.iodata_to_binary()
+      |> Code.string_to_quoted!()
+
+    %{source | exemploid_string: exemploid_string, exemploid_ast: exemploid_ast}
+  end
+
+  defp find_source_exemploid(source), do: source
 end

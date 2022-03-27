@@ -6,7 +6,7 @@ Requirements:
 
 - See `mix.exs` for the required version of Elixir.
   - You may comment this out and run on an alternate version, but you may encounter problems.
-- Alternatively use [asdf][adsf].
+- Alternatively use [asdf][asdf].
 
 1. Clone the repo to your desired location.
 2. Make sure that you can build the _escript_ with `mix escript.build`.
