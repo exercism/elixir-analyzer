@@ -88,6 +88,178 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     end
   end
 
+  test_exercise_analysis "finds local calls if they use the module name to reference the function",
+    comments: [] do
+    [
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = AssertCallVerification.helper()
+          IO.puts(result)
+
+          AssertCallVerification.private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # call helper with capture notation
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = Enum.map(result, &AssertCallVerification.helper/0)
+          IO.puts(result)
+
+          private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # indirect call
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = AssertCallVerification.extra_helper()
+          IO.puts(result)
+
+          AssertCallVerification.private_helper() |> IO.puts()
+        end
+
+        def extra_helper() do
+          AssertCallVerification.helper()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "finds local calls if they use __MODULE__ to reference the function",
+    comments: [] do
+    [
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = __MODULE__.helper()
+          IO.puts(result)
+
+          __MODULE__.private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # call helper with capture notation
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = Enum.map(result, &__MODULE__.helper/0)
+          IO.puts(result)
+
+          private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # indirect call
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = __MODULE__.extra_helper()
+          IO.puts(result)
+
+          __MODULE__.private_helper() |> IO.puts()
+        end
+
+        def extra_helper() do
+          __MODULE__.helper()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "doesn't find local calls if they're same-named functions from a different module",
+    comments: [
+      "didn't find a local call to helper/0",
+      "didn't find a local call to helper/0 within function/0",
+      "didn't find a local call to private_helper/0",
+      "didn't find a local call to private_helper/0 within function/0"
+    ] do
+    [
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = OtherModule.helper()
+          IO.puts(result)
+
+          OtherModule.private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end,
+      # call helper with capture notation
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = Enum.map(result, &OtherModule.helper/0)
+          IO.puts(result)
+
+          OtherModule.private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "missing call to IO.puts/1 in solution",
     comments: [
       "didn't find a call to IO.puts/1 anywhere in solution",

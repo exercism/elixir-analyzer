@@ -8,6 +8,8 @@ assert_call "description" do
 end
 ```
 
+This will also find local calls that reference the module by name or by `__MODULE__`.
+
 ## Find function call by module name and function name (any arity, any argument names)
 
 ```elixir

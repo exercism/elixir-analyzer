@@ -66,6 +66,24 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           final_function(:math.pi())
         end
       end,
+      # via two helpers unnecessarily referencing the module in local calls
+      defmodule AssertCallVerification do
+        def main_function() do
+          AssertCallVerification.helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          __MODULE__.helper_2(path)
+        end
+
+        def helper_2(path) do
+          Elixir.Mix.Utils.read_path(path)
+
+          :math.pi()
+          |> AssertCallVerification.final_function()
+        end
+      end,
       # Full path for the helper function
       defmodule AssertCallVerification do
         def main_function() do
@@ -200,7 +218,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
       end,
       defmodule AssertCallVerification do
         # Internal modules don't fool assert_call
-        defmodule UnrelateInternaldModule do
+        defmodule UnrelatedInternalModule do
           def main_function() do
             helper("")
             |> do_something()
