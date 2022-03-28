@@ -68,6 +68,81 @@ defmodule ElixirAnalyzer.ExerciseTest.BoutiqueInventoryTest do
       end
     end
 
+    test_exercise_analysis "update_names should use Enum.map",
+      comments_include: [
+        ElixirAnalyzer.Constants.boutique_inventory_use_enum_map()
+      ] do
+      defmodule BoutiqueInventory do
+        def update_names(inventory, old_word, new_word) do
+          Enum.reduce(inventory, [], fn item, acc ->
+            item =
+              Map.update!(item, :name, fn name -> String.replace(name, old_word, new_word) end)
+
+            [item | acc]
+          end)
+          |> Enum.reverse()
+        end
+      end
+    end
+
+    test_exercise_analysis "increase_quantity should use either Enum.into or Map.new",
+      comments_exclude: [
+        ElixirAnalyzer.Constants.boutique_inventory_increase_quantity_best_function_choice()
+      ] do
+      [
+        defmodule BoutiqueInventory do
+          def increase_quantity(item, count) do
+            Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+              quantity_by_size
+              |> Enum.into(%{}, fn {size, quantity} -> {size, quantity + count} end)
+            end)
+          end
+        end,
+        defmodule BoutiqueInventory do
+          def increase_quantity(item, count) do
+            Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+              quantity_by_size
+              |> Map.new(fn {size, quantity} -> {size, quantity + count} end)
+            end)
+          end
+        end
+      ]
+    end
+
+    test_exercise_analysis "increase_quantity should use just Enum.into instead of Enum.map + Enum.into or something else",
+      comments_include: [
+        ElixirAnalyzer.Constants.boutique_inventory_increase_quantity_best_function_choice()
+      ] do
+      [
+        defmodule BoutiqueInventory do
+          def increase_quantity(item, count) do
+            Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+              quantity_by_size
+              |> Enum.map(fn {size, quantity} -> {size, quantity + count} end)
+              |> Enum.into(%{})
+            end)
+          end
+        end,
+        def increase_quantity(item, count) do
+          Map.update(item, :quantity_by_size, %{}, fn quantity_by_size ->
+            quantity_by_size
+            |> Map.keys()
+            |> Enum.reduce(item.quantity_by_size, fn size, acc ->
+              Map.update!(acc, size, &(&1 + count))
+            end)
+          end)
+        end,
+        def increase_quantity(item, count) do
+          item.quantity_by_size
+          |> Map.keys()
+          |> Enum.map(&[:quantity_by_size, &1])
+          |> Enum.reduce(item, fn keys, acc ->
+            update_in(acc, keys, &(&1 + count))
+          end)
+        end
+      ]
+    end
+
     test_exercise_analysis "total_quantity not using Enum.reduce",
       comments_include: [ElixirAnalyzer.Constants.boutique_inventory_use_enum_reduce()] do
       defmodule BoutiqueInventory do
