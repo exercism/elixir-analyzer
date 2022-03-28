@@ -47,9 +47,7 @@ defmodule ElixirAnalyzer.CLITest do
 
   setup do
     on_exit(fn ->
-      File.ls!(@lasagna_path)
-      |> Enum.filter(&String.ends_with?(&1, ".json"))
-      |> Enum.each(&File.rm(Path.join(@lasagna_path, &1)))
+      Enum.each(["analysis.json", "output.json"], &File.rm(Path.join(@lasagna_path, &1)))
     end)
   end
 
