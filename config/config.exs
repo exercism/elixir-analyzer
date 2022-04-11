@@ -102,6 +102,9 @@ config :elixir_analyzer,
     "take-a-number" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TakeANumber
     },
+    "take-a-number-deluxe" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.TakeANumberDeluxe
+    },
     "top-secret" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.TopSecret
     },

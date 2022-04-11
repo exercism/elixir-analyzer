@@ -167,6 +167,11 @@ defmodule ElixirAnalyzer.Constants do
     # Take A Number Comments
     take_a_number_do_not_use_abstractions: "elixir.take-a-number.do_not_use_abstractions",
 
+    # Take A Number Deluxe Comments
+    take_a_number_deluxe_use_genserver: "elixir.take-a-number-deluxe.use_genserver",
+    take_a_number_deluxe_annotate_impl_genserver:
+      "elixir.take-a-number-deluxe.annotate_impl_genserver",
+
     # Top Secret Comments
     top_secret_function_reuse: "elixir.top-secret.function_reuse",
 
