@@ -41,7 +41,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionCapture do
 
   defp annotate(node, acc), do: {node, acc}
 
-  @exceptions [:<<>>, :{}]
+  @exceptions [:<<>>, :{}, :%{}]
   defp find_anonymous(
          {:&, _, [{name, _, args}]} = node,
          %{capture_depth: depth, functions: functions}
