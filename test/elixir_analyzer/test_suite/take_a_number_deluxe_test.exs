@@ -89,8 +89,8 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
       end
 
       @impl GenServer
-      def handle_info(:timeout, _state) do
-        exit(:normal)
+      def handle_info(:timeout, state) do
+        {:stop, :normal, state}
       end
 
       @impl GenServer
