@@ -15,7 +15,7 @@ defmodule ElixirAnalyzer.ExerciseTest.LanguageListTest do
 
       def count(list), do: length(list)
 
-      def exciting_list?(list), do: "Elixir" in list
+      def functional_list?(list), do: "Elixir" in list
     end
   end
 
@@ -53,22 +53,22 @@ defmodule ElixirAnalyzer.ExerciseTest.LanguageListTest do
         def count(list), do: E.count(list)
       end,
       defmodule LanguageList do
-        def exciting_list?(list), do: Enum.any?(list, &(&1 == "Elixir"))
+        def functional_list?(list), do: Enum.any?(list, &(&1 == "Elixir"))
       end,
       defmodule LanguageList do
-        def exciting_list?(list), do: Enum.filter(list, &(&1 == "Elixir")) != []
+        def functional_list?(list), do: Enum.filter(list, &(&1 == "Elixir")) != []
       end,
       defmodule LanguageList do
         import Enum
-        def exciting_list?(list), do: any?(list, &(&1 == "Elixir"))
+        def functional_list?(list), do: any?(list, &(&1 == "Elixir"))
       end,
       defmodule LanguageList do
         import Enum, only: [any?: 2]
-        def exciting_list?(list), do: any?(list, &(&1 == "Elixir"))
+        def functional_list?(list), do: any?(list, &(&1 == "Elixir"))
       end,
       defmodule LanguageList do
         alias Enum, as: E
-        def exciting_list?(list), do: E.any?(list, &(&1 == "Elixir"))
+        def functional_list?(list), do: E.any?(list, &(&1 == "Elixir"))
       end
     ]
   end
