@@ -58,7 +58,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
         {:cont, %{chunk | context: context}}
 
       {:context, context}, %{context: _} = chunk ->
-        {:cont, chunk, %{context: context, name: nil, operations: []}}
+        {:cont, %{chunk | operations: Enum.reverse(chunk.operations)},
+         %{context: context, name: nil, operations: []}}
 
       {op, name}, %{name: name, operations: ops} = chunk ->
         {:cont, %{chunk | operations: [op | ops]}}
