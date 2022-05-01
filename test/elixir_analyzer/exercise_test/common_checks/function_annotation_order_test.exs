@@ -278,6 +278,69 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           @doc ""
           def x(), do: 1
         end
+      end,
+      # chriseyre2000's solution to grade-school
+      defmodule School do
+        @moduledoc """
+        Simulate students in a school.
+
+        Each student is in a grade.
+        """
+        @type school :: any()
+        @doc """
+        Create a new, empty school.
+        """
+        @spec new() :: school
+        def new() do
+          %{}
+        end
+
+        @doc """
+        Add a student to a particular grade in school.
+        """
+        @spec add(school, String.t(), integer) :: {:ok | :error, school}
+        def add(school, name, grade) do
+          if school |> Map.get(name) != nil do
+            {:error, school}
+          else
+            {:ok, school |> Map.put(name, grade)}
+          end
+        end
+
+        @doc """
+        Return the names of the students in a particular grade, sorted alphabetically.
+        """
+        @spec grade(school, integer) :: [String.t()]
+        def grade(school, grade) do
+          for({k, v} <- school, v == grade, do: k) |> Enum.sort()
+        end
+
+        @doc """
+        Return the names of all the students in the school sorted by grade and name.
+        """
+        @spec roster(school) :: [String.t()]
+        def roster(school) do
+          for({k, v} <- school, do: {k, v})
+          |> Enum.sort(School.Sorting)
+          |> Enum.map(&elem(&1, 0))
+        end
+
+        defmodule Sorting do
+          @doc """
+          Provides a compare function
+          """
+          @spec compare(first :: {String.t(), integer}, second :: {String.t(), integer}) ::
+                  :gt | :lt | :eq
+          def compare({name, grade}, {name2, grade2}) do
+            cond do
+              grade > grade2 -> :gt
+              grade < grade2 -> :lt
+              name > name2 -> :gt
+              name < name2 -> :lt
+              true -> :eq
+            end
+          end
+        end
       end
     ]
   end
