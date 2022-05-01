@@ -21,9 +21,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     |> check_errors()
   end
 
-  defp traverse({:defmodule, _, [{:__aliases__, _, aliases}, [do: do_block]]}, acc) do
+  defp traverse({:defmodule, _, [{:__aliases__, _, aliases}, _]} = ast, acc) do
     context = {:context, Module.concat(aliases)}
-    {do_block, [context | acc]}
+    {ast, [context | acc]}
   end
 
   defp traverse({:@, _meta, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
