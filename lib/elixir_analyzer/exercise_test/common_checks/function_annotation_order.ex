@@ -52,27 +52,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     {ast, acc}
   end
 
-  defp check_errors(attrs) do
-    Enum.reduce(attrs, [], &check_wrong_order/2)
-  end
-
-  defp check_wrong_order(attr, acc) do
-    case attr.operations do
-      [:spec, :doc | _] ->
-        [order_error_msg()]
-
-      [hd | tl] when hd in @def_ops ->
-        if :spec in tl or :doc in tl do
-          [order_error_msg()]
-        else
-          acc
-        end
-
-      _ ->
-        acc
-    end
-  end
-
   defp chunk_definitions(definitions) do
     chunk_fun = fn
       {:context, context}, %{context: nil} = chunk ->
@@ -133,6 +112,27 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
   defp do_merge_definitions([], acc) do
     Enum.reverse(acc)
+  end
+
+  defp check_errors(attrs) do
+    Enum.reduce(attrs, [], &check_wrong_order/2)
+  end
+
+  defp check_wrong_order(attr, acc) do
+    case attr.operations do
+      [:spec, :doc | _] ->
+        [order_error_msg()]
+
+      [hd | tl] when hd in @def_ops ->
+        if :spec in tl or :doc in tl do
+          [order_error_msg()]
+        else
+          acc
+        end
+
+      _ ->
+        acc
+    end
   end
 
   defp order_error_msg() do
