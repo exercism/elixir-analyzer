@@ -279,6 +279,23 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           def x(), do: 1
         end
       end,
+      defmodule Main do
+        defmodule Sub do
+          def y(), do: 0
+          def x(), do: 1
+        end
+
+        @spec x() :: integer()
+        def x(), do: 2
+      end,
+      defmodule Main do
+        defmodule Sub do
+          def x(), do: 1
+        end
+
+        @spec x() :: integer()
+        def x(), do: 2
+      end,
       # chriseyre2000's solution to grade-school
       defmodule School do
         @moduledoc """
