@@ -12,55 +12,63 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
 
   def run(ast) do
-    {_, attrs} = Macro.prewalk(ast, [], &traverse/2)
+    acc = %{module: [], definitions: %{}}
+    {_, %{definitions: definitions}} = Macro.traverse(ast, acc, &enter_node/2, &exit_node/2)
 
-    attrs
-    |> Enum.reverse()
-    |> chunk_definitions()
-    |> merge_definitions()
+    definitions
+    |> Enum.flat_map(fn {_module, ops} ->
+      ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()
+    end)
     |> check_errors()
   end
 
-  defp traverse({:defmodule, _, [{:__aliases__, _, aliases}, _]} = ast, acc) do
-    context = {:context, Module.concat(aliases)}
-    {ast, [context | acc]}
+  defp enter_node({:defmodule, _, [{:__aliases__, _, aliases}, _]} = ast, acc) do
+    module = [aliases | acc.module]
+    definitions = Map.put(acc.definitions, module, [])
+    {ast, %{module: module, definitions: definitions}}
   end
 
-  defp traverse({:@, _meta, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
-    {ast, [{:spec, fn_name} | acc]}
+  defp enter_node({:@, _, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
+    definitions = Map.update!(acc.definitions, acc.module, &[{:spec, fn_name} | &1])
+    {ast, %{acc | definitions: definitions}}
   end
 
-  defp traverse({:@, _, [{:spec, _, [{fn_name, _, _}]}]} = ast, acc) do
-    {ast, [{:spec, fn_name} | acc]}
+  defp enter_node({:@, _, [{:spec, _, [{fn_name, _, _}]}]} = ast, acc) do
+    definitions = Map.update!(acc.definitions, acc.module, &[{:spec, fn_name} | &1])
+    {ast, %{acc | definitions: definitions}}
   end
 
-  defp traverse({:@, _, [{:doc, _, _}]} = ast, acc) do
-    {ast, [:doc | acc]}
+  defp enter_node({:@, _, [{:doc, _, _}]} = ast, acc) do
+    definitions = Map.update!(acc.definitions, acc.module, &[:doc | &1])
+    {ast, %{acc | definitions: definitions}}
   end
 
-  defp traverse({op, _, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
+  defp enter_node({op, _, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
        when op in @def_ops do
-    {ast, [{op, fn_name} | acc]}
+    definitions = Map.update!(acc.definitions, acc.module, &[{op, fn_name} | &1])
+    {ast, %{acc | definitions: definitions}}
   end
 
-  defp traverse({op, _, [{fn_name, _, _} | _]} = ast, acc)
+  defp enter_node({op, _, [{fn_name, _, _} | _]} = ast, acc)
        when op in @def_ops do
-    {ast, [{op, fn_name} | acc]}
+    definitions = Map.update!(acc.definitions, acc.module, &[{op, fn_name} | &1])
+    {ast, %{acc | definitions: definitions}}
   end
 
-  defp traverse(ast, acc) do
+  defp enter_node(ast, acc) do
+    {ast, acc}
+  end
+
+  defp exit_node({:defmodule, _, _} = ast, %{module: module} = acc) do
+    {ast, %{acc | module: tl(module)}}
+  end
+
+  defp exit_node(ast, acc) do
     {ast, acc}
   end
 
   defp chunk_definitions(definitions) do
     chunk_fun = fn
-      {:context, context}, %{context: nil} = chunk ->
-        {:cont, %{chunk | context: context}}
-
-      {:context, context}, %{context: _} = chunk ->
-        {:cont, %{chunk | operations: Enum.reverse(chunk.operations)},
-         %{context: context, name: nil, operations: []}}
-
       {op, name}, %{name: name, operations: ops} = chunk ->
         {:cont, %{chunk | operations: [op | ops]}}
 
@@ -68,8 +76,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
         {:cont, %{chunk | name: name, operations: [op | ops]}}
 
       {op, name}, %{operations: ops} = chunk ->
-        {:cont, %{chunk | operations: Enum.reverse(ops)},
-         %{context: chunk.context, name: name, operations: [op]}}
+        {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: name, operations: [op]}}
 
       :doc, %{name: nil, operations: ops} = chunk ->
         {:cont, %{chunk | operations: [:doc | ops]}}
@@ -78,13 +85,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
         {:cont, %{chunk | operations: [:doc | ops]}}
 
       :doc, %{operations: ops} = chunk ->
-        {:cont, %{chunk | operations: Enum.reverse(ops)},
-         %{context: chunk.context, name: nil, operations: [:doc]}}
+        {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: nil, operations: [:doc]}}
     end
 
     Enum.chunk_while(
       definitions,
-      %{name: nil, operations: [], context: nil},
+      %{name: nil, operations: []},
       chunk_fun,
       &{:cont, %{&1 | operations: Enum.reverse(&1.operations)}, nil}
     )
@@ -98,7 +104,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   end
 
   defp do_merge_definitions([first | [second | rest] = tail], acc) do
-    if (first.name == second.name || second.name == nil) and first.context == second.context do
+    if first.name == second.name || second.name == nil do
       do_merge_definitions(rest, [
         %{name: first.name, operations: first.operations ++ second.operations} | acc
       ])
