@@ -150,7 +150,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     comments: [] do
     [
       defmodule Test do
-        @spec is_one(integer()) :: integer()
+        @spec one?(integer()) :: integer()
         def one?(1), do: true
         def one?(2), do: false
         def one?(3), do: false
@@ -164,7 +164,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     comments: [] do
     [
       defmodule Test do
-        @spec is_one(number)
+        @spec one?(number)
         def one?(number), do: number == 1
       end
     ]
@@ -255,6 +255,46 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         def test(x), do: x
         @doc "just a test function"
+      end
+    ]
+  end
+
+  test_exercise_analysis "overloading specifications is ok",
+    comments: [] do
+    [
+      defmodule Test do
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        def function(:one), do: 1
+      end
+    ]
+  end
+
+  test_exercise_analysis "doc between overloading specifications should crash",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec function(integer) :: atom
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        def function(:one), do: 1
+      end,
+      defmodule Test do
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        def function(1), do: :one
+        def function(:one), do: 1
+      end,
+      defmodule Test do
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        def function(:one), do: 1
       end
     ]
   end
