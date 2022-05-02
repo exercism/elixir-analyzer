@@ -12,7 +12,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   @def_ops [:def, :defmacro]
 
   def run(ast) do
-    acc = %{module: [], definitions: %{}}
+    acc = %{module: [], definitions: %{[] => []}}
     {_, %{definitions: definitions}} = Macro.traverse(ast, acc, &enter_node/2, &exit_node/2)
 
     definitions
