@@ -69,20 +69,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
   defp chunk_definitions(definitions) do
     chunk_fun = fn
-      {op, name}, %{name: name, operations: ops} = chunk ->
-        {:cont, %{chunk | operations: [op | ops]}}
-
       {op, name}, %{name: nil, operations: ops} = chunk ->
         {:cont, %{chunk | name: name, operations: [op | ops]}}
 
+      {op, name}, %{name: name, operations: ops} = chunk ->
+        {:cont, %{chunk | operations: [op | ops]}}
+
       {op, name}, %{operations: ops} = chunk ->
         {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: name, operations: [op]}}
-
-      :doc, %{name: nil, operations: ops} = chunk ->
-        {:cont, %{chunk | operations: [:doc | ops]}}
-
-      :doc, %{operations: [:spec] = ops} = chunk ->
-        {:cont, %{chunk | operations: [:doc | ops]}}
 
       :doc, %{operations: ops} = chunk ->
         {:cont, %{chunk | operations: Enum.reverse(ops)}, %{name: nil, operations: [:doc]}}
@@ -97,57 +91,42 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   end
 
   defp merge_definitions(definitions) do
-    case definitions do
-      [_] -> definitions
-      definitions -> do_merge_definitions(definitions, [])
-    end
-  end
+    Enum.reduce(
+      definitions,
+      [],
+      fn
+        %{name: def_name} = definition, [%{name: chunk_name} = chunk | chunks]
+        when is_nil(def_name) or def_name == chunk_name ->
+          [%{chunk | operations: chunk.operations ++ definition.operations} | chunks]
 
-  defp do_merge_definitions([first | [second | rest] = tail], acc) do
-    if first.name == second.name || second.name == nil do
-      do_merge_definitions(rest, [
-        %{name: first.name, operations: first.operations ++ second.operations} | acc
-      ])
-    else
-      do_merge_definitions(tail, [first | acc])
-    end
-  end
-
-  defp do_merge_definitions([hd | tail], acc) do
-    do_merge_definitions(tail, [hd | acc])
-  end
-
-  defp do_merge_definitions([], acc) do
-    Enum.reverse(acc)
+        definition, chunks ->
+          [definition | chunks]
+      end
+    )
   end
 
   defp check_errors(attrs) do
-    Enum.reduce(attrs, [], &check_wrong_order/2)
-  end
-
-  defp check_wrong_order(attr, acc) do
-    case attr.operations do
-      [:spec, :doc | _] ->
-        [order_error_msg()]
-
-      [hd | tl] when hd in @def_ops ->
-        if :spec in tl or :doc in tl do
-          [order_error_msg()]
-        else
-          acc
-        end
-
-      _ ->
-        acc
+    if Enum.any?(attrs, &check_wrong_order/1) do
+      [
+        {:fail,
+         %Comment{
+           type: :informative,
+           name: Constants.solution_function_annotation_order(),
+           comment: Constants.solution_function_annotation_order()
+         }}
+      ]
+    else
+      []
     end
   end
 
-  defp order_error_msg() do
-    {:fail,
-     %Comment{
-       type: :informative,
-       name: Constants.solution_function_annotation_order(),
-       comment: Constants.solution_function_annotation_order()
-     }}
+  defp check_wrong_order(%{operations: operations}) do
+    Enum.uniq(operations) not in [
+      [],
+      [:def],
+      [:spec, :def],
+      [:doc, :def],
+      [:doc, :spec, :def]
+    ]
   end
 end
