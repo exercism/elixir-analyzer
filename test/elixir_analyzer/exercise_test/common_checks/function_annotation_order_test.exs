@@ -397,4 +397,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       end
     ]
   end
+
+  test_exercise_analysis "can handle test snippets without module definition",
+    comments: [] do
+    [
+      def function() do
+        :ok
+      end
+    ]
+  end
 end
