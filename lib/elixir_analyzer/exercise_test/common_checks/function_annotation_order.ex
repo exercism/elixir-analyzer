@@ -9,7 +9,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   Common check to be run on every single solution.
   """
 
-  @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
+  @def_ops [:def, :defmacro]
 
   def run(ast) do
     acc = %{module: [], definitions: %{}}
@@ -124,9 +124,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     Enum.uniq(operations) not in [
       [],
       [:def],
+      [:defmacro],
       [:spec, :def],
+      [:spec, :defmacro],
       [:doc, :def],
-      [:doc, :spec, :def]
+      [:doc, :defmacro],
+      [:doc, :spec, :def],
+      [:doc, :spec, :defmacro]
     ]
   end
 end
