@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     end
   end
 
-  test_exercise_analysis "works for def, defp, defmacro, defmacrop, defguard, and defguardp",
+  test_exercise_analysis "works for def and defmacro",
     comments: [Constants.solution_function_annotation_order()] do
     [
       defmodule Test do
@@ -28,27 +28,23 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         @spec x()
         @doc ""
-        defp x()
-      end,
-      defmodule Test do
-        @spec x()
-        @doc ""
         defmacro x()
+      end
+    ]
+  end
+
+  test_exercise_analysis "correct order for def and defmacro is ok",
+    comments: [] do
+    [
+      defmodule Test do
+        @doc ""
+        @spec x()
+        def x()
       end,
       defmodule Test do
-        @spec x()
         @doc ""
-        defmacrop x()
-      end,
-      defmodule Test do
         @spec x()
-        @doc ""
-        defguard x()
-      end,
-      defmodule Test do
-        @spec x()
-        @doc ""
-        defguardp x()
+        defmacro x()
       end
     ]
   end
