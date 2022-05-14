@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     end
   end
 
-  test_exercise_analysis "works for def, defp, defmacro, defmacrop, defguard, and defguardp",
+  test_exercise_analysis "works for def and defmacro",
     comments: [Constants.solution_function_annotation_order()] do
     [
       defmodule Test do
@@ -28,27 +28,23 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         @spec x()
         @doc ""
-        defp x()
-      end,
-      defmodule Test do
-        @spec x()
-        @doc ""
         defmacro x()
+      end
+    ]
+  end
+
+  test_exercise_analysis "correct order for def and defmacro is ok",
+    comments: [] do
+    [
+      defmodule Test do
+        @doc ""
+        @spec x()
+        def x()
       end,
       defmodule Test do
-        @spec x()
         @doc ""
-        defmacrop x()
-      end,
-      defmodule Test do
         @spec x()
-        @doc ""
-        defguard x()
-      end,
-      defmodule Test do
-        @spec x()
-        @doc ""
-        defguardp x()
+        defmacro x()
       end
     ]
   end
@@ -150,7 +146,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     comments: [] do
     [
       defmodule Test do
-        @spec is_one(integer()) :: integer()
+        @spec one?(integer()) :: integer()
         def one?(1), do: true
         def one?(2), do: false
         def one?(3), do: false
@@ -164,7 +160,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     comments: [] do
     [
       defmodule Test do
-        @spec is_one(number)
+        @spec one?(number)
         def one?(number), do: number == 1
       end
     ]
@@ -259,6 +255,46 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     ]
   end
 
+  test_exercise_analysis "overloading specifications is ok",
+    comments: [] do
+    [
+      defmodule Test do
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        def function(:one), do: 1
+      end
+    ]
+  end
+
+  test_exercise_analysis "doc between overloading specifications should crash",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec function(integer) :: atom
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        def function(:one), do: 1
+      end,
+      defmodule Test do
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        def function(1), do: :one
+        def function(:one), do: 1
+      end,
+      defmodule Test do
+        @spec function(integer) :: atom
+        @spec function(atom) :: integer
+        def function(1), do: :one
+        @doc "https://hexdocs.pm/elixir/typespecs.html#defining-a-specification"
+        def function(:one), do: 1
+      end
+    ]
+  end
+
   test_exercise_analysis "sub-modules should not raise false positive error",
     comments: [] do
     [
@@ -278,6 +314,95 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           @doc ""
           def x(), do: 1
         end
+      end,
+      defmodule Main do
+        defmodule Sub do
+          def y(), do: 0
+          def x(), do: 1
+        end
+
+        @spec x() :: integer()
+        def x(), do: 2
+      end,
+      defmodule Main do
+        defmodule Sub do
+          def x(), do: 1
+        end
+
+        @spec x() :: integer()
+        def x(), do: 2
+      end,
+      # chriseyre2000's solution to grade-school
+      defmodule School do
+        @moduledoc """
+        Simulate students in a school.
+
+        Each student is in a grade.
+        """
+        @type school :: any()
+        @doc """
+        Create a new, empty school.
+        """
+        @spec new() :: school
+        def new() do
+          %{}
+        end
+
+        @doc """
+        Add a student to a particular grade in school.
+        """
+        @spec add(school, String.t(), integer) :: {:ok | :error, school}
+        def add(school, name, grade) do
+          if school |> Map.get(name) != nil do
+            {:error, school}
+          else
+            {:ok, school |> Map.put(name, grade)}
+          end
+        end
+
+        @doc """
+        Return the names of the students in a particular grade, sorted alphabetically.
+        """
+        @spec grade(school, integer) :: [String.t()]
+        def grade(school, grade) do
+          for({k, v} <- school, v == grade, do: k) |> Enum.sort()
+        end
+
+        @doc """
+        Return the names of all the students in the school sorted by grade and name.
+        """
+        @spec roster(school) :: [String.t()]
+        def roster(school) do
+          for({k, v} <- school, do: {k, v})
+          |> Enum.sort(School.Sorting)
+          |> Enum.map(&elem(&1, 0))
+        end
+
+        defmodule Sorting do
+          @doc """
+          Provides a compare function
+          """
+          @spec compare(first :: {String.t(), integer}, second :: {String.t(), integer}) ::
+                  :gt | :lt | :eq
+          def compare({name, grade}, {name2, grade2}) do
+            cond do
+              grade > grade2 -> :gt
+              grade < grade2 -> :lt
+              name > name2 -> :gt
+              name < name2 -> :lt
+              true -> :eq
+            end
+          end
+        end
+      end
+    ]
+  end
+
+  test_exercise_analysis "can handle test snippets without module definition",
+    comments: [] do
+    [
+      def function() do
+        :ok
       end
     ]
   end
