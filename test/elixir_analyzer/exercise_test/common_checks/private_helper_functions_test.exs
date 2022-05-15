@@ -13,6 +13,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
                 |> File.read!()
                 |> Code.string_to_quoted()
 
+  @poker_example "elixir/exercises/practice/poker/.meta/example.ex"
+                 |> File.read!()
+                 |> Code.string_to_quoted()
+
   @comment %Comment{
     type: :informative,
     comment: Constants.solution_private_helper_functions(),
@@ -583,6 +587,275 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
       }
 
       assert PrivateHelperFunctions.run(code, @remote_control_car_exemplar) == [{:fail, comment}]
+    end
+  end
+
+  describe "practice exercise with poker" do
+    test "allows a compare/2 function for Enum.sort/2" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              Enum.sort(hands, Poker)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort/2 desc" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              Enum.sort(hands, {:desc, Poker})
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort/2 with __MODULE__" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              Enum.sort(hands, __MODULE__)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort/2 with piping" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              hands |> Enum.sort(Poker)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort/2 with piping and __MODULE__" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              hands |> Enum.sort(__MODULE__)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort_by/3" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              Enum.sort_by(hands, & &1, Poker)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort_by/3 with piping" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              hands |> Enum.sort_by(& &1, Poker)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "allows a compare/2 function for Enum.sort_by/3 with piping and __MODULE__" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              hands |> Enum.sort_by(& &1, __MODULE__)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == []
+    end
+
+    test "compare must be of arity 2" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              hands |> Enum.sort(__MODULE__)
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}, opts \\ []) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{actual: "def compare(_, _, _)", expected: "defp compare(_, _, _)"}
+      }
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == [{:fail, comment}]
+    end
+
+    test "doesn't allow a compare/2 function when not used" do
+      code =
+        quote do
+          defmodule Poker do
+            def best_hand(hands) do
+              Enum.sort(hands)
+              Enum.sort_by(hands, & &1)
+
+              Enum.sort(hands, :desc)
+              Enum.sort_by(hands, & &1, :desc)
+
+              Enum.sort(hands, {:asc, Poker.InnerModule})
+              Enum.sort_by(hands, & &1, {:asc, Poker.InnerModule})
+            end
+
+            @ranks ~w(2 3 4 5 6 7 8 9 10 J Q K A)
+            defp index_of({_, rank}), do: index_of(rank)
+            defp index_of(rank), do: Enum.find_index(@ranks, &(&1 == rank))
+
+            def compare({_, first_rank}, {_, second_rank}) do
+              cond do
+                first_rank == second_rank -> :eq
+                index_of(first_rank) > index_of(second_rank) -> :gt
+                true -> :lt
+              end
+            end
+          end
+        end
+
+      comment = %{
+        @comment
+        | params: %{actual: "def compare(_, _)", expected: "defp compare(_, _)"}
+      }
+
+      assert PrivateHelperFunctions.run(code, @poker_example) == [{:fail, comment}]
     end
   end
 end
