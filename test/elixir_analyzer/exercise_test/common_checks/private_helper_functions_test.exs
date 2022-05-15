@@ -1,3 +1,5 @@
+# credo:disable-for-this-file Credo.Check.Warning.UnusedEnumOperation
+
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctionsTest do
   use ExUnit.Case
 
