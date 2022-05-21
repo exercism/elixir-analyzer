@@ -17,10 +17,15 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
     {_, %{definitions: code_definitions}} =
       Macro.traverse(code_ast, acc, &annotate/2, &find_definition/2)
 
+    # Some functions have to be public even though they don't appear in the exemploid.
+    # That's because they can be indirectly used with dynamic dispatch by the standard library.
+    {_, %{exceptions: exceptions}} =
+      Macro.traverse(code_ast, %{module: [], exceptions: []}, &annotate/2, &find_exceptions/2)
+
     {_, %{definitions: exemploid_definitions}} =
       Macro.traverse(exemploid_ast, acc, &annotate/2, &find_definition/2)
 
-    case Enum.reverse(find_public_helpers(code_definitions, exemploid_definitions)) do
+    case Enum.reverse(find_public_helpers(code_definitions, exemploid_definitions, exceptions)) do
       [] ->
         []
 
@@ -93,12 +98,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
     length_args..(length_args - default_values)//-1
   end
 
-  defp find_public_helpers(code_definitions, exemploid_definitions) do
+  defp find_public_helpers(code_definitions, exemploid_definitions, exceptions) do
     exemploid_modules =
       exemploid_definitions |> Enum.map(fn {module, _, _, _} -> module end) |> Enum.uniq()
 
     (Enum.uniq(code_definitions) -- exemploid_definitions)
     |> Enum.filter(fn {module, _, _, _} -> module in exemploid_modules end)
+    |> Enum.reject(fn definition -> definition in exceptions end)
     |> Enum.map(&print_definition/1)
   end
 
@@ -110,5 +116,81 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
   defp make_args(arity) do
     for(_ <- 1..arity//1, do: "_")
     |> Enum.join(", ")
+  end
+
+  @exceptional_enum_sort_functions %{
+    sort: %{arity: 2, sorter_argument_position: 2},
+    sort_by: %{arity: 3, sorter_argument_position: 3}
+  }
+
+  defp find_exceptions(
+         {:|>, _,
+          [
+            _,
+            {{:., [], [{:__aliases__, _, [:Enum]}, function_name]}, [], arguments}
+          ]} = node,
+         %{module: module, exceptions: exceptions}
+       ) do
+    exceptions =
+      if is_map(@exceptional_enum_sort_functions[function_name]) and
+           @exceptional_enum_sort_functions[function_name].arity == length(arguments) + 1 do
+        sorter_arg =
+          Enum.at(
+            arguments,
+            @exceptional_enum_sort_functions[function_name].sorter_argument_position - 2
+          )
+
+        find_enum_sort_exceptions(sorter_arg, %{module: module, exceptions: exceptions})
+      else
+        exceptions
+      end
+
+    {node, %{module: module, exceptions: exceptions}}
+  end
+
+  defp find_exceptions(
+         {{:., [], [{:__aliases__, _, [:Enum]}, function_name]}, [], arguments} = node,
+         %{module: module, exceptions: exceptions}
+       ) do
+    exceptions =
+      if is_map(@exceptional_enum_sort_functions[function_name]) and
+           @exceptional_enum_sort_functions[function_name].arity == length(arguments) do
+        sorter_arg =
+          Enum.at(
+            arguments,
+            @exceptional_enum_sort_functions[function_name].sorter_argument_position - 1
+          )
+
+        find_enum_sort_exceptions(sorter_arg, %{module: module, exceptions: exceptions})
+      else
+        exceptions
+      end
+
+    {node, %{module: module, exceptions: exceptions}}
+  end
+
+  defp find_exceptions(node, acc), do: {node, acc}
+
+  defp find_enum_sort_exceptions(sorter_arg, %{module: module, exceptions: exceptions}) do
+    case sorter_arg do
+      order when order in [:asc, :desc] ->
+        exceptions
+
+      {:__aliases__, _, sorter_arg_module} when is_list(sorter_arg_module) ->
+        [{[sorter_arg_module], :def, :compare, 2} | exceptions]
+
+      {:__MODULE__, _, _} ->
+        [{module, :def, :compare, 2} | exceptions]
+
+      {order, {:__aliases__, _, sorter_arg_module}}
+      when order in [:asc, :desc] and is_list(sorter_arg_module) ->
+        [{[sorter_arg_module], :def, :compare, 2} | exceptions]
+
+      {order, {:__MODULE__, _, _}} when order in [:asc, :desc] ->
+        [{[module], :def, :compare, 2} | exceptions]
+
+      _ ->
+        exceptions
+    end
   end
 end
