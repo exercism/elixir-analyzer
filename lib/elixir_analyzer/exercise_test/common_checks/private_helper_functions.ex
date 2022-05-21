@@ -176,16 +176,17 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.PrivateHelperFunctions do
       order when order in [:asc, :desc] ->
         exceptions
 
-      {:__aliases__, _, module} when is_list(module) ->
-        [{[module], :def, :compare, 2} | exceptions]
+      {:__aliases__, _, sorter_arg_module} when is_list(sorter_arg_module) ->
+        [{[sorter_arg_module], :def, :compare, 2} | exceptions]
 
-      {:__MODULE__, _, _} when is_list(module) ->
+      {:__MODULE__, _, _} ->
         [{module, :def, :compare, 2} | exceptions]
 
-      {order, {:__aliases__, _, module}} when order in [:asc, :desc] and is_list(module) ->
-        [{[module], :def, :compare, 2} | exceptions]
+      {order, {:__aliases__, _, sorter_arg_module}}
+      when order in [:asc, :desc] and is_list(sorter_arg_module) ->
+        [{[sorter_arg_module], :def, :compare, 2} | exceptions]
 
-      {order, {:__MODULE__, _, _}} when order in [:asc, :desc] and is_list(module) ->
+      {order, {:__MODULE__, _, _}} when order in [:asc, :desc] ->
         [{[module], :def, :compare, 2} | exceptions]
 
       _ ->
