@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
   """
 
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
 
   use ElixirAnalyzer.ExerciseTest,
     # this is temporary until we include editor files in compilation
@@ -19,13 +20,37 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
     end
   end
 
-  feature "uses @impl GenServer" do
+  check_source "uses @impl GenServer" do
     type :actionable
-    find :any
     comment Constants.take_a_number_deluxe_annotate_impl_genserver()
 
-    form do
-      @impl GenServer
+    check(%Source{code_ast: code_ast}) do
+      {_, %{defs_without_impls: defs_without_impls}} =
+        Macro.postwalk(code_ast, %{defs_without_impls: [], impl?: false}, &find_defs_and_impls/2)
+
+      defs_without_impls == []
     end
+  end
+
+  @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
+  @genserver_callbacks_in_this_exercise [:init, :handle_call, :handle_cast, :handle_info]
+  defp find_defs_and_impls(node, acc) do
+    acc =
+      case node do
+        {:@, _, [{:impl, _, [{:__aliases__, _, [:GenServer]}]}]} ->
+          %{acc | impl?: true}
+
+        {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
+          if function_name in @genserver_callbacks_in_this_exercise and !acc.impl? do
+            %{acc | impl?: false, defs_without_impls: [function_name | acc.defs_without_impls]}
+          else
+            %{acc | impl?: false}
+          end
+
+        _ ->
+          acc
+      end
+
+    {node, acc}
   end
 end
