@@ -103,8 +103,12 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
           comments =
             result.comments
             |> Enum.map(fn comment_details -> comment_details.comment end)
-            # There are too many compiler warnings in tests
-            |> Enum.reject(&(&1 == Constants.solution_compiler_warnings()))
+            |> Enum.reject(fn comment ->
+              # Exclude common comment that's appended to all solutions that have negative comments
+              # There are too many compiler warnings in tests
+              comment =~ ~r[open an issue] or
+                comment == Constants.solution_compiler_warnings()
+            end)
 
           Enum.map(Keyword.keys(unquote(assertions)), fn
             :comments ->

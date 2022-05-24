@@ -93,6 +93,26 @@ defmodule ElixirAnalyzer.Submission do
     %{submission | comments: comments}
   end
 
+  def append_feedback_request_comment(%__MODULE__{comments: comments} = submission) do
+    frequencies = get_type_frequencies_in_comments(comments)
+
+    comments =
+      if frequencies.essential + frequencies.actionable > 0 do
+        comments ++
+          [
+            %{
+              type: :informative,
+              comment:
+                "If this automated feedback doesn't look right, please [open an issue in the `exercism/elixir-analyzer` repository](https://github.com/exercism/elixir-analyzer/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)."
+            }
+          ]
+      else
+        comments
+      end
+
+    %{submission | comments: comments}
+  end
+
   defp get_summary(%__MODULE__{halted: true, comments: comments} = submission)
        when comments == [] do
     case submission.halt_reason do
@@ -101,14 +121,16 @@ defmodule ElixirAnalyzer.Submission do
     end
   end
 
-  @default_type_frequencies @comment_types |> Enum.map(&{&1, 0}) |> Enum.into(%{})
-
   defp get_summary(%__MODULE__{comments: comments}) do
+    summary_response(get_type_frequencies_in_comments(comments))
+  end
+
+  @default_type_frequencies @comment_types |> Enum.map(&{&1, 0}) |> Enum.into(%{})
+  defp get_type_frequencies_in_comments(comments) do
     type_frequencies_in_comments = Enum.frequencies_by(comments, fn comment -> comment.type end)
 
     @default_type_frequencies
     |> Map.merge(type_frequencies_in_comments)
-    |> summary_response()
   end
 
   @nbsp <<0xC2, 0xA0>>
