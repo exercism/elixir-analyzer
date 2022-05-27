@@ -26,7 +26,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
 
     check(%Source{code_ast: code_ast}) do
       {_, %{defs_without_impls: defs_without_impls}} =
-        Macro.postwalk(code_ast, %{defs_without_impls: [], impl?: false}, &find_defs_and_impls/2)
+        Macro.prewalk(code_ast, %{defs_without_impls: [], impl?: false}, &find_defs_and_impls/2)
 
       defs_without_impls == []
     end
