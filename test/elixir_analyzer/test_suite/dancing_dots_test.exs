@@ -84,16 +84,28 @@ defmodule ElixirAnalyzer.TestSuite.DancingDotsTest do
 
     test_exercise_analysis "alias works",
       comments_exclude: [Constants.dancing_dots_annotate_impl_animation()] do
-      defmodule DancingDots.Flicker do
-        alias DancingDots.Animation
-        use Animation
+      [
+        defmodule DancingDots.Flicker do
+          alias DancingDots.Animation
+          use Animation
 
-        @impl Animation
-        def handle_frame(dot, frame_number, _opts) do
-          opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
-          %{dot | opacity: opacity}
+          @impl Animation
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
+        end,
+        defmodule DancingDots.Flicker do
+          alias DancingDots.Animation, as: A
+          use A
+
+          @impl A
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
         end
-      end
+      ]
     end
 
     test_exercise_analysis "non-callback helpers do not trigger the check",

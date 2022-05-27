@@ -13,10 +13,17 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
     comment Constants.dancing_dots_annotate_impl_animation()
 
     check(%Source{code_ast: code_ast}) do
+      {_, %{aliases: aliases}} =
+        Macro.prewalk(
+          code_ast,
+          %{aliases: %{}},
+          &find_aliases/2
+        )
+
       {_, %{defs_without_impls: defs_without_impls}} =
         Macro.prewalk(
           code_ast,
-          %{defs_without_impls: [], impl?: false, skip?: false},
+          %{defs_without_impls: [], impl?: false, skip?: false, aliases: aliases},
           &find_defs_and_impls/2
         )
 
@@ -26,14 +33,36 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
 
   @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
   @callbacks_in_this_exercise [:init, :handle_frame]
+  @behaviour_module [:DancingDots, :Animation]
+  defp find_aliases(node, acc) do
+    acc =
+      case node do
+        {:alias, _, [{:__aliases__, _, module_name}]} ->
+          alias = [List.last(module_name)]
+          %{acc | aliases: Map.update(acc.aliases, module_name, [alias], &[alias | &1])}
+
+        {:alias, _, [{:__aliases__, _, module_name}, [as: {:__aliases__, _, alias}]]} ->
+          %{acc | aliases: Map.update(acc.aliases, module_name, [alias], &[alias | &1])}
+
+        _ ->
+          acc
+      end
+
+    {node, acc}
+  end
+
   defp find_defs_and_impls(node, acc) do
     acc =
       case node do
         {:defmodule, _, [{:__aliases__, _, module_name} | _]} ->
-          %{acc | impl?: false, skip?: module_name == [:DancingDots, :Animation]}
+          %{acc | impl?: false, skip?: module_name == @behaviour_module}
 
-        {:@, _, [{:impl, _, [{:__aliases__, _, [:DancingDots, :Animation]}]}]} ->
-          %{acc | impl?: true}
+        {:@, _, [{:impl, _, [{:__aliases__, _, module_name}]}]} ->
+          %{
+            acc
+            | impl?:
+                module_name in [@behaviour_module | Map.get(acc.aliases, @behaviour_module, [])]
+          }
 
         {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
           if function_name in @callbacks_in_this_exercise and !acc.impl? and !acc.skip? do
