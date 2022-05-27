@@ -8,6 +8,20 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
 
   use ElixirAnalyzer.ExerciseTest
 
+  feature "DancingDots.Flicker shouldn't reimplement init/1" do
+    type :essential
+    find :none
+    comment Constants.dancing_dots_do_not_reimplement_init()
+
+    form do
+      defmodule DancingDots.Flicker do
+        _block_includes do
+          def init(_ignore), do: _ignore
+        end
+      end
+    end
+  end
+
   check_source "uses @impl DancingDots.Animation" do
     type :actionable
     comment Constants.dancing_dots_annotate_impl_animation()

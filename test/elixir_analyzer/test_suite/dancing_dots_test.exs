@@ -56,6 +56,53 @@ defmodule ElixirAnalyzer.TestSuite.DancingDotsTest do
     """
   end
 
+  describe "DancingDots.Flicker shouldn't reimplement init/1" do
+    test_exercise_analysis "reimplementing init in various ways triggers the check",
+      comments_include: [Constants.dancing_dots_do_not_reimplement_init()] do
+      [
+        defmodule DancingDots.Flicker do
+          use DancingDots.Animation
+
+          @impl DancingDots.Animation
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
+
+          def init(opts), do: {:ok, opts}
+        end,
+        defmodule DancingDots.Flicker do
+          use DancingDots.Animation
+
+          @impl DancingDots.Animation
+          def init(x) do
+            _unrelated_statement = []
+            {:ok, x}
+          end
+
+          @impl DancingDots.Animation
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
+        end,
+        defmodule DancingDots.Flicker do
+          use DancingDots.Animation
+
+          defp helper1, do: 1
+
+          def init(x) do
+            _unrelated_statement = []
+            y = x
+            {:ok, y}
+          end
+
+          defp helper2, do: 2
+        end
+      ]
+    end
+  end
+
   describe "must annotate with `@impl DancingDots.Animation`" do
     test_exercise_analysis "forgot `@impl` entirely",
       comments_include: [Constants.dancing_dots_annotate_impl_animation()] do

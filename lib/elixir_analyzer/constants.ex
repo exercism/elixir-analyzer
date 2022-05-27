@@ -71,6 +71,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # Dancing Dots Comments
     dancing_dots_annotate_impl_animation: "elixir.dancing-dots.annotate_impl_animation",
+    dancing_dots_do_not_reimplement_init: "elixir.dancing-dots.do_not_reimplement_init",
 
     # DNA Encoding Comments
     dna_encoding_use_recursion: "elixir.dna-encoding.use_recursion",
