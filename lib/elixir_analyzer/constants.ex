@@ -43,6 +43,9 @@ defmodule ElixirAnalyzer.Constants do
 
     # Concept exercises
 
+    # Basketball Website comments
+    basketball_website_no_explicit_nil: "elixir.basketball-website.no_explicit_nil",
+
     # Bird Count Comments
     bird_count_use_recursion: "elixir.bird-count.use_recursion",
 

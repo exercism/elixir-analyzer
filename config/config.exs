@@ -24,6 +24,9 @@ import Config
 config :elixir_analyzer,
   exercise_config: %{
     # concept exercises
+    "basketball-website" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.BasketballWebsite
+    },
     "bird-count" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.BirdCount
     },
