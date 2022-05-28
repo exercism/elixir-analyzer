@@ -11,4 +11,10 @@ defmodule ElixirAnalyzer.TestSuite.BasketballWebsite do
       nil
     end
   end
+
+  assert_no_call "does not use Map" do
+    type :actionable
+    comment Constants.basketball_website_no_map()
+    called_fn module: Map, name: :_
+  end
 end

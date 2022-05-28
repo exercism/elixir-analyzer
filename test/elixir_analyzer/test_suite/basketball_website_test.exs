@@ -2,23 +2,45 @@ defmodule ElixirAnalyzer.ExerciseTest.BasketballWebsiteTest do
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.TestSuite.BasketballWebsite
 
-  test_exercise_analysis "example solution",
-    comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
-    defmodule BasketballWebsite do
-      def extract_from_path(data, path) do
-        paths = String.split(path, ".", trim: true)
-        do_extract(data, paths)
+  describe "perfect solutions" do
+    test_exercise_analysis "exemplar solution",
+      comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
+      defmodule BasketballWebsite do
+        def extract_from_path(data, path) do
+          paths = String.split(path, ".", trim: true)
+          do_extract(data, paths)
+        end
+
+        defp do_extract(data, []), do: data
+
+        defp do_extract(data, [path | next]) do
+          do_extract(data[path], next)
+        end
+
+        def get_in_path(data, path) do
+          paths = String.split(path, ".", trim: true)
+          get_in(data, paths)
+        end
       end
+    end
 
-      defp do_extract(data, []), do: data
+    test_exercise_analysis "another good solution", comments: [] do
+      defmodule BasketballWebsite do
+        def extract_from_path(data, path) do
+          paths = String.split(path, ".", trim: true)
+          do_extract(data, paths)
+        end
 
-      defp do_extract(data, [path | next]) do
-        do_extract(data[path], next)
-      end
+        defp do_extract(data, []), do: data
 
-      def get_in_path(data, path) do
-        paths = String.split(path, ".", trim: true)
-        get_in(data, paths)
+        defp do_extract(data, [path | next]) do
+          do_extract(Access.get(data, path), next)
+        end
+
+        def get_in_path(data, path) do
+          paths = String.split(path, ".", trim: true)
+          get_in(data, paths)
+        end
       end
     end
   end
@@ -37,6 +59,24 @@ defmodule ElixirAnalyzer.ExerciseTest.BasketballWebsiteTest do
 
         defp do_extract(data, [path | next]) do
           do_extract(data[path], next)
+        end
+      end
+    end
+  end
+
+  describe "using Map" do
+    test_exercise_analysis "there should be no usage of the map module",
+      comments_include: [ElixirAnalyzer.Constants.basketball_website_no_explicit_nil()] do
+      defmodule BasketballWebsite do
+        def extract_from_path(data, path) do
+          paths = String.split(path, ".", trim: true)
+          do_extract(data, paths)
+        end
+
+        defp do_extract(data, []), do: data
+
+        defp do_extract(data, [path | next]) do
+          do_extract(Map.get(data || %{}, path, nil), next)
         end
       end
     end
