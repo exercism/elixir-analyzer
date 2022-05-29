@@ -155,6 +155,32 @@ defmodule ElixirAnalyzer.TestSuite.DancingDotsTest do
       ]
     end
 
+    test_exercise_analysis "unrelated alias doesn't fool the analyzer",
+      comments_include: [Constants.dancing_dots_annotate_impl_animation()] do
+      [
+        defmodule DancingDots.Flicker do
+          alias Genserver, as: Animation
+          use DancingDots.Animation
+
+          @impl Animation
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
+        end,
+        defmodule DancingDots.Flicker do
+          alias OtherModule.Animation
+          use DancingDots.Animation
+
+          @impl Animation
+          def handle_frame(dot, frame_number, _opts) do
+            opacity = if rem(frame_number, 4) == 0, do: dot.opacity / 2, else: dot.opacity
+            %{dot | opacity: opacity}
+          end
+        end
+      ]
+    end
+
     test_exercise_analysis "non-callback helpers do not trigger the check",
       comments_exclude: [Constants.dancing_dots_annotate_impl_animation()] do
       defmodule DancingDots.Flicker do

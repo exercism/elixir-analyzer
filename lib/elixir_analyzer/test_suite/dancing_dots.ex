@@ -30,7 +30,7 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
       {_, %{aliases: aliases}} =
         Macro.prewalk(
           code_ast,
-          %{aliases: %{}},
+          %{aliases: []},
           &find_aliases/2
         )
 
@@ -51,12 +51,12 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
   defp find_aliases(node, acc) do
     acc =
       case node do
-        {:alias, _, [{:__aliases__, _, module_name}]} ->
-          alias = [List.last(module_name)]
-          %{acc | aliases: Map.update(acc.aliases, module_name, [alias], &[alias | &1])}
+        {:alias, _, [{:__aliases__, _, @behaviour_module}]} ->
+          alias = [List.last(@behaviour_module)]
+          %{acc | aliases: [alias | acc.aliases]}
 
-        {:alias, _, [{:__aliases__, _, module_name}, [as: {:__aliases__, _, alias}]]} ->
-          %{acc | aliases: Map.update(acc.aliases, module_name, [alias], &[alias | &1])}
+        {:alias, _, [{:__aliases__, _, @behaviour_module}, [as: {:__aliases__, _, alias}]]} ->
+          %{acc | aliases: [alias | acc.aliases]}
 
         _ ->
           acc
@@ -74,8 +74,7 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
         {:@, _, [{:impl, _, [{:__aliases__, _, module_name}]}]} ->
           %{
             acc
-            | impl?:
-                module_name in [@behaviour_module | Map.get(acc.aliases, @behaviour_module, [])]
+            | impl?: module_name in [@behaviour_module | acc.aliases]
           }
 
         {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
