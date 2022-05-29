@@ -10,6 +10,8 @@ defmodule ElixirAnalyzer.Constants do
   """
 
   @constants [
+    general_feedback_request: "elixir.general.feedback_request",
+
     # General Error Comments
     general_file_not_found: "elixir.general.file_not_found",
     general_parsing_error: "elixir.general.parsing_error",

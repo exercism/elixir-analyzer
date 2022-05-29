@@ -21,6 +21,7 @@ defmodule ElixirAnalyzer.Submission do
 
   alias ElixirAnalyzer.Comment
   alias ElixirAnalyzer.Source
+  alias ElixirAnalyzer.Constants
 
   @enforce_keys [:source, :analysis_module]
   defstruct halted: false,
@@ -102,8 +103,7 @@ defmodule ElixirAnalyzer.Submission do
           [
             %{
               type: :informative,
-              comment:
-                "If this automated feedback doesn't look right, please [open an issue in the `exercism/elixir-analyzer` repository](https://github.com/exercism/elixir-analyzer/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)."
+              comment: Constants.general_feedback_request()
             }
           ]
       else
