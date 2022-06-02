@@ -39,6 +39,9 @@ config :elixir_analyzer,
     "chessboard" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
     },
+    "dancing-dots" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.DancingDots
+    },
     "dna-encoding" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.DNAEncoding
     },
