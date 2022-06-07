@@ -164,7 +164,7 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   @practice_exercise_path "elixir/exercises/practice"
   @meta_config ".meta/config.json"
   def find_source(test_module) do
-    %Source{}
+    %Source{code_path: []}
     |> find_source_slug(test_module)
     |> find_source_type
     |> find_source_exemploid_path
@@ -192,33 +192,32 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   end
 
   defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :concept} = source) do
-    %{"files" => %{"exemplar" => [exemploid_path | _]}} =
+    %{"files" => %{"exemplar" => exemploid_path}} =
       [@concept_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Path.join([@concept_exercise_path, slug, exemploid_path])
-    %{source | exemploid_path: exemploid_path}
+    exemploid_path = Enum.map(exemploid_path, &Path.join([@concept_exercise_path, slug, &1]))
+    %{source | exemploid_path: [exemploid_path]}
   end
 
   defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :practice} = source) do
-    %{"files" => %{"example" => [exemploid_path | _]}} =
+    %{"files" => %{"example" => exemploid_path}} =
       [@practice_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Path.join([@practice_exercise_path, slug, exemploid_path])
-
+    exemploid_path = Enum.map(exemploid_path, &Path.join([@practice_exercise_path, slug, &1]))
     %{source | exemploid_path: exemploid_path}
   end
 
   defp find_source_exemploid_path(source), do: source
 
   defp find_source_exemploid(%Source{exemploid_path: exemploid_path} = source)
-       when is_binary(exemploid_path) do
-    exemploid_string = File.read!(exemploid_path)
+       when is_list(exemploid_path) do
+    {:ok, exemploid_string} = read_files(exemploid_path)
 
     exemploid_ast =
       exemploid_string
@@ -230,4 +229,18 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   end
 
   defp find_source_exemploid(source), do: source
+
+  defp read_files(paths) do
+    Enum.reduce_while(
+      paths,
+      {:ok, nil},
+      fn path, {:ok, code} ->
+        case File.read(path) do
+          {:ok, file} when is_nil(code) -> {:cont, {:ok, file}}
+          {:ok, file} -> {:cont, {:ok, code <> "\n" <> file}}
+          {:error, err} -> {:halt, {:error, err}}
+        end
+      end
+    )
+  end
 end

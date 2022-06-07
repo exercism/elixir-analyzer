@@ -29,10 +29,10 @@ defmodule ElixirAnalyzer.CLITest do
          source: %Source{
            code_ast: {:defmodule, _, _},
            code_string: "defmodule Lasagna" <> _,
-           code_path: @lasagna_path <> "/lib/lasagna.ex",
+           code_path: [@lasagna_path <> "/lib/lasagna.ex"],
            exemploid_ast: {:defmodule, _, _},
            exemploid_string: "defmodule Lasagna" <> _,
-           exemploid_path: @lasagna_path <> "/.meta/exemplar.ex",
+           exemploid_path: [@lasagna_path <> "/.meta/exemplar.ex"],
            exercise_type: :concept,
            path: @lasagna_path,
            slug: "lasagna"
