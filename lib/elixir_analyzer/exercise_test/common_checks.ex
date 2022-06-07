@@ -46,7 +46,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       VariableNames.run(code_ast),
       ModuleAttributeNames.run(code_ast),
       ModulePascalCase.run(code_ast),
-      CompilerWarnings.run(code_path, code_ast),
+      CompilerWarnings.run(code_path),
       BooleanFunctions.run(code_ast),
       FunctionAnnotationOrder.run(code_ast),
       ExemplarComparison.run(code_ast, type, exemploid_ast),
