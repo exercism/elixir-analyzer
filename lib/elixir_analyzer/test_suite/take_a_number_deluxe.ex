@@ -6,9 +6,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Source
 
-  use ElixirAnalyzer.ExerciseTest,
-    # this is temporary until we include editor files in compilation
-    suppress_tests: [Constants.solution_compiler_warnings()]
+  use ElixirAnalyzer.ExerciseTest
 
   feature "uses GenServer" do
     type :actionable
