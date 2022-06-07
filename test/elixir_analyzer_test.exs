@@ -119,6 +119,17 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
+    test "perfect solution for exercise with multiple solution files" do
+      exercise = "dancing_dots"
+      path = "./test_data/dancing-dots/split_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
     test "failing solution with comments" do
       exercise = "lasagna"
       path = "./test_data/lasagna/failing_solution/"
