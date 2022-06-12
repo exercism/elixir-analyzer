@@ -5,11 +5,11 @@ defmodule ElixirAnalyzer.Source do
   defstruct [
     :slug,
     :path,
-    :code_path,
+    :submitted_files,
     :code_string,
     :code_ast,
     :exercise_type,
-    :exemploid_path,
+    :exemploid_files,
     :exemploid_string,
     :exemploid_ast
   ]
@@ -17,11 +17,11 @@ defmodule ElixirAnalyzer.Source do
   @type t() :: %__MODULE__{
           slug: String.t(),
           path: String.t(),
-          code_path: [String.t()],
+          submitted_files: [String.t()],
           code_string: String.t(),
           code_ast: Macro.t(),
           exercise_type: :concept | :practice,
-          exemploid_path: [String.t()],
+          exemploid_files: [String.t()],
           exemploid_string: String.t(),
           exemploid_ast: Macro.t()
         }

@@ -164,10 +164,10 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
   @practice_exercise_path "elixir/exercises/practice"
   @meta_config ".meta/config.json"
   def find_source(test_module) do
-    %Source{code_path: []}
+    %Source{submitted_files: []}
     |> find_source_slug(test_module)
     |> find_source_type
-    |> find_source_exemploid_path
+    |> find_source_exemploid_files
     |> find_source_exemploid
   end
 
@@ -191,33 +191,33 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
     end
   end
 
-  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :concept} = source) do
-    %{"files" => %{"exemplar" => exemploid_path}} =
+  defp find_source_exemploid_files(%Source{slug: slug, exercise_type: :concept} = source) do
+    %{"files" => %{"exemplar" => exemploid_files}} =
       [@concept_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Enum.map(exemploid_path, &Path.join([@concept_exercise_path, slug, &1]))
-    %{source | exemploid_path: [exemploid_path]}
+    exemploid_files = Enum.map(exemploid_files, &Path.join([@concept_exercise_path, slug, &1]))
+    %{source | exemploid_files: [exemploid_files]}
   end
 
-  defp find_source_exemploid_path(%Source{slug: slug, exercise_type: :practice} = source) do
-    %{"files" => %{"example" => exemploid_path}} =
+  defp find_source_exemploid_files(%Source{slug: slug, exercise_type: :practice} = source) do
+    %{"files" => %{"example" => exemploid_files}} =
       [@practice_exercise_path, slug, @meta_config]
       |> Path.join()
       |> File.read!()
       |> Jason.decode!()
 
-    exemploid_path = Enum.map(exemploid_path, &Path.join([@practice_exercise_path, slug, &1]))
-    %{source | exemploid_path: exemploid_path}
+    exemploid_files = Enum.map(exemploid_files, &Path.join([@practice_exercise_path, slug, &1]))
+    %{source | exemploid_files: exemploid_files}
   end
 
-  defp find_source_exemploid_path(source), do: source
+  defp find_source_exemploid_files(source), do: source
 
-  defp find_source_exemploid(%Source{exemploid_path: exemploid_path} = source)
-       when is_list(exemploid_path) do
-    {:ok, exemploid_string} = read_files(exemploid_path)
+  defp find_source_exemploid(%Source{exemploid_files: exemploid_files} = source)
+       when is_list(exemploid_files) do
+    {:ok, exemploid_string} = read_files(exemploid_files)
 
     exemploid_ast =
       exemploid_string
