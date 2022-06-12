@@ -68,7 +68,7 @@ defmodule ElixirAnalyzerTest do
                analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
                expected_output = """
-               {\"comments\":[{\"comment\":\"elixir.general.file_not_found\",\"params\":{\"file_name\":\"two_fer.ex\",\"path\":\"./test_data/two_fer/missing_file_solution/\"},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
+               {\"comments\":[{\"comment\":\"elixir.general.file_not_found\",\"params\":{\"file_name\":\"two_fer.ex\",\"path\":\"test_data/two_fer/missing_file_solution/\"},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
                """
 
                assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -251,7 +251,7 @@ defmodule ElixirAnalyzerTest do
         end)
 
       assert log =~
-               "[error_message: :enoent] [warning] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
+               "[error_message: :enoent] [warning] Unable to read config file test_data/lasagna/missing_config/.meta/config.json"
 
       assert log =~ "[warning] Check not performed, halted previously"
     end

@@ -79,7 +79,7 @@ defmodule ElixirAnalyzer do
 
     defaults = [
       {:exercise, exercise},
-      {:path, input_path},
+      {:path, String.trim_leading(input_path, "./")},
       {:output_path, output_path},
       {:output_file, @output_file},
       {:exercise_config, default_exercise_config()},
@@ -169,10 +169,8 @@ defmodule ElixirAnalyzer do
     if Enum.empty?(solution_path), do: raise("No solution files specified")
 
     code_path =
-      params.path
-      |> Path.join("lib")
-      |> ls_r()
-      |> Enum.filter(&String.ends_with?(&1, ".ex"))
+      Path.join([params.path, "lib", "**", "*.ex"])
+      |> Path.wildcard()
       |> Enum.concat(solution_path)
       |> Enum.uniq()
       |> Enum.sort()
@@ -190,22 +188,6 @@ defmodule ElixirAnalyzer do
 
     {code_path, exercise_type, exemploid_path,
      exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
-  end
-
-  defp ls_r(path) do
-    cond do
-      File.regular?(path) ->
-        [path]
-
-      File.dir?(path) ->
-        File.ls!(path)
-        |> Enum.map(&Path.join(path, &1))
-        |> Enum.map(&ls_r/1)
-        |> Enum.concat()
-
-      true ->
-        []
-    end
   end
 
   # Check
