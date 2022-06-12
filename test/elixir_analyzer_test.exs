@@ -28,7 +28,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  test_data/two_fer/imperfect_solution/lib/two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.private_helper_functions\",\"params\":{\"actual\":\"def public_helper(_)\",\"expected\":\"defp public_helper(_)\"},\"type\":\"informative\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
+        "{\"comments\":[{\"comment\":\"elixir.two-fer.use_of_function_header\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_specification\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  lib/two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.use_module_doc\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.private_helper_functions\",\"params\":{\"actual\":\"def public_helper(_)\",\"expected\":\"defp public_helper(_)\"},\"type\":\"informative\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
 
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
@@ -68,7 +68,7 @@ defmodule ElixirAnalyzerTest do
                analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
                expected_output = """
-               {\"comments\":[{\"comment\":\"elixir.general.file_not_found\",\"params\":{\"file_name\":\"two_fer.ex\",\"path\":\"./test_data/two_fer/missing_file_solution/\"},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
+               {\"comments\":[{\"comment\":\"elixir.general.file_not_found\",\"params\":{\"file_name\":\"two_fer.ex\",\"path\":\"test_data/two_fer/missing_file_solution/\"},\"type\":\"essential\"}],\"summary\":\"Check the comments for things to fix. 🛠\"}
                """
 
                assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
@@ -91,7 +91,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  test_data/two_fer/imperfect_solution/lib/two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.private_helper_functions\",\"params\":{\"actual\":\"def public_helper(_)\",\"expected\":\"defp public_helper(_)\"},\"type\":\"informative\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
+        "{\"comments\":[{\"comment\":\"elixir.solution.raise_fn_clause_error\",\"type\":\"actionable\"},{\"comment\":\"elixir.solution.variable_name_snake_case\",\"params\":{\"actual\":\"_nameInPascalCase\",\"expected\":\"_name_in_pascal_case\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_attribute_name_snake_case\",\"params\":{\"actual\":\"someUnusedModuleAttribute\",\"expected\":\"some_unused_module_attribute\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.module_pascal_case\",\"params\":{\"actual\":\"My_empty_module\",\"expected\":\"MyEmptyModule\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: module attribute @someUnusedModuleAttribute was set but never used\\n  lib/two_fer.ex:2\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.solution.indentation\",\"type\":\"informative\"},{\"comment\":\"elixir.solution.private_helper_functions\",\"params\":{\"actual\":\"def public_helper(_)\",\"expected\":\"defp public_helper(_)\"},\"type\":\"informative\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
 
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
@@ -119,6 +119,17 @@ defmodule ElixirAnalyzerTest do
       assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
     end
 
+    test "perfect solution for exercise with multiple solution files" do
+      exercise = "dancing_dots"
+      path = "./test_data/dancing-dots/split_solution/"
+      analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+
+      expected_output =
+        "{\"comments\":[],\"summary\":\"Submission analyzed. No automated suggestions found.\"}"
+
+      assert Submission.to_json(analyzed_exercise) == String.trim(expected_output)
+    end
+
     test "failing solution with comments" do
       exercise = "lasagna"
       path = "./test_data/lasagna/failing_solution/"
@@ -136,7 +147,7 @@ defmodule ElixirAnalyzerTest do
       analyzed_exercise = ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
 
       expected_output =
-        "{\"comments\":[{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: Behaviour.defcallback/1 is deprecated. Use the @callback module attribute instead\\n  test_data/lasagna/deprecated_modules/lib/lasagna.ex:4: Lasagna\\n\\nwarning: HashDict.new/0 is deprecated. Use maps and the Map module instead\\n  test_data/lasagna/deprecated_modules/lib/lasagna.ex:7: Lasagna.expected_minutes_in_oven/0\\n\\nwarning: HashSet.member?/2 is deprecated. Use the MapSet module instead\\n  test_data/lasagna/deprecated_modules/lib/lasagna.ex:12: Lasagna.remaining_minutes_in_oven/1\\n\\nwarning: HashSet.new/0 is deprecated. Use the MapSet module instead\\n  test_data/lasagna/deprecated_modules/lib/lasagna.ex:12: Lasagna.remaining_minutes_in_oven/1\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
+        "{\"comments\":[{\"comment\":\"elixir.solution.compiler_warnings\",\"params\":{\"warnings\":\"warning: Behaviour.defcallback/1 is deprecated. Use the @callback module attribute instead\\n  lib/lasagna.ex:4\\n\\nwarning: HashDict.new/0 is deprecated. Use maps and the Map module instead\\n  lib/lasagna.ex:7\\n\\nwarning: HashSet.member?/2 is deprecated. Use the MapSet module instead\\n  lib/lasagna.ex:12\\n\\nwarning: HashSet.new/0 is deprecated. Use the MapSet module instead\\n  lib/lasagna.ex:12\\n\\n\"},\"type\":\"actionable\"},{\"comment\":\"elixir.general.feedback_request\",\"type\":\"informative\"}],\"summary\":\"Check the comments for some suggestions. 📣\"}"
 
       assert Submission.to_json(analyzed_exercise) == expected_output
     end
@@ -240,7 +251,7 @@ defmodule ElixirAnalyzerTest do
         end)
 
       assert log =~
-               "[error_message: :enoent] [warning] Unable to read config file ./test_data/lasagna/missing_config/.meta/config.json"
+               "[error_message: :enoent] [warning] Unable to read config file test_data/lasagna/missing_config/.meta/config.json"
 
       assert log =~ "[warning] Check not performed, halted previously"
     end
@@ -268,10 +279,10 @@ defmodule ElixirAnalyzerTest do
 
                assert %Submission{
                         halted: true,
-                        halt_reason: "Analysis skipped, unexpected error Elixir.ArgumentError"
+                        halt_reason: "Analysis skipped, unexpected error Elixir.RuntimeError"
                       } = analyzed_exercise
              end) =~
-               "[error_message: \"errors were found at the given arguments:\\n\\n  * 1st argument: not a nonempty list\\n\"] [warning] TestSuite halted, Elixir.ArgumentError"
+               "[error_message: \"No solution files specified\"] [warning] TestSuite halted, Elixir.RuntimeError"
     end
   end
 

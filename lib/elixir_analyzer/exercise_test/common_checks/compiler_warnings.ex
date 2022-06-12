@@ -5,28 +5,30 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
   alias ElixirAnalyzer.Constants
   alias ElixirAnalyzer.Comment
 
-  def run(code_path, _code_ast) do
-    import ExUnit.CaptureIO
-    Application.put_env(:elixir, :ansi_enabled, false)
+  def run(code_path) do
+    Logger.configure(level: :critical)
 
     warnings =
-      capture_io(:stderr, fn ->
-        try do
-          Code.compile_file(code_path)
-          |> Enum.each(fn {module, _binary} ->
+      case Kernel.ParallelCompiler.compile(code_path) do
+        {:ok, modules, warnings} ->
+          Enum.each(modules, fn module ->
             :code.delete(module)
             :code.purge(module)
           end)
-        rescue
-          # There are too many compile errors for tests, so we filter them out
-          # We assume that real code passed the tests and therefore compiles
-          _ -> nil
-        end
-      end)
+
+          warnings
+
+        {:error, _errors, _warnings} ->
+          # This should not happen, as real code is assumed to have compiled and
+          # passed the tests
+          []
+      end
+
+    Logger.configure(level: :warn)
 
     Application.put_env(:elixir, :ansi_enabled, true)
 
-    if warnings == "" do
+    if Enum.empty?(warnings) do
       []
     else
       [
@@ -35,9 +37,20 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
            type: :actionable,
            name: Constants.solution_compiler_warnings(),
            comment: Constants.solution_compiler_warnings(),
-           params: %{warnings: warnings}
+           params: %{warnings: Enum.map_join(warnings, &format_warning/1)}
          }}
       ]
     end
+  end
+
+  defp format_warning({filepath, line, warning}) do
+    [_ | after_lib] = String.split(filepath, "/lib/")
+    filepath = "lib/" <> Enum.join(after_lib)
+
+    """
+    warning: #{warning}
+      #{filepath}:#{line}
+
+    """
   end
 end

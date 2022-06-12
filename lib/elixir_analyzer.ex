@@ -79,7 +79,7 @@ defmodule ElixirAnalyzer do
 
     defaults = [
       {:exercise, exercise},
-      {:path, input_path},
+      {:path, String.trim_leading(input_path, "./")},
       {:output_path, output_path},
       {:output_file, @output_file},
       {:exercise_config, default_exercise_config()},
@@ -107,14 +107,14 @@ defmodule ElixirAnalyzer do
       Logger.debug("Getting the exercise config")
       exercise_config = params.exercise_config[params.exercise]
 
-      {code_path, exercise_type, exemploid_path, analysis_module} =
+      {submitted_files, exercise_type, exemploid_files, analysis_module} =
         do_init(params, exercise_config)
 
       Logger.debug("Initialization successful",
         path: params.path,
-        code_path: code_path,
+        submitted_files: submitted_files,
         exercise_type: exercise_type,
-        exemploid_path: exemploid_path,
+        exemploid_files: exemploid_files,
         analysis_module: analysis_module
       )
 
@@ -129,9 +129,9 @@ defmodule ElixirAnalyzer do
 
       source = %{
         source
-        | code_path: code_path,
+        | submitted_files: submitted_files,
           exercise_type: exercise_type,
-          exemploid_path: exemploid_path
+          exemploid_files: exemploid_files
       }
 
       %{
@@ -165,16 +165,28 @@ defmodule ElixirAnalyzer do
 
   defp do_init(params, exercise_config) do
     meta_config = Path.join(params.path, @meta_config) |> File.read!() |> Jason.decode!()
-    relative_code_path = meta_config["files"]["solution"] |> hd()
-    code_path = Path.join(params.path, relative_code_path)
+    solution_files = meta_config["files"]["solution"] |> Enum.map(&Path.join(params.path, &1))
+    if Enum.empty?(solution_files), do: raise("No solution files specified")
 
-    {exercise_type, exemploid_path} =
+    submitted_files =
+      Path.join([params.path, "lib", "**", "*.ex"])
+      |> Path.wildcard()
+      |> Enum.concat(solution_files)
+      |> Enum.uniq()
+      |> Enum.sort()
+
+    editor_files = Map.get(meta_config["files"], "editor", [])
+
+    {exercise_type, exemploid_files} =
       case meta_config["files"] do
-        %{"exemplar" => [path | _]} -> {:concept, Path.join(params.path, path)}
-        %{"example" => [path | _]} -> {:practice, Path.join(params.path, path)}
+        %{"exemplar" => path} -> {:concept, path}
+        %{"example" => path} -> {:practice, path}
       end
 
-    {code_path, exercise_type, exemploid_path,
+    exemploid_files =
+      (editor_files ++ exemploid_files) |> Enum.sort() |> Enum.map(&Path.join(params.path, &1))
+
+    {submitted_files, exercise_type, exemploid_files,
      exercise_config[:analyzer_module] || ElixirAnalyzer.TestSuite.Default}
   end
 
@@ -190,15 +202,15 @@ defmodule ElixirAnalyzer do
   end
 
   defp check(%Submission{source: source} = submission, _params) do
-    Logger.info("Attempting to read code file", code_file_path: source.code_path)
+    Logger.info("Attempting to read code files", code_file_path: source.submitted_files)
 
-    with {:code_read, {:ok, code_string}} <- {:code_read, File.read(source.code_path)},
+    with {:code_read, {:ok, code_string}} <- {:code_read, read_files(source.submitted_files)},
          source <- %{source | code_string: code_string},
-         Logger.info("Code file read successfully"),
-         Logger.info("Attempting to read exemploid", exemploid_path: source.exemploid_path),
+         Logger.info("Code files read successfully"),
+         Logger.info("Attempting to read exemploid", exemploid_files: source.exemploid_files),
          {:exemploid_read, _, {:ok, exemploid_string}} <-
-           {:exemploid_read, source, File.read(source.exemploid_path)},
-         Logger.info("Exemploid file read successfully, attempting to parse"),
+           {:exemploid_read, source, read_files(source.exemploid_files)},
+         Logger.info("Exemploid files read successfully, attempting to parse"),
          {:exemploid_ast, _, {:ok, exemploid_ast}} <-
            {:exemploid_ast, source, Code.string_to_quoted(exemploid_string)} do
       Logger.info("Exemploid file parsed successfully")
@@ -208,7 +220,7 @@ defmodule ElixirAnalyzer do
       {:code_read, {:error, reason}} ->
         Logger.warning("TestSuite halted: Code file not found. Reason: #{reason}",
           path: source.path,
-          code_path: source.code_path
+          submitted_files: source.submitted_files
         )
 
         submission
@@ -216,7 +228,7 @@ defmodule ElixirAnalyzer do
         |> Submission.append_comment(%Comment{
           comment: Constants.general_file_not_found(),
           params: %{
-            "file_name" => Path.basename(source.code_path),
+            "file_name" => Path.basename(source.submitted_files),
             "path" => source.path
           },
           type: :essential
@@ -224,18 +236,32 @@ defmodule ElixirAnalyzer do
 
       {:exemploid_read, source, {:error, reason}} ->
         Logger.warning("Exemploid file not found. Reason: #{reason}",
-          exemploid_path: source.exemploid_path
+          exemploid_files: source.exemploid_files
         )
 
         %{submission | source: source}
 
       {:exemploid_ast, source, {:error, reason}} ->
         Logger.warning("Exemploid file could not be parsed. Reason: #{inspect(reason)}",
-          exemploid_path: source.exemploid_path
+          exemploid_files: source.exemploid_files
         )
 
         %{submission | source: source}
     end
+  end
+
+  defp read_files(paths) do
+    Enum.reduce_while(
+      paths,
+      {:ok, nil},
+      fn path, {:ok, code} ->
+        case File.read(path) do
+          {:ok, file} when is_nil(code) -> {:cont, {:ok, file}}
+          {:ok, file} -> {:cont, {:ok, code <> "\n" <> file}}
+          {:error, err} -> {:halt, {:error, err}}
+        end
+      end
+    )
   end
 
   # Analyze
