@@ -253,9 +253,10 @@ defmodule ElixirAnalyzer do
   defp read_files(paths) do
     Enum.reduce_while(
       paths,
-      {:ok, ""},
+      {:ok, nil},
       fn path, {:ok, code} ->
         case File.read(path) do
+          {:ok, file} when is_nil(code) -> {:cont, {:ok, file}}
           {:ok, file} -> {:cont, {:ok, code <> "\n" <> file}}
           {:error, err} -> {:halt, {:error, err}}
         end
