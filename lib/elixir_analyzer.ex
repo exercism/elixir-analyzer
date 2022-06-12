@@ -166,7 +166,7 @@ defmodule ElixirAnalyzer do
   defp do_init(params, exercise_config) do
     meta_config = Path.join(params.path, @meta_config) |> File.read!() |> Jason.decode!()
     solution_path = meta_config["files"]["solution"] |> Enum.map(&Path.join(params.path, &1))
-    if Enum.empty?(solution_path), do: raise("No solution file specified")
+    if Enum.empty?(solution_path), do: raise("No solution files specified")
 
     code_path =
       params.path
