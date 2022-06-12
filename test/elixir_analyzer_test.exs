@@ -282,7 +282,7 @@ defmodule ElixirAnalyzerTest do
                         halt_reason: "Analysis skipped, unexpected error Elixir.RuntimeError"
                       } = analyzed_exercise
              end) =~
-               "[error_message: \"No solution file specified\"] [warning] TestSuite halted, Elixir.RuntimeError"
+               "[error_message: \"No solution files specified\"] [warning] TestSuite halted, Elixir.RuntimeError"
     end
   end
 
