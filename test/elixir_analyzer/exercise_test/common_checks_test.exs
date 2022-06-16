@@ -380,4 +380,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
       ]
     end
   end
+
+  describe "no use of defdelegate" do
+    test_exercise_analysis "reports using defdelegate",
+      comments: [Constants.solution_defdelegate()] do
+      [
+        defmodule Defdelegate do
+          defdelegate new(), to: Map
+        end,
+        defmodule Defdelegate do
+          defdelegate foo(), to: Map, as: :new
+        end
+      ]
+    end
+  end
 end
