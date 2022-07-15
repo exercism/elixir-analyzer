@@ -23,4 +23,10 @@ defmodule ElixirAnalyzer.TestSuite.SquareRoot do
     called_fn module: Float, name: :pow
     comment Constants.square_root_do_not_use_built_in_sqrt()
   end
+
+  assert_no_call "do not use **" do
+    type :essential
+    called_fn module: Kernel, name: :**
+    comment Constants.square_root_do_not_use_built_in_sqrt()
+  end
 end

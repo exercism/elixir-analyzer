@@ -111,5 +111,34 @@ defmodule ElixirAnalyzer.ExerciseTest.SquareRootTest do
         end
       ]
     end
+
+    test_exercise_analysis "detects Kernel.**",
+      comments: [Constants.square_root_do_not_use_built_in_sqrt()] do
+      [
+        defmodule SquareRoot do
+          def calculate(n), do: (n / 1 ** 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          import Kernel, only: [**: 2]
+          def calculate(n), do: (n / 1 ** 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          alias Kernel, as: K
+          def calculate(n), do: K.**(n / 1, 0.5) |> floor()
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            import Kernel, only: [**: 2]
+            (n / 1 ** 0.5) |> floor()
+          end
+        end,
+        defmodule SquareRoot do
+          def calculate(n) do
+            alias Kernel, as: K
+            K.**(n / 1, 0.5) |> floor()
+          end
+        end
+      ]
+    end
   end
 end
