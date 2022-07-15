@@ -21,7 +21,7 @@ defmodule ElixirAnalyzer.TestSuite.BasketballWebsite do
   assert_no_call "extract_from_path does not use get_in" do
     type :essential
     comment Constants.basketball_website_get_in()
-    called_fn name: :get_in
+    called_fn module: Kernel, name: :get_in
     calling_fn module: BasketballWebsite, name: :extract_from_path
   end
 
