@@ -59,7 +59,7 @@ defmodule ElixirAnalyzer.ExerciseTest.BasketballWebsiteTest do
 
   describe "using Map" do
     test_exercise_analysis "there should be no usage of the map module",
-      comments_include: [ElixirAnalyzer.Constants.basketball_website_no_explicit_nil()] do
+      comments_include: [ElixirAnalyzer.Constants.basketball_website_no_map()] do
       defmodule BasketballWebsite do
         def extract_from_path(data, path) do
           paths = String.split(path, ".", trim: true)
