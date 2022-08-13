@@ -37,7 +37,13 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
       {_, %{defs_without_impls: defs_without_impls}} =
         Macro.prewalk(
           code_ast,
-          %{defs_without_impls: [], impl?: false, skip?: false, aliases: aliases},
+          %{
+            defs_without_impls: [],
+            defs_with_impls: [],
+            impl?: false,
+            skip?: false,
+            aliases: aliases
+          },
           &find_defs_and_impls/2
         )
 
@@ -78,11 +84,20 @@ defmodule ElixirAnalyzer.TestSuite.DancingDots do
           }
 
         {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
-          if function_name in @callbacks_in_this_exercise and !acc.impl? and !acc.skip? do
-            %{acc | impl?: false, defs_without_impls: [function_name | acc.defs_without_impls]}
-          else
-            %{acc | impl?: false}
-          end
+          acc =
+            cond do
+              function_name in @callbacks_in_this_exercise and
+                function_name not in acc.defs_with_impls and !acc.impl? and !acc.skip? ->
+                %{acc | defs_without_impls: [function_name | acc.defs_without_impls]}
+
+              acc.impl? and !acc.skip? ->
+                %{acc | defs_with_impls: [function_name | acc.defs_with_impls]}
+
+              true ->
+                acc
+            end
+
+          %{acc | impl?: false}
 
         _ ->
           acc

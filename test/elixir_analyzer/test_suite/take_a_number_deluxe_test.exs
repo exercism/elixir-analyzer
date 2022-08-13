@@ -171,7 +171,7 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
       end
     end
 
-    test_exercise_analysis "must be used for all callbacks",
+    test_exercise_analysis "must be used for each callback at least once",
       comments_include: [Constants.take_a_number_deluxe_annotate_impl_genserver()] do
       [
         defmodule TakeANumberDeluxe do
@@ -210,67 +210,10 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
           def handle_call(:report_state, _from, state) do
           end
 
-          @impl GenServer
           def handle_call(:queue_new_number, _from, state) do
           end
 
           @impl GenServer
-          def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_cast(:reset_state, state) do
-          end
-
-          @impl GenServer
-          def handle_info(:timeout, state) do
-          end
-
-          @impl GenServer
-          def handle_info(_, state) do
-          end
-        end,
-        defmodule TakeANumberDeluxe do
-          @impl GenServer
-          def init(init_arg) do
-          end
-
-          @impl GenServer
-          def handle_call(:report_state, _from, state) do
-          end
-
-          def handle_call(:queue_new_number, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_cast(:reset_state, state) do
-          end
-
-          @impl GenServer
-          def handle_info(:timeout, state) do
-          end
-
-          @impl GenServer
-          def handle_info(_, state) do
-          end
-        end,
-        defmodule TakeANumberDeluxe do
-          @impl GenServer
-          def init(init_arg) do
-          end
-
-          @impl GenServer
-          def handle_call(:report_state, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_call(:queue_new_number, _from, state) do
-          end
-
           def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
           end
 
@@ -335,35 +278,6 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
           def handle_cast(:reset_state, state) do
           end
 
-          def handle_info(:timeout, state) do
-          end
-
-          @impl GenServer
-          def handle_info(_, state) do
-          end
-        end,
-        defmodule TakeANumberDeluxe do
-          @impl GenServer
-          def init(init_arg) do
-          end
-
-          @impl GenServer
-          def handle_call(:report_state, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_call(:queue_new_number, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
-          end
-
-          @impl GenServer
-          def handle_cast(:reset_state, state) do
-          end
-
-          @impl GenServer
           def handle_info(:timeout, state) do
           end
 
@@ -371,6 +285,72 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
           end
         end
       ]
+    end
+
+    test_exercise_analysis "does not need to be repeated for the second definition of the same callback",
+      comments_exclude: [Constants.take_a_number_deluxe_annotate_impl_genserver()] do
+      defmodule TakeANumberDeluxe do
+        @impl GenServer
+        def init(init_arg) do
+        end
+
+        @impl GenServer
+        def handle_call(:report_state, _from, state) do
+        end
+
+        def handle_call(:queue_new_number, _from, state) do
+        end
+
+        def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
+        end
+
+        @impl GenServer
+        def handle_cast(:reset_state, state) do
+        end
+
+        @impl GenServer
+        def handle_info(:timeout, state) do
+        end
+
+        def handle_info(_, state) do
+        end
+      end
+    end
+
+    test_exercise_analysis "works with empty function heads",
+      comments_exclude: [Constants.take_a_number_deluxe_annotate_impl_genserver()] do
+      defmodule TakeANumberDeluxe do
+        @impl GenServer
+        def init(init_arg) do
+        end
+
+        @impl GenServer
+        def handle_call(message, from, state)
+
+        def handle_call(:report_state, _from, state) do
+        end
+
+        def handle_call(:queue_new_number, _from, state) do
+        end
+
+        def handle_call({:serve_next_queued_number, priority_number}, _from, state) do
+        end
+
+        @impl GenServer
+        def handle_cast(message, state)
+
+        def handle_cast(:reset_state, state) do
+        end
+
+        @impl GenServer
+        def handle_info(message, state)
+
+        def handle_info(:timeout, state) do
+        end
+
+        def handle_info(_, state) do
+        end
+      end
     end
   end
 end
