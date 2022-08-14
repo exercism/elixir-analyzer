@@ -24,7 +24,11 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
 
     check(%Source{code_ast: code_ast}) do
       {_, %{defs_without_impls: defs_without_impls}} =
-        Macro.prewalk(code_ast, %{defs_without_impls: [], impl?: false}, &find_defs_and_impls/2)
+        Macro.prewalk(
+          code_ast,
+          %{defs_without_impls: [], impl?: false, defs_with_impls: []},
+          &find_defs_and_impls/2
+        )
 
       defs_without_impls == []
     end
@@ -39,11 +43,20 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
           %{acc | impl?: true}
 
         {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
-          if function_name in @genserver_callbacks_in_this_exercise and !acc.impl? do
-            %{acc | impl?: false, defs_without_impls: [function_name | acc.defs_without_impls]}
-          else
-            %{acc | impl?: false}
-          end
+          acc =
+            cond do
+              function_name in @genserver_callbacks_in_this_exercise and
+                function_name not in acc.defs_with_impls and !acc.impl? ->
+                %{acc | defs_without_impls: [function_name | acc.defs_without_impls]}
+
+              acc.impl? ->
+                %{acc | defs_with_impls: [function_name | acc.defs_with_impls]}
+
+              true ->
+                acc
+            end
+
+          %{acc | impl?: false}
 
         _ ->
           acc
