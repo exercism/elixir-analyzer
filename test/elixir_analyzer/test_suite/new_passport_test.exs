@@ -70,7 +70,7 @@ defmodule ElixirAnalyzer.TestSuite.NewPassportTest do
     end
   end
 
-  test_exercise_analysis "uses case in get_new_passport/3",
+  test_exercise_analysis "does not use with in get_new_passport/3",
     comments_include: [Constants.new_passport_use_with()] do
     defmodule NewPassport do
       def get_new_passport(now, birthday, form) do

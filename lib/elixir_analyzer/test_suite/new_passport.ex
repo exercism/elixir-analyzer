@@ -13,13 +13,6 @@ defmodule ElixirAnalyzer.TestSuite.NewPassport do
     called_fn name: :with
   end
 
-  assert_no_call "case is not used in get_new_passport/3" do
-    type :essential
-    comment Constants.new_passport_use_with()
-    calling_fn module: NewPassport, name: :get_new_passport
-    called_fn name: :case
-  end
-
   feature "given code wasn't modified" do
     type :informative
     comment Constants.new_passport_do_not_modify_code()
