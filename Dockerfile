@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325 as builder
+FROM hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801 as builder
 
 RUN apt-get update && \
   apt-get install bash -y
@@ -13,7 +13,7 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN ./bin/build.sh
 
-FROM hexpm/elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325
+FROM hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
 COPY --from=builder /etc/passwd /etc/passwd
 
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
