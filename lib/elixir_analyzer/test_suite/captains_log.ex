@@ -23,7 +23,14 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     type :essential
     calling_fn module: CaptainsLog, name: :random_stardate
     called_fn module: Enum, name: :random
-    comment Constants.captains_log_use_rand_uniform()
+    comment Constants.captains_log_do_not_use_enum_random()
+  end
+
+  assert_no_call "random_stardate does not use :rand.uniform_real" do
+    type :essential
+    calling_fn module: CaptainsLog, name: :random_stardate
+    called_fn module: :rand, name: :uniform_real
+    comment Constants.captains_log_do_not_use_rand_uniform_real()
   end
 
   assert_call "random_stardate uses :rand.uniform" do
