@@ -104,7 +104,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall do
   defp do_walk_assert_call_block({:suppress_if, _, args} = node, test_data) do
     case args do
       [name, condition] when condition in [:pass, :fail] ->
-        {node, Map.put(test_data, :suppress_if, {name, condition})}
+        test_data =
+          Map.update(test_data, :suppress_if, [{name, condition}], &[{name, condition} | &1])
+
+        {node, test_data}
 
       _ ->
         raise """

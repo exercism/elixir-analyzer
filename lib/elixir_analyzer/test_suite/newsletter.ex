@@ -59,12 +59,13 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
 
   feature "send_newsletter ends with close_log" do
     type :actionable
+    find :none
     comment Constants.newsletter_send_newsletter_returns_implicitly()
 
     form do
       def send_newsletter(_ignore, _ignore, _ignore) do
         _block_ends_with do
-          close_log(_ignore)
+          :ok
         end
       end
     end
