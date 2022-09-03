@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.MixProject do
     [
       app: :elixir_analyzer,
       version: "0.1.0",
-      elixir: "~> 1.13",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       # Turn off protocol consolidation to avoid warning in analyzed code
