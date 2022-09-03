@@ -39,7 +39,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     end
   end
 
-  assert_no_call "assert 2: no foo() unless feature 1 found a foo() first" do
+  assert_no_call "assert 2: no bar() unless feature 1 found a foo() first" do
     comment "assert 2: bar() was called"
     suppress_if "feature 1: no foo() unless common check was found", :fail
     called_fn name: :bar
@@ -61,7 +61,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     end
   end
 
-  assert_no_call "assert 3: no foo() unless assert 1 found a foo() first" do
+  assert_no_call "assert 3: no baz() unless assert 1 found a foo() first" do
     comment "assert 3: baz() was called"
     suppress_if "assert 1: no foo() unless common check was found", :fail
     called_fn name: :baz
@@ -71,5 +71,30 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.SuppressIf do
     comment "check source 3: baz() was called"
     suppress_if "feature 1: no foo() unless common check was found", :fail
     check(%Source{code_string: code_string}, do: not String.contains?(code_string, "baz"))
+  end
+
+  feature "feature 4: no qux() unless feature 2/3 found a bar()/baz() first" do
+    find :none
+    comment "feature 4: qux() was called"
+    suppress_if "feature 2: no bar() unless assert 1 found a foo() first", :fail
+    suppress_if "feature 3: no baz() unless feature 1 found a foo() first", :fail
+
+    form do
+      qux()
+    end
+  end
+
+  assert_no_call "assert 4: no qux() unless feature 2/3 found a bar()/baz() first" do
+    comment "assert 4: qux() was called"
+    suppress_if "feature 2: no bar() unless assert 1 found a foo() first", :fail
+    suppress_if "feature 3: no baz() unless feature 1 found a foo() first", :fail
+    called_fn name: :qux
+  end
+
+  check_source "check source 4: no qux() unless feature 2/3 found a bar()/baz() first" do
+    comment "check source 4: qux() was called"
+    suppress_if "feature 2: no bar() unless assert 1 found a foo() first", :fail
+    suppress_if "feature 3: no baz() unless feature 1 found a foo() first", :fail
+    check(%Source{code_string: code_string}, do: not String.contains?(code_string, "qux"))
   end
 end

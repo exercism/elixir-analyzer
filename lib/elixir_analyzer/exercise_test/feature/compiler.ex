@@ -11,7 +11,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
     type = Keyword.get(feature_data, :type, :informative)
     find_type = Keyword.get(feature_data, :find, :all)
     find_at_depth = Keyword.get(feature_data, :depth, nil)
-    suppress_if = Keyword.get(feature_data, :suppress_if, false)
+    suppress_if = Keyword.get(feature_data, :suppress_if, [])
 
     form_expr =
       feature_forms

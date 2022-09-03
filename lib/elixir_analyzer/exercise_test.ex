@@ -82,22 +82,11 @@ defmodule ElixirAnalyzer.ExerciseTest do
 
       defp filter_suppressed_results(feature_results) do
         Enum.reject(feature_results, fn
-          {_test_result, %{suppress_if: condition}} when condition !== false ->
-            any_result_matches_suppress_condition?(feature_results, condition)
+          {_test_result, %{suppress_if: [_ | _] = conditions}} ->
+            Enum.any?(feature_results, fn {result, test} -> {test.name, result} in conditions end)
 
           {_test_result, %{comment: comment}} ->
             comment in unquote(suppress_tests)
-        end)
-      end
-
-      defp any_result_matches_suppress_condition?(feature_results, condition) do
-        {suppress_on_test_name, suppress_on_result} = condition
-
-        Enum.any?(feature_results, fn {result, test} ->
-          case {result, test.name} do
-            {^suppress_on_result, ^suppress_on_test_name} -> true
-            _ -> false
-          end
         end)
       end
 

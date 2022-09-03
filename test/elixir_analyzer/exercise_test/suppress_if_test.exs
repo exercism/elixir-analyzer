@@ -83,6 +83,72 @@ defmodule ElixirAnalyzer.ExerciseTest.SuppressIfTest do
     end
   end
 
+  test_exercise_analysis "assert/feature/check 4 find qux",
+    comments: [
+      "feature 4: qux() was called",
+      "assert 4: qux() was called",
+      "check source 4: qux() was called"
+    ] do
+    defmodule MyModule do
+      def my_function() do
+        qux()
+      end
+    end
+  end
+
+  test_exercise_analysis "feature 2 finds bar and suppress assert/feature/check 4 find qux",
+    comments_include: [
+      "feature 2: bar() was called"
+    ],
+    comments_exclude: [
+      "feature 4: qux() was called",
+      "assert 4: qux() was called",
+      "check source 4: qux() was called"
+    ] do
+    defmodule MyModule do
+      def my_function() do
+        bar()
+        qux()
+      end
+    end
+  end
+
+  test_exercise_analysis "feature 3 finds baz and suppress assert/feature/check 4 find qux",
+    comments_include: [
+      "feature 3: baz() was called"
+    ],
+    comments_exclude: [
+      "feature 4: qux() was called",
+      "assert 4: qux() was called",
+      "check source 4: qux() was called"
+    ] do
+    defmodule MyModule do
+      def my_function() do
+        baz()
+        qux()
+      end
+    end
+  end
+
+  test_exercise_analysis "feature 2/3 finds bar/baz and suppress assert/feature/check 4 find qux",
+    comments_include: [
+      "feature 2: bar() was called",
+      "feature 3: baz() was called"
+    ],
+    comments_exclude: [
+      "feature 4: qux() was called",
+      "assert 4: qux() was called",
+      "check source 4: qux() was called"
+    ] do
+    defmodule MyModule do
+      def my_function() do
+        bar()
+        baz()
+        qux()
+      end
+    end
+  end
+
   describe "Error is triggered when wrong arguments are passed to suppress_if" do
     @suppress_if_error "Invalid :suppress_if arguments. Arguments must have the form\n  suppress_if \"some check name\", (:pass | :fail)\n"
     test "works with assert_call" do

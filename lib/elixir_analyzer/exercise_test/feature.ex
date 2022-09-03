@@ -106,7 +106,8 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature do
   defp gather_feature_data({:suppress_if, _, args} = node, acc) do
     case args do
       [name, condition] when condition in [:pass, :fail] ->
-        {node, put_in(acc, [:suppress_if], {name, condition})}
+        acc = Map.update(acc, :suppress_if, [{name, condition}], &[{name, condition} | &1])
+        {node, acc}
 
       _ ->
         raise """

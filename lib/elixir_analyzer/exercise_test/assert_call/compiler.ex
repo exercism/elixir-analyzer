@@ -16,7 +16,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     comment = Keyword.fetch!(assert_call_data, :comment)
     should_call = Keyword.fetch!(assert_call_data, :should_call)
     type = Keyword.fetch!(assert_call_data, :type)
-    suppress_if = Keyword.get(assert_call_data, :suppress_if, false)
+    suppress_if = Keyword.get(assert_call_data, :suppress_if, [])
 
     test_description =
       Macro.escape(%Comment{
