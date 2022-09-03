@@ -60,7 +60,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
   describe "random_stardate uses :rand.uniform" do
     test_exercise_analysis "when using Enum.random instead",
       comments_include: [
-        Constants.captains_log_do_not_use_enum_random(),
+        Constants.captains_log_do_not_use_enum_random()
+      ],
+      comments_exclude: [
         Constants.captains_log_use_rand_uniform()
       ] do
       defmodule CaptainsLog do
@@ -72,7 +74,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
 
     test_exercise_analysis "when using :rand.uniform_real instead",
       comments_include: [
-        Constants.captains_log_do_not_use_rand_uniform_real(),
+        Constants.captains_log_do_not_use_rand_uniform_real()
+      ],
+      comments_exclude: [
         Constants.captains_log_use_rand_uniform()
       ] do
       defmodule CaptainsLog do

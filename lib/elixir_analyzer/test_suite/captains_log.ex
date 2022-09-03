@@ -39,9 +39,8 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     called_fn module: :rand, name: :uniform
     comment Constants.captains_log_use_rand_uniform()
     suppress_if Constants.solution_deprecated_random_module(), :fail
-    # TODO: support multiple suppress_if
-    # suppress_if Constants.captains_log_do_not_use_rand_uniform_real(), :fail
-    # suppress_if Constants.captains_log_do_not_use_enum_random(), :fail
+    suppress_if "random_stardate does not use :rand.uniform_real", :fail
+    suppress_if "random_stardate does not use Enum.random", :fail
   end
 
   assert_call "format_stardate uses :io_lib" do
