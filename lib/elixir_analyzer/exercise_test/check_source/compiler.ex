@@ -8,7 +8,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource.Compiler do
     name = Keyword.fetch!(check_source_data, :description)
     comment = Keyword.fetch!(check_source_data, :comment)
     type = Keyword.get(check_source_data, :type, :informative)
-    suppress_if = Keyword.get(check_source_data, :suppress_if, false)
+    suppress_if = Keyword.get(check_source_data, :suppress_if, [])
 
     test_description =
       Macro.escape(%Comment{

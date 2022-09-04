@@ -39,44 +39,68 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
     end
   end
 
-  test_exercise_analysis "other solution",
+  test_exercise_analysis "other solutions",
     comments: [] do
-    defmodule Newsletter do
-      import File
-      import IO
+    [
+      defmodule Newsletter do
+        import File
+        import IO
 
-      def read_emails(path) do
-        path
-        |> read!()
-        |> String.split()
+        def read_emails(path) do
+          path
+          |> read!()
+          |> String.split()
+        end
+
+        def open_log(path) do
+          open!(path, [:write])
+        end
+
+        def log_sent_email(pid, email) do
+          puts(pid, email)
+        end
+
+        def close_log(pid) do
+          close(pid)
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun) do
+          log_pid = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end,
+      defmodule Newsletter do
+        def read_emails(path), do: do_read_email(File.read!(path))
+        defp do_read_email(""), do: []
+        defp do_read_email(emails), do: String.trim(emails) |> String.split("\n")
+
+        def open_log(path), do: File.open!(path, [:write])
+
+        def log_sent_email(pid, email), do: IO.puts(pid, email)
+
+        def close_log(pid), do: File.close(pid)
+
+        def send_newsletter(emails_path, log_path, send_fun) do
+          do_send(read_emails(emails_path), open_log(log_path), send_fun)
+        end
+
+        defp do_send([], log_pid, _), do: close_log(log_pid)
+
+        defp do_send([email | rest], log_pid, f) do
+          if f.(email) === :ok, do: log_sent_email(log_pid, email)
+          do_send(rest, log_pid, f)
+        end
       end
-
-      def open_log(path) do
-        open!(path, [:write])
-      end
-
-      def log_sent_email(pid, email) do
-        puts(pid, email)
-      end
-
-      def close_log(pid) do
-        close(pid)
-      end
-
-      def send_newsletter(emails_path, log_path, send_fun) do
-        log_pid = open_log(log_path)
-        emails = read_emails(emails_path)
-
-        Enum.each(emails, fn email ->
-          case send_fun.(email) do
-            :ok -> log_sent_email(log_pid, email)
-            _ -> nil
-          end
-        end)
-
-        close_log(log_pid)
-      end
-    end
+    ]
   end
 
   describe "using IO.write in log_sent_email" do
@@ -174,22 +198,6 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
 
             close_log(log_pid)
             :ok
-          end
-        end,
-        defmodule Newsletter do
-          def send_newsletter(emails_path, log_path, send_fun) do
-            log_pid = open_log(log_path)
-            emails = read_emails(emails_path)
-
-            Enum.each(emails, fn email ->
-              case send_fun.(email) do
-                :ok -> log_sent_email(log_pid, email)
-                _ -> nil
-              end
-            end)
-
-            x = close_log(log_pid)
-            x
           end
         end
       ]
