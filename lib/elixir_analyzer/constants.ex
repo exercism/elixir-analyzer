@@ -145,6 +145,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # New Passport Comments
     new_passport_use_with: "elixir.new-passport.use_with",
+    new_passport_use_with_else: "elixir.new-passport.use_with_else",
     new_passport_do_not_modify_code: "elixir.new-passport.do_not_modify_code",
 
     # Pacman Rules Comments
