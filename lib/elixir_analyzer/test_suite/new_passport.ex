@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.TestSuite.NewPassport do
   """
 
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
   use ElixirAnalyzer.ExerciseTest
 
   assert_call "with is used in get_new_passport/3" do
@@ -13,11 +14,21 @@ defmodule ElixirAnalyzer.TestSuite.NewPassport do
     called_fn name: :with
   end
 
-  assert_no_call "case is not used in get_new_passport/3" do
+  check_source "with is used with else in get_new_passport/3" do
     type :essential
-    comment Constants.new_passport_use_with()
-    calling_fn module: NewPassport, name: :get_new_passport
-    called_fn name: :case
+    comment Constants.new_passport_use_with_else()
+    suppress_if "with is used in get_new_passport/3", :fail
+
+    check(%Source{code_ast: code_ast}) do
+      {_, %{with_else_found?: found?}} =
+        Macro.prewalk(
+          code_ast,
+          %{with_else_found?: false},
+          &find_with_else_in_get_new_passport/2
+        )
+
+      found?
+    end
   end
 
   feature "given code wasn't modified" do
@@ -71,5 +82,40 @@ defmodule ElixirAnalyzer.TestSuite.NewPassport do
         Time.compare(from, time) != :gt and Time.compare(to, time) == :gt
       end
     end
+  end
+
+  defp find_with_else_in_get_new_passport(
+         {:def, _meta, [{:get_new_passport, _meta2, args}, [do: body]]} = node,
+         %{with_else_found?: false} = acc
+       )
+       when length(args) == 3 do
+    {_, with_else_found?} =
+      Macro.prewalk(body, false, fn node, acc ->
+        if acc do
+          # stop looking if already found
+          {node, acc}
+        else
+          acc =
+            case node do
+              # with clauses is a list of `{:->, _, _}` tuples ending with a do or do/else keyword list.
+              {:with, _, clauses} ->
+                case List.last(clauses) do
+                  [do: _, else: _] -> true
+                  _ -> false
+                end
+
+              _ ->
+                false
+            end
+
+          {node, acc}
+        end
+      end)
+
+    {node, Map.put(acc, :with_else_found?, with_else_found?)}
+  end
+
+  defp find_with_else_in_get_new_passport(node, acc) do
+    {node, acc}
   end
 end

@@ -70,7 +70,7 @@ defmodule ElixirAnalyzer.TestSuite.NewPassportTest do
     end
   end
 
-  test_exercise_analysis "uses case in get_new_passport/3",
+  test_exercise_analysis "does not use with in get_new_passport/3",
     comments_include: [Constants.new_passport_use_with()] do
     defmodule NewPassport do
       def get_new_passport(now, birthday, form) do
@@ -94,6 +94,29 @@ defmodule ElixirAnalyzer.TestSuite.NewPassportTest do
 
           err ->
             err
+        end
+      end
+    end
+  end
+
+  test_exercise_analysis "does not use else in with in get_new_passport/3",
+    comments_include: [Constants.new_passport_use_with_else()],
+    comments_exclude: [Constants.new_passport_use_with()] do
+    defmodule NewPassport do
+      def get_new_passport(now, birthday, form) do
+        with {:ok, timestamp} <- enter_building(now),
+             {:ok, manual} <- validate_no_coffee_break(now),
+             counter = manual.(birthday),
+             {:ok, checksum} <- stamp_form(timestamp, counter, form),
+             number <- get_new_passport_number(timestamp, counter, checksum) do
+          {:ok, number}
+        end
+      end
+
+      defp validate_no_coffee_break(now) do
+        case find_counter_information(now) do
+          {:coffee_break, _} -> {:retry, now |> NaiveDateTime.add(15 * 60)}
+          ok -> ok
         end
       end
     end
