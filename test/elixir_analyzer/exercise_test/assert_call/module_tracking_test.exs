@@ -144,6 +144,27 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ModuleTrackingTest do
         def function() do
           {:ok, file} = read_path("mix.exs")
         end
+      end,
+      defmodule AssertCallVerification do
+        import Elixir.Mix.Utils, only: [read_path: 1]
+
+        def function() do
+          {:ok, file} = read_path("mix.exs")
+        end
+      end,
+      defmodule AssertCallVerification do
+        import Elixir.Mix.Utils, only: [read_path: 1]
+
+        def function() do
+          {:ok, file} = "mix.exs" |> read_path
+        end
+      end,
+      defmodule AssertCallVerification do
+        import Elixir.Mix.Utils, only: [read_path: 1]
+
+        def function() do
+          {:ok, file} = "mix.exs" |> read_path()
+        end
       end
     ]
   end
