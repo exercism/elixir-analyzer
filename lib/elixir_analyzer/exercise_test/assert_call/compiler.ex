@@ -80,6 +80,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
+    node = annotate_piped_functions(node)
+
     acc =
       acc
       |> track_aliases(node)
@@ -170,10 +172,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def matching_function_call?({_, _, args} = function, {nil, search_name}, modules, in_module)
       when is_list(args) do
     case function do
-      # function call without parentheses in a pipe
-      {:|>, _, [_arg, {^search_name, _, atom}]} when is_atom(atom) ->
-        true
-
       # function call with captured notation
       {:/, _, [{^search_name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) ->
         true
@@ -221,11 +219,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # No module path in AST
-  def matching_function_call?({name, _, args}, {module_path, search_name}, modules, _in_module)
+  def matching_function_call?({name, meta, args}, {module_path, search_name}, modules, _in_module)
       when is_list(args) and search_name in [:_, name] do
+    arg_number = length(args) + Keyword.get(meta, :extra_arg, 0)
+
     case modules[List.wrap(module_path)] do
       nil -> false
-      imported -> {name, length(args)} in imported
+      imported -> {name, arg_number} in imported
     end
   end
 
@@ -269,6 +269,18 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def in_function?({module, name}, {module, name}), do: true
   def in_function?({_, name}, {nil, name}), do: true
   def in_function?(_, _), do: false
+
+  defp annotate_piped_functions({:|>, pipe_meta, [function, in_pipe_function]}) do
+    case in_pipe_function do
+      {name, meta, atom} when is_atom(atom) ->
+        {:|>, pipe_meta, [function, {name, Keyword.put(meta, :extra_arg, 1), []}]}
+
+      {name, meta, args} ->
+        {:|>, pipe_meta, [function, {name, Keyword.put(meta, :extra_arg, 1), args}]}
+    end
+  end
+
+  defp annotate_piped_functions(node), do: node
 
   # track_imports
 
@@ -411,9 +423,6 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
         {:., _, [{:__aliases__, _, fn_module}, fn_name]} ->
           {fn_module, fn_name}
-
-        {:|>, _, [_arg, {fn_name, _, atom}]} when is_atom(atom) ->
-          {module, fn_name}
 
         {:/, _, [{fn_name, _, atom}, arity]} when is_atom(atom) and is_integer(arity) ->
           {module, fn_name}

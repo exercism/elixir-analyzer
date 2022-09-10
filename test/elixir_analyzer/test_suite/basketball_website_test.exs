@@ -24,24 +24,38 @@ defmodule ElixirAnalyzer.ExerciseTest.BasketballWebsiteTest do
       end
     end
 
-    test_exercise_analysis "another good solution", comments: [] do
-      defmodule BasketballWebsite do
-        def extract_from_path(data, path) do
-          paths = String.split(path, ".", trim: true)
-          do_extract(data, paths)
-        end
+    test_exercise_analysis "other good solutions", comments: [] do
+      [
+        defmodule BasketballWebsite do
+          def extract_from_path(data, path) do
+            paths = String.split(path, ".", trim: true)
+            do_extract(data, paths)
+          end
 
-        defp do_extract(data, []), do: data
+          defp do_extract(data, []), do: data
 
-        defp do_extract(data, [path | next]) do
-          do_extract(Access.get(data, path), next)
-        end
+          defp do_extract(data, [path | next]) do
+            do_extract(Access.get(data, path), next)
+          end
 
-        def get_in_path(data, path) do
-          paths = String.split(path, ".", trim: true)
-          get_in(data, paths)
+          def get_in_path(data, path) do
+            paths = String.split(path, ".", trim: true)
+            get_in(data, paths)
+          end
+        end,
+        defmodule BasketballWebsite do
+          def extract_from_path(data, path),
+            do: do_extract_from_path(data, String.split(path, "."))
+
+          defp do_extract_from_path(nil, _), do: nil
+          defp do_extract_from_path(data, []), do: data
+
+          defp do_extract_from_path(data, [head | tail]),
+            do: do_extract_from_path(data[head], tail)
+
+          def get_in_path(data, path), do: data |> get_in(String.split(path, "."))
         end
-      end
+      ]
     end
 
     test_exercise_analysis "using Enum is also fine", comments: [] do
