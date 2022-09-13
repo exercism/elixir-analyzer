@@ -8,17 +8,13 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
   Common check to be run on every single solution.
   """
-
   @def_ops [:def, :defmacro]
 
   def run(ast) do
     acc = %{module: [], definitions: %{[] => []}}
     {_, %{definitions: definitions}} = Macro.traverse(ast, acc, &enter_node/2, &exit_node/2)
 
-    definitions
-    |> Enum.flat_map(fn {_module, ops} ->
-      ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()
-    end)
+    definitions |> Enum.flat_map(fn {_module, ops} ->  ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()  end)
     |> check_errors()
   end
 
@@ -123,6 +119,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   defp check_wrong_order(%{operations: operations}) do
     Enum.uniq(operations) not in [
       [],
+      [:doc], # first three cases allow for private functions (:defp) or macros (:defmacrop) to have a doc, a spec or a doc-spec in the right order
+      [:spec],
+      [:doc, :spec],
       [:def],
       [:defmacro],
       [:spec, :def],
