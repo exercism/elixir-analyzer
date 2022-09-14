@@ -14,7 +14,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     acc = %{module: [], definitions: %{[] => []}}
     {_, %{definitions: definitions}} = Macro.traverse(ast, acc, &enter_node/2, &exit_node/2)
 
-    definitions |> Enum.flat_map(fn {_module, ops} ->  ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()  end)
+    definitions
+    |> Enum.flat_map(fn {_module, ops} ->
+      ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()
+    end)
     |> check_errors()
   end
 
