@@ -18,52 +18,52 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     |> check_errors()
   end
 
-  defp enter_node({:defmodule, _, [{:__aliases__, _, aliases}, _]} = ast, acc) do
+  def enter_node({:defmodule, _, [{:__aliases__, _, aliases}, _]} = ast, acc) do
     module = [aliases | acc.module]
     definitions = Map.put(acc.definitions, module, [])
     {ast, %{module: module, definitions: definitions}}
   end
 
-  defp enter_node({:@, _, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
+  def enter_node({:@, _, [{:spec, _, [{:"::", _, [{fn_name, _, _} | _]}]} | _]} = ast, acc) do
     definitions = Map.update!(acc.definitions, acc.module, &[{:spec, fn_name} | &1])
     {ast, %{acc | definitions: definitions}}
   end
 
-  defp enter_node({:@, _, [{:spec, _, [{fn_name, _, _}]}]} = ast, acc) do
+  def enter_node({:@, _, [{:spec, _, [{fn_name, _, _}]}]} = ast, acc) do
     definitions = Map.update!(acc.definitions, acc.module, &[{:spec, fn_name} | &1])
     {ast, %{acc | definitions: definitions}}
   end
 
-  defp enter_node({:@, _, [{:doc, _, _}]} = ast, acc) do
+  def enter_node({:@, _, [{:doc, _, _}]} = ast, acc) do
     definitions = Map.update!(acc.definitions, acc.module, &[:doc | &1])
     {ast, %{acc | definitions: definitions}}
   end
 
-  defp enter_node({op, _, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
+  def enter_node({op, _, [{:when, _, [{fn_name, _, _} | _]} | _]} = ast, acc)
        when op in @def_ops do
     definitions = Map.update!(acc.definitions, acc.module, &[{op, fn_name} | &1])
     {ast, %{acc | definitions: definitions}}
   end
 
-  defp enter_node({op, _, [{fn_name, _, _} | _]} = ast, acc)
+  def enter_node({op, _, [{fn_name, _, _} | _]} = ast, acc)
        when op in @def_ops do
     definitions = Map.update!(acc.definitions, acc.module, &[{op, fn_name} | &1])
     {ast, %{acc | definitions: definitions}}
   end
 
-  defp enter_node(ast, acc) do
+  def enter_node(ast, acc) do
     {ast, acc}
   end
 
-  defp exit_node({:defmodule, _, _} = ast, %{module: module} = acc) do
+  def exit_node({:defmodule, _, _} = ast, %{module: module} = acc) do
     {ast, %{acc | module: tl(module)}}
   end
 
-  defp exit_node(ast, acc) do
+  def exit_node(ast, acc) do
     {ast, acc}
   end
 
-  defp chunk_definitions(definitions) do
+  def chunk_definitions(definitions) do
     chunk_fun = fn
       {op, name}, %{name: nil, operations: ops} = chunk ->
         {:cont, %{chunk | name: name, operations: [op | ops]}}
@@ -86,7 +86,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     )
   end
 
-  defp merge_definitions(definitions) do
+  def merge_definitions(definitions) do
     Enum.reduce(
       definitions,
       [],
@@ -101,7 +101,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     )
   end
 
-  defp check_errors(attrs) do
+  def check_errors(attrs) do
     if Enum.any?(attrs, &check_wrong_order/1) do
       [
         {:fail,
@@ -116,10 +116,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     end
   end
 
-  defp check_wrong_order(%{operations: operations}) do
+  def check_wrong_order(%{operations: operations}) do
     Enum.uniq(operations) not in [
       [],
-      [:doc], # first three cases allow for private functions (:defp) or macros (:defmacrop) to have a doc, a spec or a doc-spec in the right order
+      [:doc], # first three cases allow for private functions (:def) or macros (:defmacrop) to have a doc, a spec or a doc-spec in the right order
       [:spec],
       [:doc, :spec],
       [:def],
