@@ -24,17 +24,17 @@ defmodule ElixirAnalyzer.TestSuite.GuessingGame do
     comment Constants.guessing_game_use_default_argument()
 
     form do
-      def compare(_ignore, _ignore \\ :no_guess)
+      def compare(_ignore, _ignore \\ _ignore)
     end
 
     form do
-      def compare(_ignore, _ignore \\ :no_guess) do
+      def compare(_ignore, _ignore \\ _ignore) do
         _ignore
       end
     end
 
     form do
-      def compare(_ignore, _ignore \\ :no_guess) when _ignore do
+      def compare(_ignore, _ignore \\ _ignore) when _ignore do
         _ignore
       end
     end

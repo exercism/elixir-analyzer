@@ -31,7 +31,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GuessingGameTest do
     end
   end
 
-  test_exercise_analysis "another acceptable solutions",
+  test_exercise_analysis "other acceptable solutions",
     comments: [] do
     [
       defmodule GuessingGame do
@@ -83,6 +83,14 @@ defmodule ElixirAnalyzer.ExerciseTest.GuessingGameTest do
         def compare(secret_number, x) when x <= secret_number - 1 do
           "So close"
         end
+      end,
+      defmodule GuessingGame do
+        def compare(secret_number, guess \\ '')
+        def compare(_, guess) when not is_number(guess), do: "Make a guess"
+        def compare(secret_number, guess) when secret_number == guess, do: "Correct"
+        def compare(secret_number, guess) when abs(secret_number - guess) <= 1, do: "So close"
+        def compare(secret_number, guess) when secret_number < guess, do: "Too high"
+        def compare(secret_number, guess) when secret_number > guess, do: "Too low"
       end
     ]
   end
