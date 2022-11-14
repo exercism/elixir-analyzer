@@ -21,7 +21,7 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorInspection do
 
   assert_call "calls spawn_link" do
     type :essential
-    called_fn name: :spawn_link
+    called_fn module: Kernel, name: :spawn_link
     comment Constants.rpn_calculator_inspection_use_start_link()
     suppress_if "calls Task.start_link", :pass
   end
