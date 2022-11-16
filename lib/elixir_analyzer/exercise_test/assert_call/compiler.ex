@@ -224,7 +224,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   # No module path in AST
   def matching_function_call?(function, {module_path, search_name}, modules, _in_module) do
-    {name, arg_number} =
+    {name, arity} =
       case function do
         {:&, _, [{:/, _, [{name, _, name_args}, arity]}]}
         when is_atom(name) and is_atom(name_args) and is_integer(arity) and
@@ -238,17 +238,20 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
           {nil, 0}
       end
 
-    case modules[List.wrap(module_path)] do
+    function_imported?(module_path, name, arity, modules)
+  end
+
+  def matching_function_call?(_, _, _, _), do: false
+
+  defp function_imported?(module, name, arity, modules) do
+    case modules[List.wrap(module)] do
       nil ->
         false
 
       imported ->
-        {name, arg_number} in imported or
-          {String.to_atom("MACRO-#{name}"), arg_number + 1} in imported
+        {name, arity} in imported or {String.to_atom("MACRO-#{name}"), arity + 1} in imported
     end
   end
-
-  def matching_function_call?(_, _, _, _), do: false
 
   @doc """
   node is a module definition
