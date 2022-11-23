@@ -75,7 +75,9 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNames do
   end
 
   defp to_snake_case(name) do
-    # Macro.underscore is good enough because a module attribute name must be a valid Elixir identifier anyway
-    Macro.underscore(to_string(name))
+    name
+    |> to_string()
+    |> Macro.underscore()
+    |> String.replace(~r/_+/, "_")
   end
 end

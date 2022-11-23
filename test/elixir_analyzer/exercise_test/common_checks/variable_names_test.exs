@@ -442,6 +442,27 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.VariableNamesTest do
                 }}
              ]
     end
+
+    test "it should report a violation /19" do
+      code =
+        quote do
+          defmodule CredoSampleModule do
+            def some_function(parameter1, parameter2) do
+              %{some_value: some_Value, other_value: otherValue} = parameter1
+            end
+          end
+        end
+
+      assert VariableNames.run(code) == [
+               {:fail,
+                %Comment{
+                  type: :actionable,
+                  name: Constants.solution_variable_name_snake_case(),
+                  comment: Constants.solution_variable_name_snake_case(),
+                  params: %{expected: "some_value", actual: "some_Value"}
+                }}
+             ]
+    end
   end
 
   describe "unrelated code" do
