@@ -8,8 +8,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
   Common check to be run on every single solution.
   """
-
-  @def_ops [:def, :defmacro]
+  @def_ops [:def, :defp, :defmacro, :defmacrop, :defguard, :defguardp]
 
   def run(ast) do
     acc = %{module: [], definitions: %{[] => []}}
@@ -17,7 +16,11 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
 
     definitions
     |> Enum.flat_map(fn {_module, ops} ->
-      ops |> Enum.reverse() |> chunk_definitions() |> merge_definitions()
+      ops
+      |> Enum.reverse()
+      |> chunk_definitions()
+      |> merge_definitions()
+      |> Enum.map(&normalize_operations/1)
     end)
     |> check_errors()
   end
@@ -105,6 +108,16 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
     )
   end
 
+  defp normalize_operations(%{operations: operations} = definition) do
+    operations =
+      Enum.map(operations, fn
+        op when op in @def_ops -> :def_op
+        op -> op
+      end)
+
+    %{definition | operations: operations}
+  end
+
   defp check_errors(attrs) do
     if Enum.any?(attrs, &check_wrong_order/1) do
       [
@@ -123,14 +136,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrder do
   defp check_wrong_order(%{operations: operations}) do
     Enum.uniq(operations) not in [
       [],
-      [:def],
-      [:defmacro],
-      [:spec, :def],
-      [:spec, :defmacro],
-      [:doc, :def],
-      [:doc, :defmacro],
-      [:doc, :spec, :def],
-      [:doc, :spec, :defmacro]
+      # @doc alone will get a compiler warning anyway so we allow it
+      [:doc],
+      [:def_op],
+      [:spec, :def_op],
+      [:doc, :def_op],
+      [:doc, :spec, :def_op]
     ]
   end
 end

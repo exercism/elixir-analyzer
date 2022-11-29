@@ -8,32 +8,79 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
 
   alias ElixirAnalyzer.Constants
 
-  test_exercise_analysis "wrong order crashes",
-    comments: [Constants.solution_function_annotation_order()] do
-    defmodule Test do
-      @spec x()
-      @doc ""
-      def x()
-    end
-  end
-
-  test_exercise_analysis "works for def and defmacro",
-    comments: [Constants.solution_function_annotation_order()] do
+  test_exercise_analysis "all accepted orders",
+    comments: [] do
     [
       defmodule Test do
-        @spec x()
+      end,
+      defmodule Test do
         @doc ""
+      end,
+      defmodule Test do
         def x()
       end,
       defmodule Test do
         @spec x()
+        def x()
+      end,
+      defmodule Test do
         @doc ""
-        defmacro x()
+        def x()
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
+        def x()
       end
     ]
   end
 
-  test_exercise_analysis "correct order for def and defmacro is ok",
+  test_exercise_analysis "some rejected orders",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
+      end,
+      defmodule Test do
+        def x()
+        @spec x()
+      end,
+      defmodule Test do
+        def x()
+        @doc ""
+      end,
+      defmodule Test do
+        def x()
+        @spec x()
+        @doc ""
+      end,
+      defmodule Test do
+        def x()
+        @doc ""
+        @spec x()
+      end,
+      defmodule Test do
+        @doc ""
+        def x()
+        @spec x()
+      end,
+      defmodule Test do
+        @spec x()
+        def x()
+        @doc ""
+      end
+    ]
+  end
+
+  test_exercise_analysis "correct order is ok for all kinds of operations",
     comments: [] do
     [
       defmodule Test do
@@ -44,7 +91,63 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         @doc ""
         @spec x()
+        defp x()
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
         defmacro x()
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
+        defmacrop x()
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
+        defguard x()
+      end,
+      defmodule Test do
+        @doc ""
+        @spec x()
+        defguardp x()
+      end
+    ]
+  end
+
+  test_exercise_analysis "wrong order crashes for all kinds of operations",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec x()
+        @doc ""
+        def x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defp x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defmacro x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defmacrop x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defguard x()
+      end,
+      defmodule Test do
+        @spec x()
+        @doc ""
+        defguardp x()
       end
     ]
   end
@@ -58,19 +161,36 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
 
         @spec y
         def y
-      end
-    ]
-  end
-
-  test_exercise_analysis "another non related definition will not fail",
-    comments: [] do
-    [
-      defmodule Test do
-        @spec x
-        def x
 
         @doc ""
-        def y
+        defp x
+
+        @spec y
+        defp y
+
+        @doc ""
+        defmacro x
+
+        @spec y
+        defmacro y
+
+        @doc ""
+        defmacrop x
+
+        @spec y
+        defmacrop y
+
+        @doc ""
+        defguard x
+
+        @spec y
+        defguard y
+
+        @doc ""
+        defguardp x
+
+        @spec y
+        defguardp y
       end
     ]
   end
@@ -81,6 +201,59 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         def a
         def b
+
+        @doc ""
+        @spec c
+        def c
+
+        defp a
+        defp b
+
+        @doc ""
+        @spec c
+        defp c
+
+        defmacro a
+        defmacro b
+
+        @doc ""
+        @spec c
+        defmacro c
+
+        defmacrop a
+        defmacrop b
+
+        @doc ""
+        @spec c
+        defmacrop c
+
+        defguard a
+        defguard b
+
+        @doc ""
+        @spec c
+        defguard c
+
+        defguardp a
+        defguardp b
+
+        @doc ""
+        @spec c
+        defguardp c
+      end
+    ]
+  end
+
+  test_exercise_analysis "multiple mixed public and private functions before attributes will not fail",
+    comments: [] do
+    [
+      defmodule Test do
+        def a
+        defp b
+        def x
+
+        @spec y
+        defp y
 
         @doc ""
         @spec c
@@ -99,6 +272,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         @spec c
         @doc ""
         def c
+      end,
+      defmodule Test do
+        defmacrop a
+        defmacrop b
+
+        @spec c
+        @doc ""
+        defmacrop c
       end
     ]
   end
@@ -129,17 +310,34 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         @spec empty?(list()) :: boolean()
         def empty?(list) when list == [], do: true
         def empty?(_), do: false
+      end,
+      defmodule Test do
+        @spec empty?(list()) :: boolean()
+        defp empty?(list) when list == [], do: true
+        defp empty?(_), do: false
+      end,
+      defmodule Test do
+        @spec empty?(list()) :: boolean()
+        defmacrop empty?(list) when list == [], do: true
+        defmacrop empty?(_), do: false
       end
     ]
   end
 
   test_exercise_analysis "@spec defined after function crashes",
     comments: [Constants.solution_function_annotation_order()] do
-    defmodule Test do
-      def empty?(list) when list == [], do: true
-      @spec empty?(list()) :: boolean()
-      def empty?(_), do: false
-    end
+    [
+      defmodule Test do
+        def empty?(list) when list == [], do: true
+        @spec empty?(list()) :: boolean()
+        def empty?(_), do: false
+      end,
+      defmodule Test do
+        defmacrop empty?(list) when list == [], do: true
+        @spec empty?(list()) :: boolean()
+        defmacrop empty?(_), do: false
+      end
+    ]
   end
 
   test_exercise_analysis "one spec for multiple function works",
@@ -152,6 +350,14 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
         def one?(3), do: false
         def one?(4), do: false
         def one?(_), do: false
+      end,
+      defmodule Test do
+        @spec one?(integer()) :: integer()
+        defp one?(1), do: true
+        defp one?(2), do: false
+        defp one?(3), do: false
+        defp one?(4), do: false
+        defp one?(_), do: false
       end
     ]
   end
@@ -162,6 +368,10 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
       defmodule Test do
         @spec one?(number)
         def one?(number), do: number == 1
+      end,
+      defmodule Test do
+        @spec one?(number)
+        defp one?(number), do: number == 1
       end
     ]
   end
@@ -194,21 +404,19 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
 
         @spec c
         def c
-      end
-    ]
-  end
-
-  test_exercise_analysis "returns a single error even if it checks multiple times",
-    comments: [Constants.solution_function_annotation_order()] do
-    [
+      end,
       defmodule Test do
-        @spec sum(number(), number()) :: number()
-        @doc "sum two numbers"
-        def sum(x, y), do: x + y
+        @spec a
+        defmacrop a
 
-        @spec subtract(number(), number()) :: number()
-        @doc "subtract two number"
-        def subtract(x, y), do: x - y
+        defmacrop b(x \\ [])
+        @doc ""
+        @spec b(list()) :: atom()
+        defmacrop b([]), do: :empty
+        defmacrop b(_), do: :full
+
+        @spec c
+        defmacrop c
       end
     ]
   end
@@ -315,6 +523,23 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
           def x(), do: 1
         end
       end,
+      defmodule Test do
+        def x(), do: 1
+
+        defmodule Test.Y do
+          @spec x() :: integer()
+          defp x(), do: 1
+        end
+      end,
+      defmodule Test do
+        alias Blah.Bluh
+        defp x(), do: 1
+
+        defmodule Test.Y do
+          @doc ""
+          def x(), do: 1
+        end
+      end,
       defmodule Main do
         defmodule Sub do
           def y(), do: 0
@@ -398,11 +623,60 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.FunctionAnnotationOrderTest d
     ]
   end
 
+  test_exercise_analysis "@petros name-badge solution passes",
+    comments: [] do
+    [
+      defmodule NameBadge do
+        @separator " - "
+
+        @doc """
+        Take an id, a name, and a department and format a string
+        that can be printed on a badge. It handles not having an ID which
+        is the case for new employees. And it recognizes and onwer when
+        no department is passed.
+        """
+        @spec print(integer() | nil, String.t(), String.t() | nil) :: String.t()
+        def print(id, name, department) do
+          format_id(id) <>
+            name <>
+            format_department(department)
+        end
+
+        @spec format_id(integer() | nil) :: String.t()
+        defp format_id(id) do
+          if is_nil(id), do: "", else: "[#{id}]" <> @separator
+        end
+
+        @spec format_department(String.t() | nil) :: String.t()
+        defp format_department(department) do
+          if is_nil(department),
+            do: @separator <> "OWNER",
+            else: @separator <> String.upcase(department)
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "can handle test snippets without module definition",
     comments: [] do
     [
       def function() do
         :ok
+      end
+    ]
+  end
+
+  test_exercise_analysis "returns a single error even if it checks multiple times",
+    comments: [Constants.solution_function_annotation_order()] do
+    [
+      defmodule Test do
+        @spec sum(number(), number()) :: number()
+        @doc "sum two numbers"
+        def sum(x, y), do: x + y
+
+        @spec subtract(number(), number()) :: number()
+        @doc "subtract two number"
+        def subtract(x, y), do: x - y
       end
     ]
   end
