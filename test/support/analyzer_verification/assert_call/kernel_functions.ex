@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.Kernel do
   @moduledoc """
-  This is an exercise analyzer extension module to test the assert_call and assert_no_call 
+  This is an exercise analyzer extension module to test the assert_call and assert_no_call
   macros specifically for finding Kernel functions
   """
 
