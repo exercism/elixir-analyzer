@@ -180,6 +180,10 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       {^search_name, _, _args} ->
         true
 
+      # Kernel functions
+      {{:., _, [{:__aliases__, _, [:Kernel]}, ^search_name]}, _, _args} ->
+        true
+
       # local calls that unnecessarily reference the module by name
       {{:., _, [{:__aliases__, _, _}, ^search_name]}, _, _args} ->
         matching_function_call?(function, {in_module, search_name}, modules, in_module)
@@ -219,17 +223,35 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   end
 
   # No module path in AST
-  def matching_function_call?({name, meta, args}, {module_path, search_name}, modules, _in_module)
-      when is_list(args) and search_name in [:_, name] do
-    arg_number = length(args) + Keyword.get(meta, :extra_arg, 0)
+  def matching_function_call?(function, {module_path, search_name}, modules, _in_module) do
+    {name, arity} =
+      case function do
+        {:&, _, [{:/, _, [{name, _, name_args}, arity]}]}
+        when is_atom(name) and is_atom(name_args) and is_integer(arity) and
+               search_name in [name, :_] ->
+          {name, arity}
 
-    case modules[List.wrap(module_path)] do
-      nil -> false
-      imported -> {name, arg_number} in imported
-    end
+        {name, meta, args} when is_atom(name) and is_list(args) and search_name in [name, :_] ->
+          {name, length(args) + Keyword.get(meta, :extra_arg, 0)}
+
+        _ ->
+          {nil, 0}
+      end
+
+    function_imported?(module_path, name, arity, modules)
   end
 
   def matching_function_call?(_, _, _, _), do: false
+
+  defp function_imported?(module, name, arity, modules) do
+    case modules[List.wrap(module)] do
+      nil ->
+        false
+
+      imported ->
+        {name, arity} in imported or {String.to_atom("MACRO-#{name}"), arity + 1} in imported
+    end
+  end
 
   @doc """
   node is a module definition
