@@ -106,6 +106,47 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
             <<0x47, 0x49, 0x46, _::binary>> -> "image/gif"
           end
         end
+      end,
+      defmodule FileSniffer do
+        def type_from_binary(<<head::binary-size(8), _::binary>>) do
+          case head do
+            <<0x7F::8, 0x45::8, 0x4C::8, 0x46::8, _::binary>> ->
+              "application/octet-stream"
+
+            <<0x42::8, 0x4D::8, _::binary>> ->
+              "image/bmp"
+
+            <<0x89::8, 0x50::8, 0x4E::8, 0x47::8, 0x0D::8, 0x0A::8, 0x1A::8, 0x0A::8>> ->
+              "image/png"
+
+            <<0xFF::8, 0xD8::8, 0xFF::8, _::binary>> ->
+              "image/jpg"
+
+            <<0x47::8, 0x49::8, 0x46::8, _::binary>> ->
+              "image/gif"
+          end
+        end
+      end,
+      defmodule FileSniffer do
+        def type_from_binary(<<head::binary-size(8), _::binary>>) do
+          case head do
+            <<0x7F::size(8), 0x45::size(8), 0x4C::size(8), 0x46::size(8), _::binary>> ->
+              "application/octet-stream"
+
+            <<0x42::size(8), 0x4D::size(8), _::binary>> ->
+              "image/bmp"
+
+            <<0x89::size(8), 0x50::size(8), 0x4E::size(8), 0x47::size(8), 0x0D::size(8),
+              0x0A::size(8), 0x1A::size(8), 0x0A::size(8)>> ->
+              "image/png"
+
+            <<0xFF::size(8), 0xD8::size(8), 0xFF::size(8), _::binary>> ->
+              "image/jpg"
+
+            <<0x47::size(8), 0x49::size(8), 0x46::size(8), _::binary>> ->
+              "image/gif"
+          end
+        end
       end
     ]
   end
