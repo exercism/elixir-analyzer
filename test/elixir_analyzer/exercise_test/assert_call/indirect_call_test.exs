@@ -66,6 +66,21 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           final_function(:math.pi())
         end
       end,
+      # via helper and an alias
+      defmodule AssertCallVerification do
+        alias Elixir.Mix.Utils, as: U
+        alias :math, as: M
+
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          U.read_path(path)
+          final_function(M.pi())
+        end
+      end,
       # via two helpers unnecessarily referencing the module in local calls
       defmodule AssertCallVerification do
         def main_function() do
@@ -235,9 +250,72 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
         defdelegate rp(path), to: Helpers, as: :do_read_path
         defdelegate p(), to: Helpers, as: :pi
       end
-      """
+      """,
+      # via defdelegate to same module
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
 
-      # TODO delegate via __MODULE__, delegate via alias, delegate to self
+        def helper(path) do
+          rp(path)
+          final_function(p())
+        end
+
+        def do_rp(path) do
+          Elixir.Mix.Utils.read_path(path)
+        end
+
+        def do_p() do
+          :math.pi()
+        end
+
+        defdelegate rp(path), to: __MODULE__, as: :do_rp
+        defdelegate p(), to: AssertCallVerification, as: :do_p
+      end,
+      # via defdelegate with aliases on final call
+      defmodule AssertCallVerification do
+        alias Elixir.Mix.Utils, as: U
+        alias :math, as: M
+
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          read_path(path)
+          final_function(pi())
+        end
+
+        defdelegate read_path(path), to: U
+        defdelegate pi(), to: M
+      end,
+      # via defdelegate with aliases in intermediate calls
+      ~S"""
+      defmodule Helpers do
+        defdelegate do_read_path(path), to: Elixir.Mix.Utils, as: :read_path
+        defdelegate pi(), to: :math, as: :pi
+      end
+
+      defmodule AssertCallVerification do
+        alias Helpers, as: Hs
+
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          rp(path)
+          final_function(p())
+        end
+
+        defdelegate rp(path), to: Hs, as: :do_read_path
+        defdelegate p(), to: Hs, as: :pi
+      end
+      """
     ]
   end
 
