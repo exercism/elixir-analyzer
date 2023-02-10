@@ -233,9 +233,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
         end
 
         defdelegate rp(path), to: Helpers, as: :do_read_path
-        defdelegate p(), to: Helper, as: :pi
+        defdelegate p(), to: Helpers, as: :pi
       end
       """
+
+      # TODO delegate via __MODULE__, delegate via alias, delegate to self
     ]
   end
 

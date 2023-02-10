@@ -456,6 +456,30 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
   end
 
+  # track all "called" functions via delegating
+  def track_all_functions(
+        %{function_call_tree: tree, in_module: module, in_function_def: nil} = acc,
+        {:defdelegate, _, [{name, _, _}, delegate_opts]}
+      )
+      when not is_nil(name) and is_list(delegate_opts) do
+    called_module =
+      case Keyword.get(delegate_opts, :to) do
+        {:__MODULE__, _, _} ->
+          module
+
+        {:__aliases__, _, called_module} ->
+          called_module
+
+        called_module when is_atom(called_module) ->
+          called_module
+      end
+
+    called_fn = Keyword.get(delegate_opts, :as) || name
+    called = {called_module, called_fn}
+
+    %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
+  end
+
   def track_all_functions(acc, _node), do: acc
 
   # Check if a function was called through helper functions
