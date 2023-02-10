@@ -183,7 +183,59 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           Elixir.Mix.Utils.read_path()
           :math.pi() |> then(&final_function/1)
         end
+      end,
+      # via defdelegate
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          read_path(path)
+          final_function(pi())
+        end
+
+        defdelegate read_path(path), to: Elixir.Mix.Utils
+        defdelegate pi(), to: :math
+      end,
+      # via defdelegate with renaming
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          rp(path)
+          final_function(p())
+        end
+
+        defdelegate rp(path), to: Elixir.Mix.Utils, as: :read_path
+        defdelegate p(), to: :math, as: :pi
+      end,
+      # via indirect defdelegate with renaming
+      ~S"""
+      defmodule Helpers do
+        defdelegate do_read_path(path), to: Elixir.Mix.Utils, as: :read_path
+        defdelegate pi(), to: :math, as: :pi
       end
+
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          rp(path)
+          final_function(p())
+        end
+
+        defdelegate rp(path), to: Helpers, as: :do_read_path
+        defdelegate p(), to: Helper, as: :pi
+      end
+      """
     ]
   end
 
@@ -242,6 +294,51 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
         def helper(path) do
           final_function
         end
+      end,
+      # via defdelegate but to wrong module
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          read_path(path)
+          pi()
+        end
+
+        defdelegate read_path(path), to: Elixir.Mix.NOTUtils
+        defdelegate pi(), to: :not_math
+      end,
+      # via defdelegate with renaming but to wrong module
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          read_path(path)
+          pi()
+        end
+
+        defdelegate read_path(path), to: Elixir.NOTMix.Utils, as: :read_path
+        defdelegate pi(), to: :not_math, as: :pi
+      end,
+      # via defdelegate with renaming but to wrong function
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        end
+
+        def helper(path) do
+          read_path(path)
+          pi()
+        end
+
+        defdelegate read_path(path), to: Elixir.Mix.Utils, as: :not_read_path
+        defdelegate pi(), to: :math, as: :not_pi
       end
     ]
   end
