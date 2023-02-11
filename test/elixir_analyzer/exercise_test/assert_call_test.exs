@@ -39,6 +39,27 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         defp private_helper do
           :privately_helped
         end
+      end,
+      # function definitions with unnecessary but harmless rescue blocks
+      defmodule AssertCallVerification do
+        def function() do
+          x = List.first([1, 2, 3])
+          result = helper()
+          IO.puts(result)
+
+          private_helper() |> IO.puts()
+        rescue
+          ArgumentError -> :oops
+          _ -> :what
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
       end
     ]
   end
