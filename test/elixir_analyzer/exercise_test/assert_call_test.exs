@@ -64,6 +64,34 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
     ]
   end
 
+  test_exercise_analysis "finds calls even if they're in rescue blocks",
+    comments: [] do
+    [
+      # def + rescue and try + rescue
+      defmodule AssertCallVerification do
+        def function() do
+          try do
+            x = List.first([1, 2, 3])
+          rescue
+            result = helper()
+            IO.puts(result)
+          end
+        rescue
+          ArgumentError -> :oops
+          _ -> private_helper() |> IO.puts()
+        end
+
+        def helper do
+          :helped
+        end
+
+        defp private_helper do
+          :privately_helped
+        end
+      end
+    ]
+  end
+
   test_exercise_analysis "missing local call from anywhere in solution",
     comments: [
       "didn't find a local call to helper/0",
