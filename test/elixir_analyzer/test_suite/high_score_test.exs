@@ -68,8 +68,6 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
 
         def add_player(scores, name, score \\ @initial_score) do
           Map.put(scores, name, score)
-        rescue
-          _ -> "this is completely unnecessary"
         end
 
         def remove_player(scores, name) do
