@@ -268,7 +268,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   node is a function definition
   """
-  def function_def?({def_type, _, [_, [do: _]]}) when def_type in ~w[def defp]a do
+  def function_def?({def_type, _, [_, [{:do, _} | _]]}) when def_type in ~w[def defp]a do
     true
   end
 
@@ -277,11 +277,11 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   @doc """
   get the name of a function from a function definition node
   """
-  def extract_function_name({def_type, _, [{:when, _, [{name, _, _} | _]}, [do: _]]})
+  def extract_function_name({def_type, _, [{:when, _, [{name, _, _} | _]}, [{:do, _} | _]]})
       when is_atom(name) and def_type in ~w[def defp]a,
       do: name
 
-  def extract_function_name({def_type, _, [{name, _, _}, [do: _]]})
+  def extract_function_name({def_type, _, [{name, _, _}, [{:do, _} | _]]})
       when is_atom(name) and def_type in ~w[def defp]a,
       do: name
 
