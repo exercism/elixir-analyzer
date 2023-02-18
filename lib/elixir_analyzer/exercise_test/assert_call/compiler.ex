@@ -80,13 +80,15 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   """
   @spec annotate(Macro.t(), map()) :: {Macro.t(), map()}
   def annotate(node, acc) do
-    node = annotate_piped_functions(node)
+    node =
+      node
+      |> annotate_piped_functions
+      |> annotate_defdelegate
 
     acc =
       acc
       |> track_aliases(node)
       |> track_imports(node)
-      |> track_all_functions(node)
 
     cond do
       module_def?(node) -> {node, %{acc | in_module: extract_module_name(node)}}
@@ -128,6 +130,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
         } = acc
       ) do
     modules = Map.merge(modules_in_scope, in_function_modules)
+
+    acc = track_all_functions(acc, node)
 
     match_called_fn? =
       matching_function_call?(node, called_fn, modules, module) and
@@ -304,6 +308,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   defp annotate_piped_functions(node), do: node
 
+  defp annotate_defdelegate({:defdelegate, meta, [{name, name_meta, name_args}, delegate_opts]})
+       when is_list(delegate_opts) do
+    module = Keyword.get(delegate_opts, :to)
+    called_name = Keyword.get(delegate_opts, :as) || name
+
+    {:def, meta,
+     [{name, name_meta, name_args}, [do: {{:., [], [module, called_name]}, [], name_args}]]}
+  end
+
+  defp annotate_defdelegate(node), do: node
+
   # track_imports
 
   # import an Erlang module without options
@@ -434,11 +449,19 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
 
   # track all called functions
   def track_all_functions(
-        %{function_call_tree: tree, in_module: module, in_function_def: name} = acc,
+        %{
+          function_call_tree: tree,
+          in_module: module,
+          in_function_def: name,
+          modules_in_scope: modules_in_scope,
+          in_function_modules: in_function_modules
+        } = acc,
         {_, _, args} = function
       )
       when not is_nil(name) and is_list(args) do
-    called =
+    module_aliases = Map.merge(modules_in_scope, in_function_modules)
+
+    {module_called, name_called} =
       case function do
         {:., _, [{:__MODULE__, _, _}, fn_name]} ->
           {module, fn_name}
@@ -453,29 +476,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
           {module, fn_name}
       end
 
-    %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
-  end
-
-  # track all "called" functions via delegating
-  def track_all_functions(
-        %{function_call_tree: tree, in_module: module, in_function_def: nil} = acc,
-        {:defdelegate, _, [{name, _, _}, delegate_opts]}
-      )
-      when not is_nil(name) and is_list(delegate_opts) do
-    called_module =
-      case Keyword.get(delegate_opts, :to) do
-        {:__MODULE__, _, _} ->
-          module
-
-        {:__aliases__, _, called_module} ->
-          called_module
-
-        called_module when is_atom(called_module) ->
-          called_module
-      end
-
-    called_fn = Keyword.get(delegate_opts, :as) || name
-    called = {called_module, called_fn}
+    called = {Map.get(module_aliases, module_called, module_called), name_called}
 
     %{acc | function_call_tree: Map.update(tree, {module, name}, [called], &[called | &1])}
   end
