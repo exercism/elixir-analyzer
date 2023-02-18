@@ -81,6 +81,30 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.IndirectCallTest do
           final_function(M.pi())
         end
       end,
+      # via two helpers with unnecessary but harmless rescue blocks
+      defmodule AssertCallVerification do
+        def main_function() do
+          helper("")
+          |> do_something()
+        rescue
+          _ -> :oops
+        end
+
+        def helper(path) do
+          helper_2(path)
+        rescue
+          _ -> :oops
+        end
+
+        defp helper_2(path) do
+          Elixir.Mix.Utils.read_path(path)
+
+          :math.pi()
+          |> final_function
+        rescue
+          _ -> :oops
+        end
+      end,
       # via two helpers unnecessarily referencing the module in local calls
       defmodule AssertCallVerification do
         def main_function() do
