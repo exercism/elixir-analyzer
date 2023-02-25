@@ -60,7 +60,13 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
         def get_players(scores) do
           Map.keys(scores)
         end
-      end,
+      end
+    ]
+  end
+
+  test_exercise_analysis "other solutions with rescue",
+    comments: [ElixirAnalyzer.Constants.solution_no_rescue()] do
+    [
       defmodule HighScore do
         @initial_score 0
 

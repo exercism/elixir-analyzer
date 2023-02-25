@@ -39,8 +39,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
         defp private_helper do
           :privately_helped
         end
-      end,
-      # function definitions with unnecessary but harmless rescue blocks
+      end
+    ]
+  end
+
+  test_exercise_analysis "perfect solution with unnecessary but harmless rescue blocks",
+    comments: [ElixirAnalyzer.Constants.solution_no_rescue()] do
+    [
       defmodule AssertCallVerification do
         def function() do
           x = List.first([1, 2, 3])
@@ -65,7 +70,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCallTest do
   end
 
   test_exercise_analysis "finds calls even if they're in rescue blocks",
-    comments: [] do
+    comments: [ElixirAnalyzer.Constants.solution_no_rescue()] do
     [
       # def + rescue and try + rescue
       defmodule AssertCallVerification do
