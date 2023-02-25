@@ -12,6 +12,61 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue do
         comment Constants.solution_no_rescue()
         find :none
 
+        # try ------------------------------------------------------------------------
+        form do
+          try do
+            _ignore
+          rescue
+            _ignore
+          end
+        end
+
+        form do
+          try do
+            _ignore
+          rescue
+            _ignore
+          else
+            _ignore
+          end
+        end
+
+        form do
+          try do
+            _ignore
+          rescue
+            _ignore
+          after
+            _ignore
+          end
+        end
+
+        form do
+          try do
+            _ignore
+          rescue
+            _ignore
+          else
+            _ignore
+          after
+            _ignore
+          end
+        end
+
+        form do
+          try do
+            _ignore
+          rescue
+            _ignore
+          after
+            _ignore
+          else
+            _ignore
+          end
+        end
+
+        # def ------------------------------------------------------------------------
+
         form do
           def _ignore do
             _ignore
@@ -21,15 +76,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue do
         end
 
         form do
-          try do
-            _ignore
-          rescue
-            _ignore
-          end
-        end
-
-        form do
-          try do
+          def _ignore do
             _ignore
           rescue
             _ignore
@@ -39,7 +86,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue do
         end
 
         form do
-          try do
+          def _ignore do
             _ignore
           rescue
             _ignore
@@ -49,13 +96,79 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue do
         end
 
         form do
-          try do
+          def _ignore do
             _ignore
           rescue
             _ignore
           else
             _ignore
           after
+            _ignore
+          end
+        end
+
+        form do
+          def _ignore do
+            _ignore
+          rescue
+            _ignore
+          after
+            _ignore
+          else
+            _ignore
+          end
+        end
+
+        # defp -----------------------------------------------------------------------
+
+        form do
+          defp _ignore do
+            _ignore
+          rescue
+            _ignore
+          end
+        end
+
+        form do
+          defp _ignore do
+            _ignore
+          rescue
+            _ignore
+          else
+            _ignore
+          end
+        end
+
+        form do
+          defp _ignore do
+            _ignore
+          rescue
+            _ignore
+          after
+            _ignore
+          end
+        end
+
+        form do
+          defp _ignore do
+            _ignore
+          rescue
+            _ignore
+          else
+            _ignore
+          after
+            _ignore
+          end
+        end
+
+        form do
+          defp _ignore do
+            _ignore
+          rescue
+            _ignore
+          after
+            _ignore
+          else
             _ignore
           end
         end
