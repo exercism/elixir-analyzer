@@ -1,3 +1,5 @@
+# credo:disable-for-this-file Credo.Check.Warning.IoInspect
+
 defmodule ElixirAnalyzer.Support.AnalyzerVerification.NoRescue do
   use ElixirAnalyzer.ExerciseTest
 end
