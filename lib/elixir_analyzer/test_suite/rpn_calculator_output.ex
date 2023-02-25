@@ -3,8 +3,8 @@ defmodule ElixirAnalyzer.TestSuite.RpnCalculatorOutput do
   This is an exercise analyzer extension module for the concept exercise rpn-calculator-output
   """
 
-  use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
+  use ElixirAnalyzer.ExerciseTest, suppress_tests: [Constants.solution_no_rescue()]
 
   feature "uses all of try-rescue-else-after" do
     type :essential
