@@ -1,3 +1,5 @@
+# credo:disable-for-this-file Credo.Check.Refactor.LongQuoteBlocks
+
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue do
   @moduledoc """
   This is an exercise analyzer extension module used for common tests looking for the usage of `rescue`
