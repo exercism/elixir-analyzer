@@ -143,6 +143,29 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescueTest do
           end
         end
       end,
+      # try/rescue/catch/after/else multiline blocks
+      defmodule MyModule do
+        def get_first_day_of_month_in_99(month) do
+          try do
+            IO.inspect(month)
+            Date.new!(1999, month, 1)
+          rescue
+            error ->
+              IO.inspect(error)
+              nil
+          catch
+            value ->
+              IO.puts("Caught #{inspect(value)}")
+          after
+            IO.inspect("stop")
+            IO.inspect("please")
+          else
+            the_value ->
+              IO.inspect("my code is so bad, what am I doing with my life?")
+              the_value
+          end
+        end
+      end,
       # try/rescue/after/else multi clause else multiline blocks
       defmodule MyModule do
         def get_first_day_of_month_in_99(month) do
