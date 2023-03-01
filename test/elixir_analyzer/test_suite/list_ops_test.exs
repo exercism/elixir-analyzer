@@ -57,7 +57,7 @@ defmodule ElixirAnalyzer.ExerciseTest.ListOpsTest do
   end
 
   test_exercise_analysis "illegal implementations",
-    comments: [Constants.list_ops_do_not_use_list_functions()] do
+    comments_include: [Constants.list_ops_do_not_use_list_functions()] do
     [
       defmodule ListOps do
         def filter(p, l), do: Enum.filter(p, l)

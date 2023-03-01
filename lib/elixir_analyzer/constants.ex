@@ -42,6 +42,7 @@ defmodule ElixirAnalyzer.Constants do
     solution_unless_with_else: "elixir.solution.unless_with_else",
     solution_use_function_capture: "elixir.solution.use_function_capture",
     solution_deprecated_random_module: "elixir.solution.deprecated_random_module",
+    solution_no_rescue: "elixir.solution.no_rescue",
 
     # Concept exercises
 

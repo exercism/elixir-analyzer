@@ -30,6 +30,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks do
       use ElixirAnalyzer.ExerciseTest.CommonChecks.UncommonErrors
       use ElixirAnalyzer.ExerciseTest.CommonChecks.UnlessWithElse
       use ElixirAnalyzer.ExerciseTest.CommonChecks.DeprecatedRandomModule
+      use ElixirAnalyzer.ExerciseTest.CommonChecks.NoRescue
     end
   end
 

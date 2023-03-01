@@ -99,6 +99,9 @@ config :elixir_analyzer,
     "rpg-character-sheet" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpgCharacterSheet
     },
+    "rpn-calculator" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculator
+    },
     "rpn-calculator-inspection" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.RpnCalculatorInspection
     },
