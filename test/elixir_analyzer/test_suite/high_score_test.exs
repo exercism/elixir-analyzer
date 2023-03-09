@@ -60,6 +60,22 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
         def get_players(scores) do
           Map.keys(scores)
         end
+      end,
+      defmodule HighScore do
+        @default_score 0
+
+        def new(), do: %{}
+
+        defdelegate add_player(scores, name, score \\ @default_score), to: Map, as: :put
+
+        defdelegate remove_player(scores, name), to: Map, as: :delete
+
+        def reset_score(scores, name), do: Map.put(scores, name, @default_score)
+
+        def update_score(scores, name, score),
+          do: Map.update(scores, name, score, fn x -> x + score end)
+
+        defdelegate get_players(scores), to: Map, as: :keys
       end
     ]
   end
