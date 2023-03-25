@@ -61,7 +61,21 @@ defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
       non_tail_call_recursive_functions = all_recursive_functions -- tail_call_recursive_functions
 
       if non_tail_call_recursive_functions != [] || tail_call_recursive_functions == [] do
-        false
+        format_function_names = fn list ->
+          if list == [] do
+            "none"
+          else
+            Enum.map(list, fn {name, arity} -> "`#{name}/#{arity}`" end)
+            |> Enum.join(", ")
+          end
+        end
+
+        {false,
+         %{
+           non_tail_call_recursive_functions:
+             format_function_names.(non_tail_call_recursive_functions),
+           tail_call_recursive_functions: format_function_names.(tail_call_recursive_functions)
+         }}
       else
         true
       end

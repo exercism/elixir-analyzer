@@ -20,10 +20,21 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSource.Compiler do
 
     quote do
       (fn %Source{} = source ->
-         if unquote(check_function).(source) do
-           {:pass, unquote(test_description)}
-         else
-           {:fail, unquote(test_description)}
+         case unquote(check_function).(source) do
+           true ->
+             {:pass, unquote(test_description)}
+
+           false ->
+             {:fail, unquote(test_description)}
+
+           {true, params} when is_map(params) ->
+             {:pass, %{unquote(test_description) | params: params}}
+
+           {false, params} when is_map(params) ->
+             {:fail, %{unquote(test_description) | params: params}}
+
+           _ ->
+             raise "check must be a boolean or a tuple with a boolean and a map of parameters for the comment"
          end
        end).(unquote(code_source))
     end

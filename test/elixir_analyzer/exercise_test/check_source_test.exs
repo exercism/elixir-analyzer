@@ -2,6 +2,8 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
   use ElixirAnalyzer.ExerciseTestCase,
     exercise_test_module: ElixirAnalyzer.Support.AnalyzerVerification.CheckSource
 
+  alias ElixirAnalyzer.Submission
+
   test_exercise_analysis "empty module",
     comments: ["always return false", "didn't use multiline"] do
     ~S"""
@@ -205,5 +207,34 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
         end
       end
     end
+  end
+
+  test "allows passing comment params" do
+    code_string = ~S"""
+    defmodule Fruits do
+      @best_fruit = "banana"
+      @best_fruit_for_breakfast = "banana"
+      @best_fruit_for_a_snack = "banana"
+    end
+    """
+
+    source =
+      ElixirAnalyzer.ExerciseTestCase.find_source(
+        ElixirAnalyzer.Support.AnalyzerVerification.CheckSource
+      )
+
+    result =
+      ElixirAnalyzer.Support.AnalyzerVerification.CheckSource.analyze(%Submission{
+        source: %{source | code_string: code_string},
+        analysis_module: ElixirAnalyzer.Support.AnalyzerVerification.CheckSource
+      })
+
+    comment = Enum.find(result.comments, fn comment -> comment.comment == "even banana count" end)
+
+    assert comment == %{
+             comment: "even banana count",
+             params: %{banana_count: 3},
+             type: :actionable
+           }
   end
 end

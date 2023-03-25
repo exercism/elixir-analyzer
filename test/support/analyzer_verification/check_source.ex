@@ -61,4 +61,36 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
       String.trim(code_string) == Code.format_string!(code_string) |> Enum.join()
     end
   end
+
+  check_source "should have an even number of bananas in the code" do
+    type :actionable
+    comment "even banana count"
+
+    check(%Source{code_string: code_string}) do
+      chunks = String.split(code_string, "banana", trim: false)
+      banana_count = Enum.count(chunks) - 1
+
+      if rem(banana_count, 2) == 1 do
+        {false, %{banana_count: banana_count}}
+      else
+        {true, %{banana_count: banana_count}}
+      end
+    end
+  end
+
+  check_source "should have an even number of bananas in the code" do
+    type :actionable
+    comment "even banana count"
+
+    check(%Source{code_string: code_string}) do
+      chunks = String.split(code_string, "banana", trim: false)
+      banana_count = Enum.count(chunks) - 1
+
+      if rem(banana_count, 2) == 1 do
+        {false, %{banana_count: banana_count}}
+      else
+        {true, %{banana_count: banana_count}}
+      end
+    end
+  end
 end
