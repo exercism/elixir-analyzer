@@ -42,6 +42,9 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxe do
         {:@, _, [{:impl, _, [{:__aliases__, _, [:GenServer]}]}]} ->
           %{acc | impl?: true}
 
+        {:@, _, [{:impl, _, [true]}]} ->
+          %{acc | impl?: true}
+
         {op, _, [{function_name, _, _} | _]} when op in @def_ops ->
           acc =
             cond do
