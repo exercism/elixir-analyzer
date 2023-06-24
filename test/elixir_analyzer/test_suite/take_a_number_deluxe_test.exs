@@ -147,12 +147,12 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
       end
     end
 
-    test_exercise_analysis "value must be a module",
+    test_exercise_analysis "value as a module must be `GenServer`",
       comments_include: [Constants.take_a_number_deluxe_annotate_impl_genserver()] do
       defmodule TakeANumberDeluxe do
         use GenServer
 
-        @impl true
+        @impl NotGenServer
         def init(init_arg) do
           min_number = Keyword.get(init_arg, :min_number)
           max_number = Keyword.get(init_arg, :max_number)
@@ -164,7 +164,31 @@ defmodule ElixirAnalyzer.TestSuite.TakeANumberDeluxeTest do
           end
         end
 
-        @impl true
+        @impl NotGenServer
+        def handle_call(:report_state, _from, state) do
+          {:reply, state, state, state.auto_shutdown_timeout}
+        end
+      end
+    end
+
+    test_exercise_analysis "value as a boolean must be `true`",
+      comments_include: [Constants.take_a_number_deluxe_annotate_impl_genserver()] do
+      defmodule TakeANumberDeluxe do
+        use GenServer
+
+        @impl false
+        def init(init_arg) do
+          min_number = Keyword.get(init_arg, :min_number)
+          max_number = Keyword.get(init_arg, :max_number)
+          auto_shutdown_timeout = Keyword.get(init_arg, :auto_shutdown_timeout, :infinity)
+
+          case TakeANumberDeluxe.State.new(min_number, max_number, auto_shutdown_timeout) do
+            {:ok, state} -> {:ok, state, auto_shutdown_timeout}
+            {:error, error} -> {:stop, error}
+          end
+        end
+
+        @impl false
         def handle_call(:report_state, _from, state) do
           {:reply, state, state, state.auto_shutdown_timeout}
         end
