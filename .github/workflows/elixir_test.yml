@@ -27,6 +27,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          apt-get install -y ca-certificates
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
