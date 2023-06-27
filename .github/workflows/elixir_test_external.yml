@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: hexpm/elixir:1.15.0-erlang-26.0-ubuntu-jammy-20230126
+      image: hexpm/elixir:1.15.0-erlang-26.0.1-debian-buster-20230612
 
     steps:
       - name: Install git

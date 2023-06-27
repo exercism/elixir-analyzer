@@ -1,7 +1,7 @@
-FROM hexpm/elixir:1.15.0-erlang-26.0-ubuntu-jammy-20230126 as builder
+FROM hexpm/elixir:1.15.0-erlang-26.0.1-debian-buster-20230612 as builder
 
 RUN apt-get update && \
-  apt-get install bash ca-certificates -y
+  apt-get install bash -y
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser
@@ -13,12 +13,12 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN ./bin/build.sh
 
-FROM hexpm/elixir:1.15.0-erlang-26.0-ubuntu-jammy-20230126
+FROM hexpm/elixir:1.15.0-erlang-26.0.1-debian-buster-20230612
 COPY --from=builder /etc/passwd /etc/passwd
 
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
 RUN apt-get update && \
-  apt-get install bash jq ca-certificates -y
+  apt-get install bash jq -y
 
 USER appuser
 WORKDIR /opt/analyzer
