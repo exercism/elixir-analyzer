@@ -71,19 +71,19 @@ defmodule ElixirAnalyzer.ExerciseTest.CheckSourceTest do
         end
       end
       ''',
-      ~S"""
+      ~S'''
       defmodule CheckSourceVerification do
         def foo do
-          '''
+          ~c"""
           love
           is
           all
           you
           need
-          '''
+          """
         end
       end
-      """
+      '''
     ]
   end
 

@@ -6,20 +6,20 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
     comments: [ElixirAnalyzer.Constants.solution_same_as_exemplar()] do
     ~S"""
     defmodule Username do
-      def sanitize('') do
-        ''
+      def sanitize(~c"") do
+        ~c""
       end
 
       def sanitize([head | tail]) do
         sanitized =
           case head do
-            ?ß -> 'ss'
-            ?ä -> 'ae'
-            ?ö -> 'oe'
-            ?ü -> 'ue'
+            ?ß -> ~c"ss"
+            ?ä -> ~c"ae"
+            ?ö -> ~c"oe"
+            ?ü -> ~c"ue"
             x when x >= ?a and x <= ?z -> [x]
-            ?_ -> '_'
-            _ -> ''
+            ?_ -> ~c"_"
+            _ -> ~c""
           end
 
         sanitized ++ sanitize(tail)
@@ -36,13 +36,13 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
         List.foldr(list, [], fn code, acc ->
           sanitized =
             case code do
-              ?ß -> 'ss'
-              ?ä -> 'ae'
-              ?ö -> 'oe'
-              ?ü -> 'ue'
+              ?ß -> ~c"ss"
+              ?ä -> ~c"ae"
+              ?ö -> ~c"oe"
+              ?ü -> ~c"ue"
               x when x >= ?a and x <= ?z -> [x]
-              ?_ -> '_'
-              _ -> ''
+              ?_ -> ~c"_"
+              _ -> ~c""
             end
 
           sanitized ++ acc
