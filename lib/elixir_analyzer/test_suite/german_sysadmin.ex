@@ -25,12 +25,6 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
     comment Constants.german_sysadmin_no_string()
   end
 
-  assert_no_call "doesn't create binaries from character codes" do
-    type :essential
-    called_fn name: :<<>>
-    comment Constants.german_sysadmin_no_string()
-  end
-
   assert_call "using case is required" do
     type :essential
     called_fn name: :case
@@ -45,5 +39,33 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
       integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
       Enum.all?(integers, &String.contains?(code_string, &1))
     end
+  end
+
+  check_source "doesn't create binaries from character codes" do
+    type :essential
+    comment Constants.german_sysadmin_no_string()
+
+    check(%Source{code_ast: code_ast}) do
+      {_, no_binary?} =
+        code_ast
+        |> Macro.postwalk(&remove_sigil_c/1)
+        |> Macro.postwalk(true, &no_binary_fun?/2)
+
+      no_binary?
+    end
+  end
+
+  defp remove_sigil_c({:sigil_c, _, _}) do
+    []
+  end
+
+  defp remove_sigil_c(node), do: node
+
+  defp no_binary_fun?({:<<>>, _, _} = node, _) do
+    {node, false}
+  end
+
+  defp no_binary_fun?(node, acc) do
+    {node, acc}
   end
 end
