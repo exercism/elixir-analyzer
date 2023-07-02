@@ -30,13 +30,13 @@ defmodule ElixirAnalyzer.ConstantsTest do
 
         {status, status_msg} = get_comment_with_retry_on_rate_limit_error(request_url)
 
-        assert {status, status_msg, @comment} == {200, 'OK', @comment}
+        assert {status, status_msg, @comment} == {200, ~c"OK", @comment}
       end
     end
   end
 
   defp get_comment_with_retry_on_rate_limit_error(request_url) do
-    {:ok, {{'HTTP/1.1', status, status_msg}, _headers, _body}} =
+    {:ok, {{~c"HTTP/1.1", status, status_msg}, _headers, _body}} =
       :httpc.request(:head, {request_url, []}, [], [])
 
     if status == 429 do

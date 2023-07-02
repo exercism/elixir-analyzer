@@ -35,7 +35,7 @@ defmodule ElixirAnalyzer.ExerciseTest do
     feature_test_data = Module.get_attribute(env.module, :feature_tests)
     assert_call_data = Module.get_attribute(env.module, :assert_call_tests)
     check_source_data = Module.get_attribute(env.module, :check_source_tests)
-    suppress_tests = Module.get_attribute(env.module, :suppress_tests, [])
+    suppress_tests = Module.get_attribute(env.module, :suppress_tests) || []
 
     # placeholders for submission code
     code_ast = quote do: code_ast

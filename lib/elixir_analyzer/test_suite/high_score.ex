@@ -20,6 +20,10 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
     form do
       def add_player(_ignore, _ignore, _ignore \\ @_ignore)
     end
+
+    form do
+      defdelegate add_player(_ignore, _ignore, _ignore \\ @_ignore), _ignore
+    end
   end
 
   feature "uses a module attribute to define the initial score" do

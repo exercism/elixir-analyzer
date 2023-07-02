@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
+      image: hexpm/elixir:1.15.2-erlang-26.0.2-debian-bookworm-20230612
 
     steps:
       - name: Install git
@@ -16,7 +16,7 @@ jobs:
           apt-get install -y git
 
       - name: Checkout repository and submodules
-        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
         with:
           submodules: recursive
 

@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
+      image: hexpm/elixir:1.15.2-erlang-26.0.2-debian-bookworm-20230612
 
     steps:
       - name: Install git
@@ -16,7 +16,7 @@ jobs:
           apt-get install -y git
 
       - name: Checkout repository and submodules
-        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
         with:
           submodules: recursive
 
@@ -49,11 +49,11 @@ jobs:
 
       - name: Retrieve PLT Cache
 
-        uses: actions/cache@69d9d449aced6a2ede0bc19182fadc3a0a42d2b0
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
         id: plt-cache
         with:
           path: priv/plts
-          key: elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
+          key: elixir:1.15.2-erlang-26.0.2-debian-bookworm-20230612-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
 
       - name: Create PLTs
         if: steps.plt-cache.outputs.cache-hit != 'true'
@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
 
       - name: Run Smoke Test in Docker
         run: bin/run-tests-in-docker.sh
