@@ -143,20 +143,8 @@ defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
   defp check_if_function_recursive(acc, fn_name, args, opts) do
     fn_arity = length(args)
 
-    all_calls_in_function_def =
-      case opts[:do] do
-        {:__block, _, calls} ->
-          calls
-
-        calls when is_list(calls) ->
-          calls
-
-        call ->
-          [call]
-      end
-
     {_, any_nested_recursive_calls?} =
-      Macro.prewalk(all_calls_in_function_def, false, fn node, acc ->
+      Macro.prewalk(opts[:do], false, fn node, acc ->
         case node do
           {^fn_name, _, args} when length(args) == fn_arity -> {node, true}
           _ -> {node, acc}
