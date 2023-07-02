@@ -30,26 +30,47 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
 
   test_exercise_analysis "other valid solutions",
     comments: [] do
-    ~S"""
-    defmodule Username do
-      def sanitize(list) do
-        List.foldr(list, [], fn code, acc ->
-          sanitized =
-            case code do
-              ?ß -> ~c"ss"
-              ?ä -> ~c"ae"
-              ?ö -> ~c"oe"
-              ?ü -> ~c"ue"
-              x when x >= ?a and x <= ?z -> [x]
-              ?_ -> ~c"_"
-              _ -> ~c""
-            end
+    [
+      ~S"""
+      defmodule Username do
+        def sanitize(list) do
+          List.foldr(list, [], fn code, acc ->
+            sanitized =
+              case code do
+                ?ß -> ~c"ss"
+                ?ä -> ~c"ae"
+                ?ö -> ~c"oe"
+                ?ü -> ~c"ue"
+                x when x >= ?a and x <= ?z -> [x]
+                ?_ -> ~c"_"
+                _ -> ~c""
+              end
 
-          sanitized ++ acc
-        end)
+            sanitized ++ acc
+          end)
+        end
       end
-    end
-    """
+      """,
+      """
+      defmodule Username do
+      @spec sanitize(charlist) :: charlist
+      def sanitize(username) do
+        username
+        |> Enum.filter(&(&1 in ~c"äöüßabcdefghijklmnopqrstuvwxyz_"))
+        |> Enum.reduce([], fn char, list ->
+          case char do
+            ?ä -> [?e, ?a | list]
+            ?ö -> [?e, ?o | list]
+            ?ü -> [?e, ?u | list]
+            ?ß -> [?s, ?s | list]
+            c -> [c | list]
+          end
+        end)
+        |> Enum.reverse()
+      end
+      end
+      """
+    ]
   end
 
   test_exercise_analysis "detects cheating with strings",

@@ -36,8 +36,11 @@ defmodule ElixirAnalyzer.TestSuite.GermanSysadmin do
     comment Constants.solution_no_integer_literal()
 
     check(%Source{code_string: code_string}) do
-      integers = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
-      Enum.all?(integers, &String.contains?(code_string, &1))
+      question_mark_code_points = ["?ß", "?ä", "?ö", "?ü", "?_", "?a", "?z"]
+      integer_literal_code_points = ["223", "228", "246", "252", "95", "97", "122"]
+
+      Enum.any?(question_mark_code_points, &String.contains?(code_string, &1)) &&
+        not Enum.any?(integer_literal_code_points, &String.contains?(code_string, &1))
     end
   end
 
