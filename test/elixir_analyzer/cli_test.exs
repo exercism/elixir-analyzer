@@ -43,7 +43,7 @@ defmodule ElixirAnalyzer.CLITest do
 
   defp match_submission(_), do: false
 
-  @lasagna_result "{\"comments\":[{\"comment\":\"elixir.solution.same_as_exemplar\",\"type\":\"celebratory\"}],\"summary\":\"You're doing something right. 🎉\"}"
+  @lasagna_result "{\"comments\":[{\"type\":\"celebratory\",\"comment\":\"elixir.solution.same_as_exemplar\"}],\"summary\":\"You're doing something right. 🎉\"}"
 
   setup do
     on_exit(fn ->

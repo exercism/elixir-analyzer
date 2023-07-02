@@ -24,7 +24,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
           []
       end
 
-    Logger.configure(level: :warn)
+    Logger.configure(level: :warning)
 
     Application.put_env(:elixir, :ansi_enabled, true)
 
