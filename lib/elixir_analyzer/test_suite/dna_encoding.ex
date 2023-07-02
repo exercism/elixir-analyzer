@@ -85,28 +85,12 @@ defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
   defp find_tail_call_recursive_functions(node, acc) do
     acc =
       case node do
+        {op, _meta1, [{:when, _meta2, [{fn_name, _meta3, args} | _]}, opts]}
+        when op in [:def, :defp] ->
+          check_if_function_tail_call_recursive(acc, fn_name, args, opts)
+
         {op, _meta1, [{fn_name, _meta2, args}, opts]} when op in [:def, :defp] ->
-          fn_arity = length(args)
-
-          last_call_in_function_def =
-            case opts[:do] do
-              {:__block, _, calls} when is_list(calls) ->
-                List.last(calls)
-
-              calls when is_list(calls) ->
-                List.last(calls)
-
-              call ->
-                call
-            end
-
-          case last_call_in_function_def do
-            {^fn_name, _meta3, args} when length(args) == fn_arity ->
-              [{fn_name, fn_arity} | acc]
-
-            _ ->
-              acc
-          end
+          check_if_function_tail_call_recursive(acc, fn_name, args, opts)
 
         _ ->
           acc
@@ -115,42 +99,74 @@ defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
     {node, acc}
   end
 
+  defp check_if_function_tail_call_recursive(acc, fn_name, args, opts) do
+    fn_arity = length(args)
+
+    last_call_in_function_def =
+      case opts[:do] do
+        {:__block, _, calls} when is_list(calls) ->
+          List.last(calls)
+
+        calls when is_list(calls) ->
+          List.last(calls)
+
+        call ->
+          call
+      end
+
+    case last_call_in_function_def do
+      {^fn_name, _meta3, args} when length(args) == fn_arity ->
+        [{fn_name, fn_arity} | acc]
+
+      _ ->
+        acc
+    end
+  end
+
   defp find_all_recursive_functions(node, acc) do
     acc =
       case node do
+        {op, _meta1, [{:when, _meta2, [{fn_name, _meta3, args} | _]}, opts]}
+        when op in [:def, :defp] ->
+          check_if_function_recursive(acc, fn_name, args, opts)
+
         {op, _meta1, [{fn_name, _meta2, args}, opts]} when op in [:def, :defp] ->
-          fn_arity = length(args)
-
-          all_calls_in_function_def =
-            case opts[:do] do
-              {:__block, _, calls} ->
-                calls
-
-              calls when is_list(calls) ->
-                calls
-
-              call ->
-                [call]
-            end
-
-          {_, any_nested_recursive_calls?} =
-            Macro.prewalk(all_calls_in_function_def, false, fn node, acc ->
-              case node do
-                {^fn_name, _, args} when length(args) == fn_arity -> {node, true}
-                _ -> {node, acc}
-              end
-            end)
-
-          if any_nested_recursive_calls? do
-            [{fn_name, fn_arity} | acc]
-          else
-            acc
-          end
+          check_if_function_recursive(acc, fn_name, args, opts)
 
         _ ->
           acc
       end
 
     {node, acc}
+  end
+
+  defp check_if_function_recursive(acc, fn_name, args, opts) do
+    fn_arity = length(args)
+
+    all_calls_in_function_def =
+      case opts[:do] do
+        {:__block, _, calls} ->
+          calls
+
+        calls when is_list(calls) ->
+          calls
+
+        call ->
+          [call]
+      end
+
+    {_, any_nested_recursive_calls?} =
+      Macro.prewalk(all_calls_in_function_def, false, fn node, acc ->
+        case node do
+          {^fn_name, _, args} when length(args) == fn_arity -> {node, true}
+          _ -> {node, acc}
+        end
+      end)
+
+    if any_nested_recursive_calls? do
+      [{fn_name, fn_arity} | acc]
+    else
+      acc
+    end
   end
 end

@@ -483,4 +483,72 @@ defmodule ElixirAnalyzer.ExerciseTest.DNAEncodingTest do
                type: :essential
              }
   end
+
+  test "use_tail_call_recursion works with function definitions with guards" do
+    code_string = ~S"""
+    defmodule DNA do
+      @nucleotide_encode_table %{
+        ?\s => 0b0000,
+        ?A => 0b0001,
+        ?C => 0b0010,
+        ?G => 0b0100,
+        ?T => 0b1000
+      }
+
+      @nucleotide_decode_table %{
+        0b0000 => ?\s,
+        0b0001 => ?A,
+        0b0010 => ?C,
+        0b0100 => ?G,
+        0b1000 => ?T
+      }
+
+      def encode_nucleotide(code_point) do
+        Map.fetch!(@nucleotide_encode_table, code_point)
+      end
+
+      def decode_nucleotide(encoded_code) do
+        Map.fetch!(@nucleotide_decode_table, encoded_code)
+      end
+
+      def encode(dna)
+      def encode([]), do: <<>>
+
+      def encode([head | tail]) when is_list(tail) do
+        <<encode_nucleotide(head)::4, encode(tail)::bitstring>>
+      end
+
+      def decode(dna)
+      def decode(<<>>), do: []
+
+      def decode(<<head::4, tail::bitstring>>) do
+        [decode_nucleotide(head) | decode(tail)]
+      end
+
+      defp some_other_function(x) when is_integer(x) do
+        some_other_function(x - 1)
+      end
+
+      defp some_other_function(0), do: 100
+    end
+    """
+
+    source = ElixirAnalyzer.ExerciseTestCase.find_source(ElixirAnalyzer.TestSuite.DNAEncoding)
+
+    result =
+      ElixirAnalyzer.TestSuite.DNAEncoding.analyze(%Submission{
+        source: %{source | code_string: code_string},
+        analysis_module: ElixirAnalyzer.TestSuite.DNAEncoding
+      })
+
+    assert hd(result.comments) ==
+             %{
+               comment: ElixirAnalyzer.Constants.dna_encoding_use_tail_call_recursion(),
+               params: %{
+                 non_tail_call_recursive_functions: "`decode/1`, `encode/1`",
+                 tail_call_recursive_functions: "`some_other_function/1`"
+               },
+               type: :essential
+             }
+  end
 end
