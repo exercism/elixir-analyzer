@@ -84,6 +84,7 @@ defmodule ElixirAnalyzer.Constants do
 
     # DNA Encoding Comments
     dna_encoding_use_recursion: "elixir.dna-encoding.use_recursion",
+    dna_encoding_use_tail_call_recursion: "elixir.dna-encoding.use_tail_call_recursion",
 
     # File Sniffer Comments
     file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
