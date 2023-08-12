@@ -37,6 +37,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GermanSysadminTest do
           List.foldr(list, [], fn code, acc ->
             sanitized =
               case code do
+                # 223
                 ?ß -> ~c"ss"
                 ?ä -> ~c"ae"
                 ?ö -> ~c"oe"
