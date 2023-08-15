@@ -12,6 +12,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.DebugFunctions do
         comment Constants.solution_debug_functions()
         called_fn module: IO, name: :inspect
       end
+
+      assert_no_call Constants.solution_debug_functions() do
+        type :informative
+        comment Constants.solution_debug_functions()
+        called_fn module: Kernel, name: :dbg
+      end
     end
   end
 end
