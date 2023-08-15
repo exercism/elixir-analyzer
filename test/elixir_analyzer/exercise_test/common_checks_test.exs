@@ -266,6 +266,32 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
         end
       ]
     end
+
+    test_exercise_analysis "reports Kernel.dbg",
+      comments: [Constants.solution_debug_functions()] do
+      [
+        defmodule MyModule do
+          def foo() do
+            (1 + 1)
+            |> dbg()
+          end
+        end,
+        defmodule MyModule do
+          alias Kernel, as: Debug
+
+          def foo(name) do
+            Debug.dbg(name)
+          end
+        end,
+        defmodule MyModule do
+          import Kernel, only: [dbg: 1]
+
+          def foo(name) do
+            dbg(name)
+          end
+        end
+      ]
+    end
   end
 
   describe "boilerplate and TODO comments" do
