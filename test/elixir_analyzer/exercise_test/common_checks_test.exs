@@ -282,13 +282,6 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
           def foo(name) do
             Debug.dbg(name)
           end
-        end,
-        defmodule MyModule do
-          import Kernel, only: [dbg: 1]
-
-          def foo(name) do
-            dbg(name)
-          end
         end
       ]
     end
