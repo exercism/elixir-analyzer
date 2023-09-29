@@ -104,7 +104,7 @@ defmodule ElixirAnalyzer.TestSuite.DNAEncoding do
 
     last_call_in_function_def =
       case opts[:do] do
-        {:__block, _, calls} when is_list(calls) ->
+        {:__block__, _, calls} when is_list(calls) ->
           List.last(calls)
 
         calls when is_list(calls) ->
