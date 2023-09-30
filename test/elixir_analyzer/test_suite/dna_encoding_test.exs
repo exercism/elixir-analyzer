@@ -44,6 +44,64 @@ defmodule ElixirAnalyzer.ExerciseTest.DNAEncodingTest do
     end
   end
 
+  test_exercise_analysis "a different reasonable solution",
+    comments: [] do
+    defmodule DNA do
+      def encode_nucleotide(code_point) do
+        case code_point do
+          ?\s -> 0b0000
+          ?A -> 0b0001
+          ?C -> 0b0010
+          ?G -> 0b0100
+          ?T -> 0b1000
+        end
+      end
+
+      def decode_nucleotide(encoded_code) do
+        case encoded_code do
+          0b0000 -> ?\s
+          0b0001 -> ?A
+          0b0010 -> ?C
+          0b0100 -> ?G
+          0b1000 -> ?T
+        end
+      end
+
+      def encode(dna) do
+        do_encode(dna, <<>>)
+      end
+
+      defp do_encode([], encoded), do: encoded
+
+      defp do_encode([head | tail], encoded) do
+        encoded_head = encode_nucleotide(head)
+        do_encode(tail, <<encoded::bitstring, encoded_head::4>>)
+      end
+
+      def decode(dna) do
+        do_decode(dna, [])
+        |> reverse()
+      end
+
+      defp do_decode(<<>>, list), do: list
+
+      defp do_decode(<<head::4, rest::bitstring>>, list) do
+        decoded_head = decode_nucleotide(head)
+        do_decode(rest, [decoded_head | list])
+      end
+
+      defp reverse(list) do
+        do_reverse(list, [])
+      end
+
+      defp do_reverse([], reversed_list), do: reversed_list
+
+      defp do_reverse([head | tail], reversed_list) do
+        do_reverse(tail, [head | reversed_list])
+      end
+    end
+  end
+
   test_exercise_analysis "detects the usage of the Enum module",
     comments: [Constants.dna_encoding_use_recursion()] do
     [
