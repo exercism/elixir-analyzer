@@ -99,6 +99,148 @@ defmodule ElixirAnalyzer.ExerciseTest.NewsletterTest do
           if f.(email) === :ok, do: log_sent_email(log_pid, email)
           do_send(rest, log_pid, f)
         end
+      end,
+      defmodule Newsletter do
+        def read_emails(path) do
+          path
+          |> File.read!()
+          |> String.split()
+        end
+
+        def open_log(path) when is_binary(path) do
+          File.open!(path, [:write])
+        end
+
+        def log_sent_email(pid, email) when is_pid(pid) and is_binary(email) do
+          IO.puts(pid, email)
+        end
+
+        def close_log(pid) when is_pid(pid) do
+          File.close(pid)
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun)
+            when is_binary(emails_path) and is_binary(log_path) and is_function(send_fun, 1) do
+          log_pid = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end,
+      defmodule Newsletter do
+        def read_emails(path) when is_binary(path) do
+          path
+          |> File.read!()
+          |> String.split()
+        end
+
+        def open_log(path) when is_binary(path) do
+          File.open(path, [:write])
+        end
+
+        def log_sent_email(pid, email) when is_pid(pid) and is_binary(email) do
+          IO.puts(pid, email)
+        end
+
+        def close_log(pid) when is_pid(pid) do
+          File.close(pid)
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun)
+            when is_binary(emails_path) and is_binary(log_path) and is_function(send_fun, 1) do
+          {:ok, log_pid} = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end,
+      defmodule Newsletter do
+        import File
+        import IO
+
+        def read_emails(path) when is_binary(path) do
+          path
+          |> read!()
+          |> String.split()
+        end
+
+        def open_log(path) when is_binary(path) do
+          open!(path, [:write])
+        end
+
+        def log_sent_email(pid, email) when is_pid(pid) and is_binary(email) do
+          puts(pid, email)
+        end
+
+        def close_log(pid) when is_pid(pid) do
+          close(pid)
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun)
+            when is_binary(emails_path) and is_binary(log_path) and is_function(send_fun, 1) do
+          log_pid = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
+      end,
+      defmodule Newsletter do
+        import File
+        import IO
+
+        def read_emails(path) when is_binary(path) do
+          path
+          |> read!()
+          |> String.split()
+        end
+
+        def open_log(path) when is_binary(path) do
+          open(path, [:write])
+        end
+
+        def log_sent_email(pid, email) when is_pid(pid) and is_binary(email) do
+          puts(pid, email)
+        end
+
+        def close_log(pid) when is_pid(pid) do
+          close(pid)
+        end
+
+        def send_newsletter(emails_path, log_path, send_fun)
+            when is_binary(emails_path) and is_binary(log_path) and is_function(send_fun, 1) do
+          {:ok, log_pid} = open_log(log_path)
+          emails = read_emails(emails_path)
+
+          Enum.each(emails, fn email ->
+            case send_fun.(email) do
+              :ok -> log_sent_email(log_pid, email)
+              _ -> nil
+            end
+          end)
+
+          close_log(log_pid)
+        end
       end
     ]
   end
