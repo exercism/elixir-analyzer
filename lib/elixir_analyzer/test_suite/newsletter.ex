@@ -117,6 +117,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
     end
 
     form do
+      def open_log(_ignore) when _ignore do
+        _block_includes do
+          File.open(_ignore, [:write])
+        end
+      end
+    end
+
+    form do
       def open_log(_ignore) do
         _block_includes do
           File.open!(_ignore, [:write])
@@ -125,7 +133,23 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
     end
 
     form do
+      def open_log(_ignore) when _ignore do
+        _block_includes do
+          File.open!(_ignore, [:write])
+        end
+      end
+    end
+
+    form do
       def open_log(_ignore) do
+        _block_includes do
+          open(_ignore, [:write])
+        end
+      end
+    end
+
+    form do
+      def open_log(_ignore) when _ignore do
         _block_includes do
           open(_ignore, [:write])
         end
@@ -143,7 +167,7 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
     form do
       def open_log(_ignore) when _ignore do
         _block_includes do
-          File.open!(_ignore, [:write])
+          open!(_ignore, [:write])
         end
       end
     end
