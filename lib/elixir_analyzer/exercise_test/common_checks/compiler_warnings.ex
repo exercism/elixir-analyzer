@@ -37,7 +37,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
            type: :actionable,
            name: Constants.solution_compiler_warnings(),
            comment: Constants.solution_compiler_warnings(),
-           params: %{warnings: Enum.map_join(warnings, &format_warning/1)}
+           params: %{warnings: warnings |> Enum.sort() |> Enum.map_join(&format_warning/1)}
          }}
       ]
     end
