@@ -1,4 +1,5 @@
 defmodule TwoFer do
+	@someUnusedModuleAttribute 1
 
 	defmodule My_empty_module do
 	end
