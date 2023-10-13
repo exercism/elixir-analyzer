@@ -19,6 +19,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
         end
       end
     end
+
+    form do
+      def close_log(_ignore) when _ignore do
+        _block_ends_with do
+          :ok
+        end
+      end
+    end
   end
 
   feature "use IO.puts in log_sent_email rather than IO.write as last call" do
@@ -30,6 +38,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
       def log_sent_email(_ignore, _ignore) do
         _block_ends_with do
           IO.write(_ignore, _ignore)
+        end
+      end
+    end
+
+    form do
+      def log_sent_email(_ignore, _ignore) when _ignore do
+        _block_ends_with do
+          :ok
         end
       end
     end
@@ -55,6 +71,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
         end
       end
     end
+
+    form do
+      def log_sent_email(_ignore, _ignore) when _ignore do
+        _block_ends_with do
+          :ok
+        end
+      end
+    end
   end
 
   feature "send_newsletter ends with close_log" do
@@ -64,6 +88,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
 
     form do
       def send_newsletter(_ignore, _ignore, _ignore) do
+        _block_ends_with do
+          :ok
+        end
+      end
+    end
+
+    form do
+      def send_newsletter(_ignore, _ignore, _ignore) when _ignore do
         _block_ends_with do
           :ok
         end
@@ -104,6 +136,14 @@ defmodule ElixirAnalyzer.TestSuite.Newsletter do
       def open_log(_ignore) do
         _block_includes do
           open!(_ignore, [:write])
+        end
+      end
+    end
+
+    form do
+      def open_log(_ignore) when _ignore do
+        _block_includes do
+          File.open!(_ignore, [:write])
         end
       end
     end
