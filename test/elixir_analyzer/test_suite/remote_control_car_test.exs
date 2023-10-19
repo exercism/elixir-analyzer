@@ -58,6 +58,13 @@ defmodule ElixirAnalyzer.TestSuite.RemoteControlCarTest do
         def new(nickname \\ "none") when is_binary(nickname) do
           %RemoteControlCar{nickname: nickname}
         end
+      end,
+      defmodule RemoteControlCar do
+        @default_nickname "none"
+
+        def new(nickname \\ @default_nickname) do
+          %RemoteControlCar{nickname: nickname}
+        end
       end
     ]
   end
