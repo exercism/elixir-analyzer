@@ -14,19 +14,19 @@ defmodule ElixirAnalyzer.TestSuite.RemoteControlCar do
 
     # function header
     form do
-      def new(_ignore \\ "none")
+      def new(_ignore \\ _ignore)
     end
 
     # function without a guard and with a do block
     form do
-      def new(_ignore \\ "none") do
+      def new(_ignore \\ _ignore) do
         _ignore
       end
     end
 
     # function with do block
     form do
-      def new(_ignore \\ "none") when _ignore do
+      def new(_ignore \\ _ignore) when _ignore do
         _ignore
       end
     end
