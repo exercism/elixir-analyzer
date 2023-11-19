@@ -53,7 +53,8 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     acc = %{
       in_module: nil,
       in_function_def: nil,
-      in_function_modules: %{},
+      in_macro_def: nil,
+      in_function_or_macro_modules: %{},
       modules_in_scope: %{[:Kernel] => Kernel.module_info(:exports)},
       found_called: false,
       called_fn: called_fn,
@@ -91,9 +92,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       |> track_imports(node)
 
     cond do
-      module_def?(node) -> {node, %{acc | in_module: extract_module_name(node)}}
-      function_def?(node) -> {node, %{acc | in_function_def: extract_function_name(node)}}
-      true -> {node, acc}
+      module_def?(node) ->
+        {node, %{acc | in_module: extract_module_name(node)}}
+
+      function_def?(node) ->
+        {node, %{acc | in_function_def: extract_function_or_macro_name(node)}}
+
+      macro_def?(node) ->
+        {node, %{acc | in_macro_def: extract_function_or_macro_name(node)}}
+
+      true ->
+        {node, acc}
     end
   end
 
@@ -105,9 +114,17 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
     {node, acc} = find(node, acc)
 
     cond do
-      module_def?(node) -> {node, %{acc | in_module: nil}}
-      function_def?(node) -> {node, %{acc | in_function_def: nil, in_function_modules: %{}}}
-      true -> {node, acc}
+      module_def?(node) ->
+        {node, %{acc | in_module: nil}}
+
+      function_def?(node) ->
+        {node, %{acc | in_function_def: nil, in_function_or_macro_modules: %{}}}
+
+      module_def?(node) ->
+        {node, %{acc | in_macro_def: nil, in_function_or_macro_modules: %{}}}
+
+      true ->
+        {node, acc}
     end
   end
 
@@ -122,14 +139,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
         %{
           in_module: module,
           modules_in_scope: modules_in_scope,
-          in_function_modules: in_function_modules,
+          in_function_or_macro_modules: in_function_or_macro_modules,
           called_fn: called_fn,
           calling_fn: calling_fn,
           in_function_def: name,
           function_call_tree: tree
         } = acc
       ) do
-    modules = Map.merge(modules_in_scope, in_function_modules)
+    modules = Map.merge(modules_in_scope, in_function_or_macro_modules)
 
     acc = track_all_functions(acc, node)
 
@@ -137,7 +154,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
       matching_function_call?(node, called_fn, modules, module) and
         not in_function?({module, name}, called_fn)
 
-    match_calling_fn? = in_function?({module, name}, calling_fn) or is_nil(calling_fn)
+    match_calling_fn? =
+      if calling_fn do
+        in_function?({module, name}, calling_fn)
+      else
+        # in any calling function or macro? (ignoring module-level calls)
+        acc.in_function_def || acc.in_macro_def
+      end
 
     cond do
       match_called_fn? and match_calling_fn? ->
@@ -279,14 +302,25 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   def function_def?(_node), do: false
 
   @doc """
-  get the name of a function from a function definition node
+  node is a macro definition
   """
-  def extract_function_name({def_type, _, [{:when, _, [{name, _, _} | _]}, [{:do, _} | _]]})
-      when is_atom(name) and def_type in ~w[def defp]a,
+  def macro_def?({def_type, _, [_, [{:do, _} | _]]}) when def_type in ~w[defmacro defmacrop]a do
+    true
+  end
+
+  def macro_def?(_node), do: false
+
+  @doc """
+  get the name of a function or macro from a definition node
+  """
+  def extract_function_or_macro_name(
+        {def_type, _, [{:when, _, [{name, _, _} | _]}, [{:do, _} | _]]}
+      )
+      when is_atom(name) and def_type in ~w[def defp defmacro defmacrop]a,
       do: name
 
-  def extract_function_name({def_type, _, [{name, _, _}, [{:do, _} | _]]})
-      when is_atom(name) and def_type in ~w[def defp]a,
+  def extract_function_or_macro_name({def_type, _, [{name, _, _}, [{:do, _} | _]]})
+      when is_atom(name) and def_type in ~w[def defp defmacro defmacrop]a,
       do: name
 
   @doc """
@@ -441,8 +475,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
   # track modules
   defp track_modules(acc, module_paths) do
     Enum.reduce(module_paths, acc, fn {alias, full_path}, acc ->
-      if acc.in_function_def,
-        do: %{acc | in_function_modules: Map.put(acc.in_function_modules, alias, full_path)},
+      if acc.in_function_def || acc.in_macro_def,
+        do: %{
+          acc
+          | in_function_or_macro_modules:
+              Map.put(acc.in_function_or_macro_modules, alias, full_path)
+        },
         else: %{acc | modules_in_scope: Map.put(acc.modules_in_scope, alias, full_path)}
     end)
   end
@@ -454,12 +492,12 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.Compiler do
           in_module: module,
           in_function_def: name,
           modules_in_scope: modules_in_scope,
-          in_function_modules: in_function_modules
+          in_function_or_macro_modules: in_function_or_macro_modules
         } = acc,
         {_, _, args} = function
       )
       when not is_nil(name) and is_list(args) do
-    module_aliases = Map.merge(modules_in_scope, in_function_modules)
+    module_aliases = Map.merge(modules_in_scope, in_function_or_macro_modules)
 
     {module_called, name_called} =
       case function do
