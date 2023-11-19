@@ -42,6 +42,9 @@ config :elixir_analyzer,
     "chessboard" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.Chessboard
     },
+    "community-garden" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.CommunityGarden
+    },
     "dancing-dots" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.DancingDots
     },
