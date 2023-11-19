@@ -84,14 +84,14 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
         def function() do
         end
 
-        :rand.normal()
+        defp not_the_function(), do: :rand.normal()
       end,
       defmodule AssertCallVerification do
         def function() do
           import :rand, except: [normal: 0]
         end
 
-        :rand.normal()
+        defp not_the_function(), do: :rand.normal()
       end
     ]
   end
@@ -121,7 +121,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ErlangTest do
       def function() do
       end
 
-      :rand.uniform()
+      defp not_the_function(), do: :rand.uniform()
     end
   end
 
