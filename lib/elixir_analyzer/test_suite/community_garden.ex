@@ -1,6 +1,6 @@
 defmodule ElixirAnalyzer.TestSuite.CommunityGarden do
   @moduledoc """
-  This is an exercise analyzer extension module for the concept exercise Captains Log
+  This is an exercise analyzer extension module for the concept exercise Community Garden
   """
   use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
