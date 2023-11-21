@@ -313,11 +313,13 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.ModuleTrackingTest do
     [
       defmodule AssertCallVerification do
         import MyModule
-        Custom.my_function()
+
+        def function(), do: Custom.my_function()
       end,
       defmodule AssertCallVerification do
         import MyModule.Custom, only: [my_function: 0]
-        my_function()
+
+        def function(), do: my_function()
       end
     ]
   end

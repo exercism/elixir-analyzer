@@ -140,6 +140,51 @@ defmodule ElixirAnalyzer.ExerciseTest.DNAEncodingTest do
     ]
   end
 
+  test_exercise_analysis "allows the usage of Enum module for metaprogramming (outside of function bodies)",
+    comments: [] do
+    [
+      defmodule DNA do
+        @mapping %{
+          ?\s => 0b0000,
+          ?A => 0b0001,
+          ?C => 0b0010,
+          ?G => 0b0100,
+          ?T => 0b1000
+        }
+        Enum.each(@mapping, fn {char, num} ->
+          def encode_nucleotide(unquote(char)), do: unquote(num)
+        end)
+
+        Enum.each(@mapping, fn {char, num} ->
+          def decode_nucleotide(unquote(num)), do: unquote(char)
+        end)
+
+        def encode(dna) do
+          do_encode(dna, <<>>)
+        end
+
+        defp do_encode([], acc), do: acc
+
+        defp do_encode([n | rest], acc) do
+          do_encode(rest, <<acc::bitstring, encode_nucleotide(n)::4>>)
+        end
+
+        def decode(dna) do
+          do_decode(dna, [])
+        end
+
+        defp do_decode(<<>>, acc), do: acc |> reverse()
+
+        defp do_decode(<<n::4, rest::bitstring>>, acc),
+          do: do_decode(rest, [decode_nucleotide(n) | acc])
+
+        defp reverse(l), do: do_reverse(l, [])
+        defp do_reverse([], acc), do: acc
+        defp do_reverse([h | t], acc), do: do_reverse(t, [h | acc])
+      end
+    ]
+  end
+
   test_exercise_analysis "detects the usage of the Stream module",
     comments: [Constants.dna_encoding_use_recursion()] do
     [
@@ -266,6 +311,51 @@ defmodule ElixirAnalyzer.ExerciseTest.DNAEncodingTest do
         def decode(bin) do
           for <<b::4 <- bin>>, into: [], do: decode_nucleotide(b)
         end
+      end
+    ]
+  end
+
+  test_exercise_analysis "allows the usage of list comprehensions for metaprogramming (outside of function bodies)",
+    comments: [] do
+    [
+      defmodule DNA do
+        @mapping %{
+          ?\s => 0b0000,
+          ?A => 0b0001,
+          ?C => 0b0010,
+          ?G => 0b0100,
+          ?T => 0b1000
+        }
+        for {char, num} <- @mapping do
+          def encode_nucleotide(unquote(char)), do: unquote(num)
+        end
+
+        for {char, num} <- @mapping do
+          def decode_nucleotide(unquote(num)), do: unquote(char)
+        end
+
+        def encode(dna) do
+          do_encode(dna, <<>>)
+        end
+
+        defp do_encode([], acc), do: acc
+
+        defp do_encode([n | rest], acc) do
+          do_encode(rest, <<acc::bitstring, encode_nucleotide(n)::4>>)
+        end
+
+        def decode(dna) do
+          do_decode(dna, [])
+        end
+
+        defp do_decode(<<>>, acc), do: acc |> reverse()
+
+        defp do_decode(<<n::4, rest::bitstring>>, acc),
+          do: do_decode(rest, [decode_nucleotide(n) | acc])
+
+        defp reverse(l), do: do_reverse(l, [])
+        defp do_reverse([], acc), do: acc
+        defp do_reverse([h | t], acc), do: do_reverse(t, [h | acc])
       end
     ]
   end
