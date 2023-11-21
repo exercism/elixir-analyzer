@@ -78,6 +78,9 @@ defmodule ElixirAnalyzer.Constants do
     captains_log_use_rand_uniform: "elixir.captains-log.use_rand_uniform",
     captains_log_use_io_lib: "elixir.captains-log.use_io_lib",
 
+    # Community Garden Comments
+    community_garden_use_get_and_update: "elixir.community-garden.use_get_and_update",
+
     # Dancing Dots Comments
     dancing_dots_annotate_impl_animation: "elixir.dancing-dots.annotate_impl_animation",
     dancing_dots_do_not_reimplement_init: "elixir.dancing-dots.do_not_reimplement_init",
