@@ -31,10 +31,16 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         Constants.solution_use_specification(),
         Constants.two_fer_wrong_specification()
       ] do
-      defmodule TwoFer do
-        @spec two_fer(String.t()) :: String.t()
-        def two_fer(name)
-      end
+      [
+        defmodule TwoFer do
+          @spec two_fer(String.t()) :: String.t()
+          def two_fer(name)
+        end,
+        defmodule TwoFer do
+          @spec two_fer(name :: String.t()) :: String.t()
+          def two_fer(name)
+        end
+      ]
     end
 
     test_exercise_analysis "refer when wrong spec",
