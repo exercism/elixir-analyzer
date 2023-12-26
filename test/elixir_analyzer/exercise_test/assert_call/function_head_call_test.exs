@@ -72,7 +72,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.FunctionHeadCallTest do
   test_exercise_analysis "calls from the wrong function",
     comments: [
       "didn't find any call to Kernel.is_integer/1 from main_function/1",
-      "didn't find any call to Kernel.|/2 from main_function/1",
+      "didn't find any call to |/2 from main_function/1",
       "didn't find any call to Kernel.@/1 from main_function/1"
     ] do
     [
@@ -100,7 +100,7 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.FunctionHeadCallTest do
     comments: [
       "didn't find any call to Kernel.>/2 from anywhere",
       "didn't find any call to Kernel.is_integer/1 from main_function/1",
-      "didn't find any call to Kernel.|/2 from main_function/1",
+      "didn't find any call to |/2 from main_function/1",
       "didn't find any call to Kernel.@/1 from main_function/1"
     ] do
     [

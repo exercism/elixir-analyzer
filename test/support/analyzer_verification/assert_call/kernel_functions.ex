@@ -29,4 +29,10 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.Kernel do
     called_fn name: :self
     comment "didn't find a call to self/0"
   end
+
+  assert_call "finds call to Kernel.SpecialForms.<<>>/1 without module" do
+    type :informative
+    called_fn name: :<<>>
+    comment "didn't find a call to <<>>/1"
+  end
 end

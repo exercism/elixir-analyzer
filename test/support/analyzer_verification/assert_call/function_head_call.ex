@@ -19,11 +19,11 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.AssertCall.FunctionHeadCal
     comment "didn't find any call to Kernel.is_integer/1 from main_function/1"
   end
 
-  assert_call "find a call to Kernel.|/2 from main_function" do
+  assert_call "find a call to |/2 from main_function" do
     type :informative
-    called_fn module: Kernel, name: :|
+    called_fn name: :|
     calling_fn module: AssertCallVerification, name: :main_function
-    comment "didn't find any call to Kernel.|/2 from main_function/1"
+    comment "didn't find any call to |/2 from main_function/1"
   end
 
   assert_call "find a call to Kernel.@/1 from main_function" do
