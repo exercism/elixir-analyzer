@@ -24,13 +24,17 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
   end
 
   feature "has wrong spec" do
-    find :all
+    find :any
     type :actionable
     suppress_if "has spec", :fail
     comment Constants.two_fer_wrong_specification()
 
     form do
       @spec two_fer(String.t()) :: String.t()
+    end
+
+    form do
+      @spec two_fer(_ignore :: String.t()) :: String.t()
     end
   end
 
