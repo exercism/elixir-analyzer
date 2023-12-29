@@ -109,8 +109,8 @@ defmodule ElixirAnalyzerTest do
                      %{
                        "comment" => "elixir.general.parsing_error",
                        "params" => %{
-                         "error" => "missing terminator: end (for \"do\" starting at line 1)",
-                         "line" => 14
+                         "error" => "missing terminator: end",
+                         "line" => 1
                        },
                        "type" => "essential"
                      }
@@ -290,7 +290,7 @@ defmodule ElixirAnalyzerTest do
               "comment" => "elixir.solution.compiler_warnings",
               "params" => %{
                 "warnings" =>
-                  "warning: Behaviour.defcallback/1 is deprecated. Use the @callback module attribute instead\n  lib/lasagna.ex:4\n\nwarning: HashDict.new/0 is deprecated. Use maps and the Map module instead\n  lib/lasagna.ex:7\n\nwarning: HashSet.member?/2 is deprecated. Use the MapSet module instead\n  lib/lasagna.ex:12\n\nwarning: HashSet.new/0 is deprecated. Use the MapSet module instead\n  lib/lasagna.ex:12\n\n"
+                  "warning: Behaviour.defcallback/1 is deprecated. Use the @callback module attribute instead\n  lib/lasagna.ex:4:13\n\nwarning: HashDict.new/0 is deprecated. Use maps and the Map module instead\n  lib/lasagna.ex:7:14\n\nwarning: HashSet.member?/2 is deprecated. Use the MapSet module instead\n  lib/lasagna.ex:12:13\n\nwarning: HashSet.new/0 is deprecated. Use the MapSet module instead\n  lib/lasagna.ex:12:29\n\n"
               },
               "type" => "actionable"
             },

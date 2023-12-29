@@ -47,6 +47,12 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
     [_ | after_lib] = String.split(filepath, "/lib/")
     filepath = "lib/" <> Enum.join(after_lib)
 
+    line =
+      case line do
+        {line, col} when is_integer(line) and is_integer(col) -> "#{line}:#{col}"
+        line when is_integer(line) -> "#{line}"
+      end
+
     """
     warning: #{warning}
       #{filepath}:#{line}

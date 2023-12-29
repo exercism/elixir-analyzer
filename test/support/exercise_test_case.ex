@@ -85,8 +85,14 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
       {line, code} =
         case code do
-          {_, [line: line], _} -> {line, Macro.to_string(code)}
-          _ -> {__CALLER__.line, code}
+          {:sigil_S, opts, _} ->
+            {Keyword.get(opts, :line), code}
+
+          {_, opts, _} ->
+            {Keyword.get(opts, :line), Macro.to_string(code)}
+
+          _ ->
+            {__CALLER__.line, Macro.to_string(code)}
         end
 
       quote line: line do
