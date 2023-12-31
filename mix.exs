@@ -57,6 +57,6 @@ defmodule ElixirAnalyzer.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   defp escript do
-    [main_module: ElixirAnalyzer.CLI]
+    [main_module: ElixirAnalyzer.CLI, strip_beams: [keep: ["ExCk"]]]
   end
 end
