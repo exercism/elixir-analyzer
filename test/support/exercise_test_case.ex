@@ -85,13 +85,16 @@ defmodule ElixirAnalyzer.ExerciseTestCase do
 
       {line, code} =
         case code do
-          {:sigil_S, opts, _} ->
-            {Keyword.get(opts, :line), code}
+          {:sigil_S, opts, [{:<<>>, _, [inner_code]}, []]} when is_bitstring(inner_code) ->
+            {Keyword.get(opts, :line), inner_code}
 
           {_, opts, _} ->
             {Keyword.get(opts, :line), Macro.to_string(code)}
 
-          _ ->
+          code when is_bitstring(code) ->
+            {__CALLER__.line, code}
+
+          code ->
             {__CALLER__.line, Macro.to_string(code)}
         end
 
