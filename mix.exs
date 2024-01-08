@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.MixProject do
     [
       app: :elixir_analyzer,
       version: "0.1.0",
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       # Turn off protocol consolidation to avoid warning in analyzed code
@@ -57,6 +57,6 @@ defmodule ElixirAnalyzer.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   defp escript do
-    [main_module: ElixirAnalyzer.CLI]
+    [main_module: ElixirAnalyzer.CLI, strip_beams: [keep: ["ExCk"]]]
   end
 end
