@@ -1,1 +1,1 @@
-{"comments":[{"comment":"elixir.general.parsing_error","params":{"error":"missing terminator: end (for \"do\" starting at line 1)","line":14},"type":"essential"}],"summary":"Check the comments for things to fix. 🛠"}
+{"comments":[{"comment":"elixir.general.parsing_error","params":{"error":"missing terminator: end","line":1},"type":"essential"}],"summary":"Check the comments for things to fix. 🛠"}
