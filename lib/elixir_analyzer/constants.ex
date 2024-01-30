@@ -90,7 +90,7 @@ defmodule ElixirAnalyzer.Constants do
     dna_encoding_use_tail_call_recursion: "elixir.dna-encoding.use_tail_call_recursion",
 
     # File Sniffer Comments
-    file_sniffer_use_pattern_matching: "elixir.file-sniffer.use_pattern_matching",
+    file_sniffer_use_bitstring: "elixir.file-sniffer.use_bitstring",
 
     # Freelancer Rates Comments
     freelancer_rates_apply_discount_function_reuse:
