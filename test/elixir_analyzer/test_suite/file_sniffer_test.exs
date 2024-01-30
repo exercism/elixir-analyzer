@@ -239,6 +239,17 @@ defmodule ElixirAnalyzer.ExerciseTest.FileSnifferTest do
         def type_from_binary("\xFF\xD8\xFF" <> _rest), do: "image/jpg"
         def type_from_binary("GIF" <> _rest), do: "image/gif"
         def type_from_binary("\dELF" <> _rest), do: "application/octet-stream"
+      end,
+      defmodule FileSniffer do
+        def type_from_binary(<<0x42, 0x4D>> <> _rest), do: "image/bmp"
+
+        def type_from_binary(<<0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A>> <> _rest),
+          do: "image/png"
+
+        def type_from_binary(<<0xFF, 0xD8, 0xFF>> <> _rest), do: "image/jpg"
+        def type_from_binary(<<0x47, 0x49, 0x46>> <> _rest), do: "image/gif"
+        def type_from_binary(<<0x7F, 0x45, 0x4C, 0x46>> <> _rest), do: "application/octet-stream"
+        def type_from_binary(_), do: nil
       end
     ]
   end
