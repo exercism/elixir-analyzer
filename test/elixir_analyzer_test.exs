@@ -71,7 +71,14 @@ defmodule ElixirAnalyzerTest do
               },
               "type" => "informative"
             },
-            %{"comment" => "elixir.general.feedback_request", "type" => "informative"}
+            %{
+              "comment" => "elixir.general.feedback_request",
+              "type" => "informative",
+              "params" => %{
+                "mentoring_request_url" =>
+                  "https://exercism.org/tracks/elixir/exercises/two-fer/mentor_discussions"
+              }
+            }
           ],
           "summary" => "Check the comments for some suggestions. 📣"
         }
@@ -202,7 +209,14 @@ defmodule ElixirAnalyzerTest do
               },
               "type" => "informative"
             },
-            %{"comment" => "elixir.general.feedback_request", "type" => "informative"}
+            %{
+              "comment" => "elixir.general.feedback_request",
+              "type" => "informative",
+              "params" => %{
+                "mentoring_request_url" =>
+                  "https://exercism.org/tracks/elixir/exercises/not-a-real-exercise/mentor_discussions"
+              }
+            }
           ],
           "summary" => "Check the comments for some suggestions. 📣"
         }
@@ -270,7 +284,14 @@ defmodule ElixirAnalyzerTest do
               "type" => "informative"
             },
             %{"comment" => "elixir.solution.todo_comment", "type" => "informative"},
-            %{"comment" => "elixir.general.feedback_request", "type" => "informative"}
+            %{
+              "comment" => "elixir.general.feedback_request",
+              "type" => "informative",
+              "params" => %{
+                "mentoring_request_url" =>
+                  "https://exercism.org/tracks/elixir/exercises/lasagna/mentor_discussions"
+              }
+            }
           ],
           "summary" => "Check the comments for some suggestions. 📣"
         }
@@ -294,7 +315,14 @@ defmodule ElixirAnalyzerTest do
               },
               "type" => "actionable"
             },
-            %{"comment" => "elixir.general.feedback_request", "type" => "informative"}
+            %{
+              "comment" => "elixir.general.feedback_request",
+              "type" => "informative",
+              "params" => %{
+                "mentoring_request_url" =>
+                  "https://exercism.org/tracks/elixir/exercises/lasagna/mentor_discussions"
+              }
+            }
           ],
           "summary" => "Check the comments for some suggestions. 📣"
         }
