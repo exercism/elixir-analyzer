@@ -1,2 +1,2 @@
-{"comments":[{"comment":"elixir.square-root.do_not_use_built_in_sqrt","type":"essential"},{"comment":"elixir.general.feedback_request","type":"informative"}],"summary":"Check the comments for things to fix. 🛠"}
+{"comments":[{"comment":"elixir.square-root.do_not_use_built_in_sqrt","type":"essential"},{"comment":"elixir.general.feedback_request","type":"informative","params": {"mentoring_request_url":"https://exercism.org/tracks/elixir/exercises/square-root/mentor_discussions"}}],"summary":"Check the comments for things to fix. 🛠"}
 
