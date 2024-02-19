@@ -103,7 +103,11 @@ defmodule ElixirAnalyzer.Submission do
           [
             %{
               type: :informative,
-              comment: Constants.general_feedback_request()
+              comment: Constants.general_feedback_request(),
+              params: %{
+                mentoring_request_url:
+                  "https://exercism.org/tracks/elixir/exercises/#{submission.source.slug}/mentor_discussions"
+              }
             }
           ]
       else
