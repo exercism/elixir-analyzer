@@ -163,6 +163,40 @@ defmodule ElixirAnalyzer.ExerciseTest.HighScoreTest do
         end
       end
     end
+
+    test_exercise_analysis "accepts a guard",
+      comments_exclude: [Constants.high_score_use_default_argument_with_module_attribute()] do
+      defmodule HighScore do
+        def new(), do: %{}
+
+        @score 0
+        def add_player(scores, name, score \\ @score) when is_bitstring(name) do
+          Map.put(scores, name, score)
+        end
+
+        def reset_score(scores, name) do
+          Map.put(scores, name, @score)
+        end
+      end
+    end
+
+    test_exercise_analysis "accepts an empty function head with a guard",
+      comments_exclude: [Constants.high_score_use_default_argument_with_module_attribute()] do
+      defmodule HighScore do
+        def new(), do: %{}
+
+        @score 0
+        def add_player(scores, name, score \\ @score) when is_bitstring(name)
+
+        def add_player(scores, name, score) do
+          Map.put(scores, name, score)
+        end
+
+        def reset_score(scores, name) do
+          Map.put(scores, name, @score)
+        end
+      end
+    end
   end
 
   describe "looks for a module attribute with the initial score of 0" do

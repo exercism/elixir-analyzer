@@ -22,6 +22,16 @@ defmodule ElixirAnalyzer.TestSuite.HighScore do
     end
 
     form do
+      def add_player(_ignore, _ignore, _ignore \\ @_ignore) when _ignore do
+        _ignore
+      end
+    end
+
+    form do
+      def add_player(_ignore, _ignore, _ignore \\ @_ignore) when _ignore
+    end
+
+    form do
       defdelegate add_player(_ignore, _ignore, _ignore \\ @_ignore), _ignore
     end
   end
