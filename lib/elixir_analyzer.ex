@@ -155,7 +155,7 @@ defmodule ElixirAnalyzer do
         |> Submission.set_halt_reason("Analysis skipped, not able to decode solution config.")
 
       e ->
-        Logger.warning("TestSuite halted, #{e.__struct__}", error_message: e.message)
+        Logger.warning("TestSuite halted, #{e.__struct__}", error_message: Exception.message(e))
 
         submission
         |> Submission.halt()

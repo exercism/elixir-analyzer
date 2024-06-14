@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     container:
-      image: hexpm/elixir:1.16.0-erlang-26.2.1-debian-bookworm-20231009
+      image: hexpm/.github/workflows/elixir_test_external.yml
 
     steps:
       - name: Install git
