@@ -22,21 +22,25 @@ defmodule ElixirAnalyzer.ExerciseTest.AssertCall.KernelTest do
     [
       defmodule AssertCallVerification do
         def function() do
+          # credo:disable-for-next-line Credo.Check.Warning.Dbg
           Kernel.dbg()
         end
       end,
       defmodule AssertCallVerification do
         def function() do
+          # credo:disable-for-next-line Credo.Check.Warning.Dbg
           dbg()
         end
       end,
       defmodule AssertCallVerification do
         def function() do
+          # credo:disable-for-next-line Credo.Check.Warning.Dbg
           &Kernel.dbg/0
         end
       end,
       defmodule AssertCallVerification do
         def function() do
+          # credo:disable-for-next-line Credo.Check.Warning.Dbg
           &dbg/0
         end
       end

@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.PredicateFunctionNames
 defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.BooleanFunctionsTest do
   use ExUnit.Case
   alias ElixirAnalyzer.Comment

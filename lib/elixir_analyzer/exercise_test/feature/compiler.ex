@@ -69,13 +69,7 @@ defmodule ElixirAnalyzer.ExerciseTest.Feature.Compiler do
             found =
               params
               |> Enum.chunk_every(unquote(block_params), 1, :discard)
-              |> Enum.reduce(false, fn
-                chunk, false ->
-                  Compiler.form_match?(unquote(find_ast), chunk)
-
-                _chunk, true ->
-                  true
-              end)
+              |> Enum.any?(&Compiler.form_match?(unquote(find_ast), &1))
 
             {node, found}
           else

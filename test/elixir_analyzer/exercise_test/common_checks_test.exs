@@ -3,6 +3,7 @@
 # credo:disable-for-this-file Credo.Check.Readability.VariableNames
 # credo:disable-for-this-file Credo.Check.Readability.ModuleNames
 # credo:disable-for-this-file Credo.Check.Warning.IoInspect
+# credo:disable-for-this-file Credo.Check.Readability.PredicateFunctionNames
 
 defmodule ElixirAnalyzer.ExerciseTestTest.Empty do
   use ElixirAnalyzer.ExerciseTest
@@ -273,6 +274,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecksTest do
         defmodule MyModule do
           def foo() do
             (1 + 1)
+            # credo:disable-for-next-line Credo.Check.Warning.Dbg
             |> dbg()
           end
         end,
