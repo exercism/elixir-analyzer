@@ -158,7 +158,11 @@ config :logger, :console,
     :analysis_module,
     :code_file_path,
     :error_message,
-    :file_name
+    :file_name,
+    :exemploid_files,
+    :submitted_files,
+    :data,
+    :exercise_type
   ]
 
 # It is also possible to import configuration files, relative to this
