@@ -45,19 +45,19 @@ defmodule ElixirAnalyzer.TestSuite.TwoFer do
 
     # function header
     form do
-      def two_fer(_ignore \\ "you")
+      def two_fer(_ignore \\ _ignore)
     end
 
     # function without a guard and with a do block
     form do
-      def two_fer(_ignore \\ "you") do
+      def two_fer(_ignore \\ _ignore) do
         _ignore
       end
     end
 
     # function with do block
     form do
-      def two_fer(_ignore \\ "you") when _ignore do
+      def two_fer(_ignore \\ _ignore) when _ignore do
         _ignore
       end
     end
