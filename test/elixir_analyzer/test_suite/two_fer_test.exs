@@ -92,9 +92,6 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
           def two_fer(_)
         end,
         defmodule TwoFer do
-          def two_fer(name \\ "wrong default value")
-        end,
-        defmodule TwoFer do
           def two_fer(name) do
             "One for #{name}, one for me."
           end
@@ -112,6 +109,21 @@ defmodule ElixirAnalyzer.TestSuite.TwoFerTest do
         end
       ]
     end
+  end
+
+  test_exercise_analysis "accepts any value as the default parameter",
+    comments_exclude: [Constants.two_fer_use_default_parameter()] do
+    [
+      defmodule TwoFer do
+        def two_fer(name \\ "you")
+      end,
+      defmodule TwoFer do
+        def two_fer(name \\ "wrong default value")
+      end,
+      defmodule TwoFer do
+        def two_fer(name \\ nil)
+      end
+    ]
   end
 
   describe "function header" do
