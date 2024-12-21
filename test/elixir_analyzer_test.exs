@@ -234,7 +234,9 @@ defmodule ElixirAnalyzerTest do
 
       Logger.configure(level: :debug)
 
-      assert capture_log(fn -> ElixirAnalyzer.analyze_exercise(exercise, path, path, @options) end) =~
+      assert capture_log(fn ->
+               ElixirAnalyzer.analyze_exercise(exercise, path, path, @options)
+             end) =~
                "Initialization successful"
 
       Logger.configure(level: :warning)
