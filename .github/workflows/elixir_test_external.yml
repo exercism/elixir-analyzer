@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     container:
-      image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241202
+      image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
 
     steps:
       - name: Install git
