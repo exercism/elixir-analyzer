@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     container:
       image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
@@ -65,7 +65,7 @@ jobs:
         run: mix dialyzer
 
   smoke-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository

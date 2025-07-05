@@ -31,20 +31,9 @@ defmodule ElixirAnalyzer.TestSuite.HighSchoolSweetheartTest do
         i2 = initials(full_name2)
 
         """
-             ******       ******
-           **      **   **      **
-         **         ** **         **
-        **            *            **
-        **                         **
-        **     #{i1}  +  #{i2}     **
-         **                       **
-           **                   **
-             **               **
-               **           **
-                 **       **
-                   **   **
-                     ***
-                      *
+        ❤-------------------❤
+        |  #{i1}  +  #{i2}  |
+        ❤-------------------❤
         """
       end
     end
