@@ -35,7 +35,7 @@ defmodule ElixirAnalyzer.TestSuite.GottaSnatchEmAll do
     suppress_if "trade_card uses MapSet.member?", :fail
   end
 
-   assert_call "trade_card uses MapSet.delete" do
+  assert_call "trade_card uses MapSet.delete" do
     type :essential
     calling_fn module: GottaSnatchEmAll, name: :trade_card
     called_fn module: MapSet, name: :delete
