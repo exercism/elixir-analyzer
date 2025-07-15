@@ -63,6 +63,9 @@ config :elixir_analyzer,
     "german-sysadmin" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.GermanSysadmin
     },
+    "gotta-snatch-em-all" => %{
+      analyzer_module: ElixirAnalyzer.TestSuite.GottaSnatchEmAll
+    },
     "high-school-sweetheart" => %{
       analyzer_module: ElixirAnalyzer.TestSuite.HighSchoolSweetheart
     },
