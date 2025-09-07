@@ -5,7 +5,7 @@ defmodule ElixirAnalyzer.TestSuite.GottaSnatchEmAll do
   use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
 
-  assert_call "add_call uses MapSet.number?" do
+  assert_call "add_call uses MapSet.member?" do
     type :essential
     calling_fn module: GottaSnatchEmAll, name: :add_card
     called_fn module: MapSet, name: :member?
@@ -17,7 +17,7 @@ defmodule ElixirAnalyzer.TestSuite.GottaSnatchEmAll do
     calling_fn module: GottaSnatchEmAll, name: :add_card
     called_fn module: MapSet, name: :put
     comment Constants.gotta_snatch_em_all_add_card_use_mapset_member_and_put()
-    suppress_if "add_call uses MapSet.number?", :fail
+    suppress_if "add_call uses MapSet.member?", :fail
   end
 
   assert_call "trade_card uses MapSet.member?" do
