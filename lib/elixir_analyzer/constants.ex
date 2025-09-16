@@ -76,7 +76,7 @@ defmodule ElixirAnalyzer.Constants do
     captains_log_do_not_use_enum_random: "elixir.captains-log.do_not_use_enum_random",
     captains_log_do_not_use_rand_uniform_real: "elixir.captains-log.do_not_use_rand_uniform_real",
     captains_log_use_rand_uniform: "elixir.captains-log.use_rand_uniform",
-    captains_log_use_io_lib: "elixir.captains-log.use_io_lib",
+    captains_log_use_erlang: "elixir.captains-log.use_erlang",
 
     # Community Garden Comments
     community_garden_use_get_and_update: "elixir.community-garden.use_get_and_update",
