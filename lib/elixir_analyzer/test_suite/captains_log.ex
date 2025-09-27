@@ -42,7 +42,7 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     suppress_if Constants.solution_deprecated_random_module(), :fail
     suppress_if "random_stardate does not use :rand.uniform_real", :fail
     suppress_if "random_stardate does not use Enum.random", :fail
-end
+  end
 
 
   check_source "format_stardate uses erlang" do
