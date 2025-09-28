@@ -362,7 +362,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GottSnatchEmAllTest do
     ]
   end
 
-  test_exercise_analysis "does not use String.starts_with in split_shiny_cards",
+  test_exercise_analysis "does not use String.starts_with? in split_shiny_cards",
     comments_include: [
       ElixirAnalyzer.Constants.gotta_snatch_em_all_split_shiny_cards_use_string_starts_with()
     ] do
@@ -376,7 +376,7 @@ defmodule ElixirAnalyzer.ExerciseTest.GottSnatchEmAllTest do
     ]
   end
 
-  test_exercise_analysis "detect unsorterd output from split_shiny_cards",
+  test_exercise_analysis "detect unsorted output from split_shiny_cards",
     comments_include: [
       ElixirAnalyzer.Constants.gotta_snatch_em_all_split_shiny_cards_use_enum_sort()
     ] do
