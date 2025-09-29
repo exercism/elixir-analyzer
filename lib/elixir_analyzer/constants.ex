@@ -100,6 +100,34 @@ defmodule ElixirAnalyzer.Constants do
     german_sysadmin_no_string: "elixir.german-sysadmin.no_string",
     german_sysadmin_use_case: "elixir.german-sysadmin.use_case",
 
+    # Gotta Snatch Em All Comments
+    gotta_snatch_em_all_add_card_use_mapset_member_and_put:
+      "elixir.gotta-snatch-em-all.add_card_use_mapset_member_and_put",
+    gotta_snatch_em_all_trade_card_use_mapset_member_put_and_delete:
+      "elixir.gotta-snatch-em-all.trade_card_use_mapset_member_put_and_delete",
+    gotta_snatch_em_all_remove_duplicates_use_mapset_new:
+      "elixir.gotta-snatch-em-all.remove_duplicates_use_mapset_new",
+    gotta_snatch_em_all_remove_duplicates_use_enum_sort:
+      "elixir.gotta-snatch-em-all.remove_duplicates_use_enum_sort",
+    gotta_snatch_em_all_remove_duplicates_do_not_use_enum_uniq:
+      "elixir.gotta-snatch-em-all.remove_duplicates_do_not_use_enum_uniq",
+    gotta_snatch_em_all_extra_cards_use_mapset_difference_and_size:
+      "elixir.gotta-snatch-em-all.extra_cards_use_mapset_difference_and_size",
+    gotta_snatch_em_all_boring_cards_use_mapset_intersection:
+      "elixir.gotta-snatch-em-all.boring_cards_use_mapset_intersection",
+    gotta_snatch_em_all_boring_cards_use_enum_sort:
+      "elixir.gotta-snatch-em-all.boring_cards_use_enum_sort",
+    gotta_snatch_em_all_boring_cards_use_enum_reduce:
+      "elixir.gotta-snatch-em-all.boring_cards_use_enum_reduce",
+    gotta_snatch_em_all_total_cards_use_mapset_union_and_size:
+      "elixir.gotta-snatch-em-all.total_cards_use_mapset_union_and_size",
+    gotta_snatch_em_all_total_cards_use_enum_reduce:
+      "elixir.gotta-snatch-em-all.total_cards_use_enum_reduce",
+    gotta_snatch_em_all_split_shiny_cards_use_enum_sort:
+      "elixir.gotta-snatch-em-all.shiny_cards_use_enum_sort",
+    gotta_snatch_em_all_split_shiny_cards_use_string_starts_with:
+      "elixir.gotta-snatch-em-all.shiny_cards_use_string_starts_with",
+
     # Guessing Game Comments
     guessing_game_use_default_argument: "elixir.guessing-game.use_default_argument",
     guessing_game_use_multiple_clause_functions:
