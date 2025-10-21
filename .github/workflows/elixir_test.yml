@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     container:
-      image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
+      image: hexpm/elixir:1.19.0-erlang-28.1-debian-bookworm-20251020
 
     steps:
       - name: Install git
@@ -53,7 +53,7 @@ jobs:
         id: plt-cache
         with:
           path: priv/plts
-          key: elixir:1.18.1-erlang-27.2-debian-bookworm-20241223-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
+          key: elixir:1.19.0-erlang-28.1-debian-bookworm-20251020-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}-v3
 
       - name: Create PLTs
         if: steps.plt-cache.outputs.cache-hit != 'true'
