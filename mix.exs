@@ -12,10 +12,6 @@ defmodule ElixirAnalyzer.MixProject do
       consolidate_protocols: false,
       deps: deps(),
       escript: escript(),
-      preferred_cli_env: [
-        # run dialyzer in test env so that files in test/support also get checked
-        dialyzer: :test
-      ],
       dialyzer: [
         plt_core_path: "priv/plts",
         plt_file: {:no_warn, "priv/plts/eventstore.plt"}
@@ -34,6 +30,11 @@ defmodule ElixirAnalyzer.MixProject do
         "coveralls.html": :test
       ]
     ]
+  end
+
+  def cli do
+    # run dialyzer in test env so that files in test/support also get checked
+    [preferred_envs: [dialyzer: :test]]
   end
 
   # Run "mix help compile.app" to learn about applications.
