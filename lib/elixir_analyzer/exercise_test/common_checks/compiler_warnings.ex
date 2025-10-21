@@ -9,14 +9,18 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
     Logger.configure(level: :critical)
 
     warnings =
-      case Kernel.ParallelCompiler.compile(code_path) do
-        {:ok, modules, warnings} ->
+      case Kernel.ParallelCompiler.compile(code_path, return_diagnostics: true) do
+        {:ok, modules,
+         %{
+           runtime_warnings: runtime_warnings,
+           compile_warnings: compile_warnings
+         }} ->
           Enum.each(modules, fn module ->
             :code.delete(module)
             :code.purge(module)
           end)
 
-          warnings
+          compile_warnings ++ runtime_warnings
 
         {:error, _errors, _warnings} ->
           # This should not happen, as real code is assumed to have compiled and
@@ -43,7 +47,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CommonChecks.CompilerWarnings do
     end
   end
 
-  defp format_warning({filepath, line, warning}) do
+  defp format_warning(%{file: filepath, position: line, message: warning}) do
     [_ | after_lib] = String.split(filepath, "/lib/")
     filepath = "lib/" <> Enum.join(after_lib)
 

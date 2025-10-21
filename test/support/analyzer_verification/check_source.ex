@@ -58,7 +58,7 @@ defmodule ElixirAnalyzer.Support.AnalyzerVerification.CheckSource do
     comment "module is not formatted"
 
     check(%Source{code_string: code_string}) do
-      String.trim(code_string) == Code.format_string!(code_string) |> Enum.join()
+      String.trim(code_string) == Code.format_string!(code_string)
     end
   end
 
