@@ -4,6 +4,7 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
   """
   use ElixirAnalyzer.ExerciseTest
   alias ElixirAnalyzer.Constants
+  alias ElixirAnalyzer.Source
 
   assert_call "random_planet_class uses Enum.random" do
     type :essential
@@ -43,10 +44,30 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     suppress_if "random_stardate does not use Enum.random", :fail
   end
 
-  assert_call "format_stardate uses :io_lib" do
+
+  check_source "format_stardate uses erlang" do
     type :essential
-    calling_fn module: CaptainsLog, name: :format_stardate
-    called_fn module: :io_lib, name: :_
-    comment Constants.captains_log_use_io_lib()
+    comment Constants.captains_log_use_erlang()
+
+    check(%Source{code_ast: code_ast}) do
+      {_, erlang?} =
+        Macro.prewalk(code_ast, false, fn node, acc ->
+          case node do
+            # usage :io_lib.format/2
+            {{:., _, [:io_lib, :format]}, _, _} ->
+              {node, true}
+
+            # usage :erlang.function_name/arity
+            # matches any function call from :erlang module
+            {{:., _, [:erlang, _]}, _, _} ->
+              {node, true}
+
+            _ ->
+              {node, acc}
+          end
+        end)
+
+      erlang?
+    end
   end
 end
