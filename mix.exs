@@ -49,7 +49,7 @@ defmodule ElixirAnalyzer.MixProject do
     [
       {:jason, "~> 1.2"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.7", runtime: false},
       {:excoveralls, "~> 0.14", only: :test}
     ]
   end
