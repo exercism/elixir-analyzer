@@ -68,24 +68,12 @@ defmodule ElixirAnalyzer.ExerciseTest.GottSnatchEmAllTest do
 
       @spec split_shiny_cards(collection()) :: {[card()], [card()]}
       def split_shiny_cards(collection) do
-        {shiny, not_shiny} = split_with(collection, &String.starts_with?(&1, "Shiny"))
+        {shiny, not_shiny} = MapSet.split_with(collection, &String.starts_with?(&1, "Shiny"))
 
         shiny_list = shiny |> MapSet.to_list() |> Enum.sort()
         not_shiny_list = not_shiny |> MapSet.to_list() |> Enum.sort()
 
         {shiny_list, not_shiny_list}
-      end
-
-      defp split_with(mapset, predicate) do
-        init = {MapSet.new(), MapSet.new()}
-
-        Enum.reduce(mapset, init, fn item, {passes, fails} ->
-          if predicate.(item) do
-            {MapSet.put(passes, item), fails}
-          else
-            {passes, MapSet.put(fails, item)}
-          end
-        end)
       end
     end
   end

@@ -5,17 +5,13 @@ defmodule ElixirAnalyzer.MixProject do
     [
       app: :elixir_analyzer,
       version: "0.1.0",
-      elixir: "~> 1.18",
+      elixir: "~> 1.19",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       # Turn off protocol consolidation to avoid warning in analyzed code
       consolidate_protocols: false,
       deps: deps(),
       escript: escript(),
-      preferred_cli_env: [
-        # run dialyzer in test env so that files in test/support also get checked
-        dialyzer: :test
-      ],
       dialyzer: [
         plt_core_path: "priv/plts",
         plt_file: {:no_warn, "priv/plts/eventstore.plt"}
@@ -36,6 +32,11 @@ defmodule ElixirAnalyzer.MixProject do
     ]
   end
 
+  def cli do
+    # run dialyzer in test env so that files in test/support also get checked
+    [preferred_envs: [dialyzer: :test]]
+  end
+
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
@@ -47,8 +48,8 @@ defmodule ElixirAnalyzer.MixProject do
   defp deps do
     [
       {:jason, "~> 1.2"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.7", runtime: false},
       {:excoveralls, "~> 0.14", only: :test}
     ]
   end
