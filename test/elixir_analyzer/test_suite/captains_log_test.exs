@@ -111,7 +111,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
       end
     end
 
-    test_exercise_analysis "format_startdate uses :io_lib but not :erlang" do
+    test_exercise_analysis "format_stardate uses :io_lib" do
       defmodule CaptainsLog do
         def format_stardate(stardate) do
           to_string(:io_lib.format("~.1f", [stardate]))
@@ -119,7 +119,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
       end
     end
 
-    text_exercise_analysis "format_startdate uses :erlang but not :io_lib" do
+    text_exercise_analysis "format_stardate uses :erlang" do
       defmodule CaptainsLog do
         def format_stardate(stardate) do
           :erlang.float_to_binary(stardate, [{:decimals, 1}])
