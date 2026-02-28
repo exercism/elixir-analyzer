@@ -47,6 +47,15 @@ defmodule ElixirAnalyzer.TestSuite.CaptainsLog do
     type :essential
     calling_fn module: CaptainsLog, name: :format_stardate
     called_fn module: :io_lib, name: :_
-    comment Constants.captains_log_use_io_lib()
+    comment Constants.captains_log_use_erlang()
+    suppress_if "format_stardate uses :erlang", :pass
+  end
+
+  assert_call "format_stardate uses :erlang" do
+    type :essential
+    calling_fn module: CaptainsLog, name: :format_stardate
+    called_fn module: :erlang, name: :_
+    comment Constants.captains_log_use_erlang()
+    suppress_if "format_stardate uses :io_lib", :pass
   end
 end

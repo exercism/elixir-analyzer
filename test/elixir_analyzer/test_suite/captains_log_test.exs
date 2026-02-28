@@ -97,14 +97,34 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
     end
   end
 
-  test_exercise_analysis "format_stardate uses Float.round",
-    comments_include: [Constants.captains_log_use_io_lib()] do
-    defmodule CaptainsLog do
-      def format_stardate(stardate) do
-        if is_float(stardate) do
-          Float.round(stardate, 1) |> to_string()
-        else
-          raise ArgumentError
+  describe "format_stardate uses :io_lib or :erlang" do
+    test_exercise_analysis "format_stardate uses Float.round",
+      comments_include: [Constants.captains_log_use_erlang()] do
+      defmodule CaptainsLog do
+        def format_stardate(stardate) do
+          if is_float(stardate) do
+            Float.round(stardate, 1) |> to_string()
+          else
+            raise ArgumentError
+          end
+        end
+      end
+    end
+
+    test_exercise_analysis "format_stardate uses :io_lib",
+      comments_exclude: [Constants.captains_log_use_erlang()] do
+      defmodule CaptainsLog do
+        def format_stardate(stardate) do
+          to_string(:io_lib.format("~.1f", [stardate]))
+        end
+      end
+    end
+
+    test_exercise_analysis "format_stardate uses :erlang",
+      comments_exclude: [Constants.captains_log_use_erlang()] do
+      defmodule CaptainsLog do
+        def format_stardate(stardate) do
+          :erlang.float_to_binary(stardate, [{:decimals, 1}])
         end
       end
     end
