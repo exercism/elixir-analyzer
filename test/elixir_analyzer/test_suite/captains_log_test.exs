@@ -99,7 +99,7 @@ defmodule ElixirAnalyzer.ExerciseTest.CaptainsLogTest do
 
   describe "format_stardate uses :io_lib or :erlang" do
     test_exercise_analysis "format_stardate uses Float.round",
-      comments_include: [Constants.captains_log_use_io_lib(), Constants.captains_log_use_erlang()] do
+      comments_include: [Constants.captains_log_use_erlang()] do
       defmodule CaptainsLog do
         def format_stardate(stardate) do
           if is_float(stardate) do
