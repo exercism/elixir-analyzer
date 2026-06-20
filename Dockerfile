@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.19.4-erlang-28.1-debian-bookworm-20251117 as builder
+FROM hexpm/elixir:1.20.1-erlang-29.0-debian-bookworm-20260610 as builder
 
 RUN apt-get update && \
   apt-get install bash -y
@@ -13,7 +13,7 @@ COPY . .
 # Builds an escript bin/elixir_analyzer
 RUN ./bin/build.sh
 
-FROM hexpm/elixir:1.19.4-erlang-28.1-debian-bookworm-20251117
+FROM hexpm/elixir:1.20.1-erlang-29.0-debian-bookworm-20260610
 COPY --from=builder /etc/passwd /etc/passwd
 
 COPY --from=builder /elixir-analyzer/bin /opt/analyzer/bin
